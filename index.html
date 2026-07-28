@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PUG ASTR // Solana Meme</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #030408;
+      --card-bg: rgba(15, 18, 32, 0.85);
+      --accent-cyan: #00f0ff;
+      --accent-purple: #8a2be2;
+      --accent-green: #39ff14;
+      --accent-pink: #ff007f;
+      --text-white: #ffffff;
+      --text-dim: #a0a5c0;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-white);
+      font-family: 'Outfit', sans-serif;
+      overflow-x: hidden;
+      position: relative;
+      user-select: none; /* Bloquea la selección de texto */
+      -webkit-user-select: none;
+    }
+
+    #spaceCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 8%;
+      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(5, 6, 11, 0.85);
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-svg {
+      width: 48px;
+      height: 48px;
+      filter: drop-shadow(0 0 8px var(--accent-cyan));
+    }
+
+    .brand-name {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.95rem;
+      color: var(--accent-cyan);
+      text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+    }
+
+    .lang-switch {
+      background: var(--card-bg);
+      border: 1px solid var(--accent-cyan);
+      color: var(--accent-cyan);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 50px 20px 30px 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .pug-container {
+      position: relative;
+      width: 240px;
+      height: 240px;
+      margin: 0 auto 25px auto;
+      cursor: pointer;
+    }
+
+    .pug-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      border: 4px solid var(--accent-cyan);
+      box-shadow: 0 0 35px rgba(0, 240, 255, 0.6);
+      transition: transform 0.2s ease;
+      pointer-events: none; /* Evita el arrastre de imagen */
+    }
+
+    .pug-img:hover {
+      transform: scale(1.05);
+    }
+
+    .hero-title {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 1.6rem;
+      line-height: 1.4;
+      color: var(--text-white);
+      text-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
+      margin-bottom: 15px;
+    }
+
+    .hero-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      margin-bottom: 25px;
+    }
+
+    .launch-banner {
+      background: linear-gradient(135deg, rgba(138, 43, 226, 0.3), rgba(0, 240, 255, 0.3));
+      border: 2px dashed var(--accent-cyan);
+      border-radius: 20px;
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 750px;
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
+    }
+
+    .launch-banner h3 {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.95rem;
+      color: var(--accent-green);
+      margin-bottom: 10px;
+    }
+
+    .launch-banner p {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+
+    .countdown-container {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin: 25px 0;
+    }
+
+    .time-box {
+      background: rgba(15, 18, 32, 0.9);
+      border: 1px solid var(--accent-purple);
+      border-radius: 12px;
+      padding: 12px 18px;
+      min-width: 80px;
+      box-shadow: 0 0 15px rgba(138, 43, 226, 0.4);
+    }
+
+    .time-num {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 1.5rem;
+      color: var(--accent-cyan);
+      display: block;
+    }
+
+    .time-label {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      font-weight: bold;
+      margin-top: 5px;
+      display: block;
+    }
+
+    .ca-container {
+      background: var(--card-bg);
+      border: 1px solid var(--accent-cyan);
+      border-radius: 14px;
+      padding: 10px 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 15px;
+      max-width: 100%;
+      margin-bottom: 25px;
+    }
+
+    .ca-code {
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: var(--accent-green);
+      word-break: break-all;
+    }
+
+    .btn-copy {
+      background: var(--accent-cyan);
+      color: #000;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .btn-action {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      color: #fff;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 900;
+      border-radius: 30px;
+      text-decoration: none;
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
+      transition: transform 0.2s ease;
+    }
+
+    .btn-action:hover {
+      transform: translateY(-3px);
+    }
+
+    .section {
+      max-width: 950px;
+      margin: 50px auto;
+      padding: 0 20px;
+    }
+
+    .section-header {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 1.1rem;
+      color: var(--accent-cyan);
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .story-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(138, 43, 226, 0.4);
+      border-radius: 20px;
+      padding: 30px;
+      line-height: 1.8;
+      font-size: 1.05rem;
+      color: var(--text-dim);
+      box-shadow: 0 0 25px rgba(138, 43, 226, 0.15);
+    }
+
+    .story-card strong { color: var(--accent-cyan); }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid rgba(138, 43, 226, 0.3);
+      border-radius: 16px;
+      padding: 25px;
+      text-align: center;
+    }
+
+    .card h3 {
+      color: var(--accent-green);
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+    }
+
+    .arcade-box {
+      background: linear-gradient(180deg, rgba(24, 27, 46, 0.9) 0%, rgba(13, 15, 26, 0.9) 100%);
+      border: 2px solid var(--accent-purple);
+      border-radius: 24px;
+      padding: 35px 20px;
+      text-align: center;
+    }
+
+    .btn-clicker {
+      background: linear-gradient(135deg, var(--accent-pink), #e60000);
+      color: #fff;
+      border: none;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.85rem;
+      padding: 16px 28px;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 5px 0 #990033, 0 0 20px rgba(255, 0, 127, 0.5);
+      margin-top: 15px;
+      display: inline-block;
+    }
+
+    .btn-clicker:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #990033;
+    }
+
+    .btn-minigame {
+      background: linear-gradient(135deg, var(--accent-green), #008000);
+      color: #000;
+      border: none;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.8rem;
+      padding: 16px 28px;
+      border-radius: 50px;
+      cursor: not-allowed;
+      box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+      margin-top: 15px;
+      margin-left: 10px;
+      opacity: 0.5;
+      transition: all 0.3s ease;
+      display: inline-block;
+      text-decoration: none;
+    }
+
+    .btn-minigame.unlocked {
+      cursor: pointer;
+      opacity: 1;
+      box-shadow: 0 5px 0 #005500, 0 0 25px rgba(57, 255, 20, 0.7);
+    }
+
+    .btn-minigame.unlocked:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #005500;
+    }
+
+    .quote-display {
+      margin-top: 20px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: var(--accent-cyan);
+      min-height: 40px;
+    }
+
+    .disclaimer-box {
+      max-width: 800px;
+      margin: 40px auto 20px auto;
+      padding: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      background: rgba(10, 12, 20, 0.7);
+      text-align: center;
+    }
+
+    .disclaimer-title {
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.75rem;
+      color: var(--accent-pink);
+      margin-bottom: 10px;
+    }
+
+    .disclaimer-text {
+      font-size: 0.85rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      padding: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-dim);
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="spaceCanvas"></canvas>
+
+  <header>
+    <div class="brand-logo">
+      <svg class="brand-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="46" fill="#0f1220" stroke="#00f0ff" stroke-width="4"/>
+        <path d="M 22,52 A 28,28 0 0,1 78,52 A 28,18 0 0,1 22,52 Z" fill="#00f0ff" opacity="0.3"/>
+        <path d="M 25,50 A 25,25 0 0,1 75,50 A 25,15 0 0,1 25,50 Z" fill="#8a2be2" opacity="0.6"/>
+        <circle cx="50" cy="52" r="18" fill="#d2b48c"/>
+        <ellipse cx="50" cy="58" rx="10" ry="7" fill="#2b1d0c"/>
+        <circle cx="50" cy="55" rx="4" ry="3" fill="#000"/>
+        <circle cx="43" cy="48" r="4" fill="#000"/>
+        <circle cx="57" cy="48" r="4" fill="#000"/>
+        <circle cx="44" cy="47" r="1.5" fill="#fff"/>
+        <circle cx="58" cy="47" r="1.5" fill="#fff"/>
+        <path d="M 32,40 Q 25,32 35,34 Z" fill="#2b1d0c"/>
+        <path d="M 68,40 Q 75,32 65,34 Z" fill="#2b1d0c"/>
+        <path d="M 30,42 Q 50,30 68,40" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.8" stroke-linecap="round"/>
+      </svg>
+      <span class="brand-name">$PUGASTR</span>
+    </div>
+    <div>
+      <select class="lang-switch" id="langSelect" onchange="changeLanguage()">
+        <option value="es" selected>🇪🇸 Español</option>
+        <option value="en">🇺🇸 English</option>
+      </select>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="pug-container" onclick="triggerConfetti()">
+      <img src="pug.png" alt="Pug Gamer Astralis" class="pug-img" onerror="this.src='https://via.placeholder.com/240/00f0ff/000000?text=PUG+ASTRALIS'"/>
+    </div>
+
+    <h1 class="hero-title" id="t-hero-title">EL COMANDANTE DE GALAXIA</h1>
+    <p class="hero-subtitle" id="t-hero-subtitle">Conectado a la red SOLANA. El único Pug que viaja a la velocidad de la luz mientras presiona botones en el espacio.</p>
+
+    <div class="launch-banner">
+      <h3 id="t-launch-header">🚨 LANZAMIENTO OFICIAL</h3>
+      <p id="t-launch-text">
+        <strong>$PUGASTR</strong> será lanzado oficialmente en <strong>PIPERONCHAIN</strong>, la plataforma donde nacen las memecoins más virales.
+      </p>
+    </div>
+
+    <div class="countdown-container">
+      <div class="time-box">
+        <span class="time-num" id="cd-days">30</span>
+        <span class="time-label" id="t-lbl-days">Días</span>
+      </div>
+      <div class="time-box">
+        <span class="time-num" id="cd-hours">00</span>
+        <span class="time-label" id="t-lbl-hours">Horas</span>
+      </div>
+      <div class="time-box">
+        <span class="time-num" id="cd-mins">00</span>
+        <span class="time-label" id="t-lbl-mins">Min</span>
+      </div>
+      <div class="time-box">
+        <span class="time-num" id="cd-secs">00</span>
+        <span class="time-label" id="t-lbl-secs">Seg</span>
+      </div>
+    </div>
+
+    <div class="ca-container">
+      <span class="ca-code" id="caText">0xAstralisPugSolanaContractOnChain123456789</span>
+      <button class="btn-copy" id="t-btn-copy" onclick="copyCA()">COPIAR CA</button>
+    </div>
+
+    <div class="btn-group">
+      <a href="#" target="_blank" class="btn-action" id="t-btn-buy">🚀 COMPRAR EN PIPERONCHAIN</a>
+      <a href="https://t.me" target="_blank" class="btn-action" style="background: #229ED9;">💬 TELEGRAM</a>
+      <a href="https://x.com" target="_blank" class="btn-action" style="background: #000; border: 1px solid #333;">🐦 TWITTER / X</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-header" id="t-story-title">[ LA LEYENDA GALÁCTICA ]</h2>
+    <div class="story-card" id="t-story-body">
+      En los confines lejanos del cosmos, donde la red de <strong>SOLANA</strong> transmite sus señales a través de <strong>PIPEROCHAIN</strong>, nació una leyenda. Nuestro Pug no era un perrito común: accidentalmente presionó el botón de hipervelocidad en su control espacial y fue transportado a la órbita galáctica.<br><br>
+      Ahora, equipado con su casco espacial de Astralis y su control de videojuego, viaja por los sistemas estelares esquivando meteoritos, destruyéndolos con sus láseres tácticos y liderando la flota más divertida de todo el universo crypto.
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-header" id="t-tokenomics-title">[ TOKENOMICS ]</h2>
+    <div class="grid-3">
+      <div class="card">
+        <h3 id="t-tok1-title">SUPPLY TOTAL</h3>
+        <p style="font-size: 1.4rem; color: #fff; font-weight: 900; margin: 8px 0;">1,000,000,000</p>
+        <p id="t-tok1-desc">Tokens para conquistar la galaxia</p>
+      </div>
+      <div class="card">
+        <h3>TAX</h3>
+        <p style="font-size: 1.4rem; color: #fff; font-weight: 900; margin: 8px 0;">0% / 0%</p>
+        <p id="t-tok2-desc">Cero comisiones intergalácticas</p>
+      </div>
+      <div class="card">
+        <h3 id="t-tok3-title">RED</h3>
+        <p style="font-size: 1.4rem; color: #fff; font-weight: 900; margin: 8px 0;">SOLANA</p>
+        <p id="t-tok3-desc">Velocidad luz asegurada</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="arcade-box">
+      <h2 style="font-family: 'Press Start 2P', cursive; font-size: 0.95rem; color: var(--accent-cyan);" id="t-arcade-title">TRANSMISOR ESPACIAL PUG</h2>
+      <p style="color: var(--text-dim); margin-top: 10px;" id="t-arcade-desc">¡Presiona el botón para disparar una ráfaga láser manual!</p>
+      
+      <div>
+        <button class="btn-clicker" id="t-btn-clicker" onclick="triggerSpaceTransmission()">¡DISPARAR LÁSER!</button>
+        <a href="game.html" class="btn-minigame" id="t-btn-minigame" onclick="handleMinigameClick(event)">🎮 JUGAR MINIJUEGO</a>
+      </div>
+      
+      <div class="quote-display" id="quoteDisplay">✨ "¡Presiona el control para iniciar comunicación!"</div>
+    </div>
+  </section>
+
+  <div class="disclaimer-box">
+    <div class="disclaimer-title" id="t-disclaimer-title">⚠️ DESCARGO DE RESPONSABILIDAD</div>
+    <div class="disclaimer-text" id="t-disclaimer-text">
+      Este proyecto es solo para fines de entretenimiento y comunidad. No ofrecemos asesoramiento financiero y todas las decisiones de inversión son responsabilidad del usuario. El viaje espacial está lleno de aventuras, pero también de riesgos; asegúrate de investigar antes de unirte a cualquier expedición.
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2026 Pug Astralis Meme Token — Powered by PIPERONCHAIN.</p>
+  </footer>
+
+  <script>
+    /* ========================================================
+       SISTEMA DE SEGURIDAD Y BLINDAJE DEL CLIENTE
+       ======================================================== */
+
+    // 1. Bloqueo de menú contextual (Clic derecho)
+    document.addEventListener('contextmenu', event => event.preventDefault());
+
+    // 2. Bloqueo de combinaciones de teclado de desarrollo e inspección
+    document.addEventListener('keydown', function(event) {
+      // Bloquear F12
+      if (event.keyCode === 123) {
+        event.preventDefault();
+        return false;
+      }
+      // Bloquear Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (DevTools)
+      if (event.ctrlKey && event.shiftKey && (event.keyCode === 73 || event.keyCode === 74 || event.keyCode === 67)) {
+        event.preventDefault();
+        return false;
+      }
+      // Bloquear Ctrl+U (Ver código fuente)
+      if (event.ctrlKey && event.keyCode === 85) {
+        event.preventDefault();
+        return false;
+      }
+      // Bloquear Ctrl+S (Guardar página)
+      if (event.ctrlKey && event.keyCode === 83) {
+        event.preventDefault();
+        return false;
+      }
+    });
+
+    // 3. Trampa anti-Debugger (Si abren herramientas de desarrollo, congela o altera el DOM)
+    setInterval(function() {
+      const startTime = performance.now();
+      (function() {}.constructor("debugger")());
+      const endTime = performance.now();
+      if (endTime - startTime > 100) {
+        document.body.innerHTML = "<div style='color:#00f0ff;background:#030408;height:100vh;display:flex;justify-content:center;align-items:center;font-family:sans-serif;'><h1>Acceso restringido por seguridad</h1></div>";
+      }
+    }, 800);
+
+    /* ========================================================
+       1. CANVAS DE ESPACIO REALISTA CON CINTURÓN ORGANIZADO DE METEORITOS
+       ======================================================== */
+    const canvas = document.getElementById('spaceCanvas');
+    const ctx = canvas.getContext('2d');
+
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const stars = Array.from({ length: 180 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      size: Math.random() * 2.2,
+      alpha: Math.random(),
+      speed: Math.random() * 0.02 + 0.005
+    }));
+
+    function createAsteroidShape(radius, numPoints) {
+      const points = [];
+      for (let i = 0; i < numPoints; i++) {
+        const angle = (i / numPoints) * Math.PI * 2;
+        const dist = radius * (0.8 + Math.random() * 0.4);
+        points.push({ x: Math.cos(angle) * dist, y: Math.sin(angle) * dist });
+      }
+      return points;
+    }
+
+    let asteroids = [];
+    
+    function spawnAsteroid(fromRight = false, isSmall = false) {
+      const depth = isSmall ? 'back' : (Math.random() > 0.3 ? 'mid' : 'front');
+      let radius = Math.random() * 20 + 15;
+      let speedX = -(Math.random() * 0.6 + 0.9);
+      let speedY = (Math.random() - 0.5) * 0.2; 
+
+      if (isSmall) {
+        radius = Math.random() * 8 + 5;
+        speedX *= 1.2;
+      } else if (depth === 'back') {
+        radius *= 0.5;
+        speedX *= 0.5; 
+      }
+
+      const x = fromRight ? width + radius + 50 : Math.random() * (width + 200) - 100;
+      const y = Math.random() * (height * 0.9); 
+
+      asteroids.push({
+        x: x,
+        y: y,
+        radius: radius,
+        vx: speedX,
+        vy: speedY,
+        angle: Math.random() * Math.PI * 2,
+        vAngle: (Math.random() - 0.5) * 0.01, 
+        points: createAsteroidShape(radius, isSmall ? 6 : 9),
+        isSmall: isSmall,
+        depth: depth
+      });
+    }
+
+    for (let i = 0; i < 9; i++) {
+      spawnAsteroid(false, Math.random() > 0.6);
+    }
+
+    let lasers = [];
+    let explosionParticles = [];
+    let time = 0;
+    let lastAutoShoot = 0;
+
+    function animateSpace() {
+      time += 0.015;
+      ctx.clearRect(0, 0, width, height);
+
+      const sunX = width * 0.88;
+      const sunY = height * 0.2;
+      const sunRadius = 85 + Math.sin(time) * 4;
+
+      const sunGlow = ctx.createRadialGradient(sunX, sunY, 20, sunX, sunY, sunRadius * 3.5);
+      sunGlow.addColorStop(0, 'rgba(255, 200, 80, 0.7)');
+      sunGlow.addColorStop(0.3, 'rgba(255, 90, 0, 0.25)');
+      sunGlow.addColorStop(1, 'rgba(0, 0, 0, 0)');
+
+      ctx.fillStyle = sunGlow;
+      ctx.beginPath();
+      ctx.arc(sunX, sunY, sunRadius * 3.5, 0, Math.PI * 2);
+      ctx.fill();
+
+      const sunBody = ctx.createRadialGradient(sunX - 20, sunY - 20, 5, sunX, sunY, sunRadius);
+      sunBody.addColorStop(0, '#ffffff');
+      sunBody.addColorStop(0.3, '#ffea00');
+      sunBody.addColorStop(0.8, '#ff3300');
+      sunBody.addColorStop(1, '#990000');
+
+      ctx.fillStyle = sunBody;
+      ctx.beginPath();
+      ctx.arc(sunX, sunY, sunRadius, 0, Math.PI * 2);
+      ctx.fill();
+
+      stars.forEach(star => {
+        star.alpha += star.speed;
+        if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
+
+        ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      const shipX = width * 0.15;
+      const shipY = height * 0.35 + Math.sin(time * 0.8) * 15;
+
+      ctx.save();
+      ctx.translate(shipX, shipY);
+
+      const thrusterLength = 60 + Math.random() * 15;
+      const thrusterGlow = ctx.createLinearGradient(-130 - thrusterLength, 0, -110, 0);
+      thrusterGlow.addColorStop(0, 'rgba(0, 240, 255, 0)');
+      thrusterGlow.addColorStop(0.5, 'rgba(0, 240, 255, 0.8)');
+      thrusterGlow.addColorStop(1, 'rgba(255, 255, 255, 1)');
+
+      ctx.fillStyle = thrusterGlow;
+      ctx.beginPath();
+      ctx.moveTo(-110, -20);
+      ctx.lineTo(-120 - thrusterLength, 0);
+      ctx.lineTo(-110, 20);
+      ctx.closePath();
+      ctx.fill();
+
+      const hullGrad = ctx.createLinearGradient(-120, -50, 150, 50);
+      hullGrad.addColorStop(0, '#0d111d');
+      hullGrad.addColorStop(0.3, '#1d233a');
+      hullGrad.addColorStop(0.6, '#3c486b');
+      hullGrad.addColorStop(1, '#0f1424');
+
+      ctx.fillStyle = hullGrad;
+      ctx.strokeStyle = '#00f0ff';
+      ctx.lineWidth = 1.8;
+
+      ctx.beginPath();
+      ctx.moveTo(-110, -18);
+      ctx.lineTo(-60, -45);
+      ctx.lineTo(20, -35);
+      ctx.lineTo(160, 0);
+      ctx.lineTo(20, 35);
+      ctx.lineTo(-60, 45);
+      ctx.lineTo(-110, 18);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+
+      const domeGrad = ctx.createLinearGradient(10, -20, 70, 0);
+      domeGrad.addColorStop(0, 'rgba(0, 240, 255, 0.9)');
+      domeGrad.addColorStop(0.5, 'rgba(138, 43, 226, 0.7)');
+      domeGrad.addColorStop(1, 'rgba(255, 0, 127, 0.8)');
+
+      ctx.fillStyle = domeGrad;
+      ctx.beginPath();
+      ctx.ellipse(40, 0, 45, 16, 0, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+
+      if (Date.now() - lastAutoShoot > 650) {
+        asteroids.forEach(ast => {
+          if (ast.depth !== 'back' && ast.x > shipX + 80 && ast.x < shipX + 550 && Math.abs(ast.y - shipY) < 160) {
+            fireLaser(shipX + 150, shipY, ast.x, ast.y);
+            lastAutoShoot = Date.now();
+          }
+        });
+      }
+
+      for (let i = lasers.length - 1; i >= 0; i--) {
+        const l = lasers[i];
+        l.x += l.vx;
+        l.y += l.vy;
+        l.life -= 0.03;
+
+        ctx.strokeStyle = '#00f0ff';
+        ctx.shadowColor = '#00f0ff';
+        ctx.shadowBlur = 12;
+        ctx.lineWidth = 3.5;
+        ctx.beginPath();
+        ctx.moveTo(l.x, l.y);
+        ctx.lineTo(l.x - l.vx * 0.35, l.y - l.vy * 0.35);
+        ctx.stroke();
+        ctx.shadowBlur = 0;
+
+        asteroids.forEach((ast, aIndex) => {
+          if (ast.depth !== 'back') {
+            const dist = Math.hypot(l.x - ast.x, l.y - ast.y);
+            if (dist < ast.radius + 8) {
+              createExplosion(ast.x, ast.y, ast.radius);
+              
+              if (!ast.isSmall) {
+                for (let k = 0; k < 2; k++) {
+                  spawnFragment(ast.x, ast.y);
+                }
+              }
+
+              asteroids.splice(aIndex, 1);
+              lasers.splice(i, 1);
+              
+              setTimeout(() => spawnAsteroid(true, false), 1500);
+            }
+          }
+        });
+
+        if (l.life <= 0 || l.x > width || l.y < 0 || l.y > height) {
+          lasers.splice(i, 1);
+        }
+      }
+
+      for (let i = explosionParticles.length - 1; i >= 0; i--) {
+        const p = explosionParticles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= p.decay;
+
+        if (p.life <= 0) {
+          explosionParticles.splice(i, 1);
+          continue;
+        }
+
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.life;
+
+        if (p.isChunk) {
+          ctx.beginPath();
+          ctx.rect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+
+      asteroids.forEach((ast) => {
+        ast.x += ast.vx;
+        ast.y += ast.vy;
+        ast.angle += ast.vAngle;
+
+        if (ast.x < -ast.radius - 50) {
+          ast.x = width + ast.radius + 50;
+          ast.y = Math.random() * (height * 0.9);
+        }
+
+        ctx.save();
+        ctx.translate(ast.x, ast.y);
+        ctx.rotate(ast.angle);
+
+        const astGrad = ctx.createRadialGradient(
+          ast.radius * 0.3, -ast.radius * 0.3, ast.radius * 0.1,
+          0, 0, ast.radius * 1.2
+        );
+
+        if (ast.depth === 'back') {
+          ctx.globalAlpha = 0.35;
+          astGrad.addColorStop(0, '#3a3247');
+          astGrad.addColorStop(1, '#090610');
+        } else {
+          ctx.globalAlpha = 0.9;
+          astGrad.addColorStop(0, '#75658d');
+          astGrad.addColorStop(0.5, '#352b47');
+          astGrad.addColorStop(1, '#120c1f');
+        }
+
+        ctx.fillStyle = astGrad;
+        ctx.strokeStyle = ast.depth === 'back' ? 'transparent' : 'rgba(0, 240, 255, 0.2)';
+        ctx.lineWidth = 1.2;
+
+        ctx.beginPath();
+        ast.points.forEach((pt, i) => {
+          if (i === 0) ctx.moveTo(pt.x, pt.y);
+          else ctx.lineTo(pt.x, pt.y);
+        });
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.restore();
+      });
+
+      requestAnimationFrame(animateSpace);
+    }
+
+    function spawnFragment(x, y) {
+      asteroids.push({
+        x: x + (Math.random() - 0.5) * 15,
+        y: y + (Math.random() - 0.5) * 15,
+        radius: Math.random() * 6 + 4,
+        vx: -(Math.random() * 1.2 + 1.4),
+        vy: (Math.random() - 0.5) * 1.0,
+        angle: Math.random() * Math.PI,
+        vAngle: (Math.random() - 0.5) * 0.04,
+        points: createAsteroidShape(6, 6),
+        isSmall: true,
+        depth: 'mid'
+      });
+    }
+
+    function fireLaser(startX, startY, targetX, targetY) {
+      const angle = Math.atan2(targetY - startY, targetX - startX);
+      const speed = 20;
+      lasers.push({
+        x: startX,
+        y: startY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 1.0
+      });
+    }
+
+    function createExplosion(x, y, radius) {
+      const count = Math.floor(radius * 1.2);
+      const colors = ['#ff007f', '#00f0ff', '#ffea00', '#ffffff', '#8a2be2'];
+
+      for (let i = 0; i < count; i++) {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 4 + 1.0;
+        explosionParticles.push({
+          x: x,
+          y: y,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          size: Math.random() * (radius * 0.2) + 2,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          life: 1.0,
+          decay: Math.random() * 0.03 + 0.015,
+          angle: Math.random() * Math.PI,
+          isChunk: Math.random() > 0.5
+        });
+      }
+    }
+
+    animateSpace();
+
+    /* ========================================================
+       2. TRADUCTOR BILINGÜE
+       ======================================================== */
+    const i18n = {
+      es: {
+        heroTitle: "EL COMANDANTE DE SOLANA",
+        heroSubtitle: "Conectado a la red Astralis Network. El único Pug que viaja a la velocidad de la luz mientras presiona botones en el espacio.",
+        launchHeader: "🚨 LANZAMIENTO OFICIAL",
+        launchText: "<strong>$PUGASTR</strong> será lanzado oficialmente en <strong>Solana</strong>, la plataforma donde nacen las memecoins más virales.",
+        lblDays: "Días",
+        lblHours: "Horas",
+        lblMins: "Min",
+        lblSecs: "Seg",
+        btnCopy: "COPIAR CA",
+        btnBuy: "🚀 COMPRAR EN SOLANA",
+        storyTitle: "[ LA LEYENDA GALÁCTICA ]",
+        storyBody: "En los confines lejanos del cosmos, donde la red de <strong>Astralis Network</strong> transmite sus señales a través de <strong>Solana</strong>, nació una leyenda. Nuestro Pug no era un perrito común: accidentalmente presionó el botón de hipervelocidad en su control espacial y fue transportado a la órbita galáctica.<br><br>Ahora, equipado con su casco espacial de Astralis y su control de videojuego, viaja por los sistemas estelares esquivando meteoritos, destruyéndolos con sus láseres tácticos y liderando la flota más divertida de todo el universo crypto.",
+        tokenomicsTitle: "[ TOKENOMICS ]",
+        tok1Title: "SUPPLY TOTAL",
+        tok1Desc: "Tokens para conquistar la galaxia",
+        tok2Desc: "Cero comisiones intergalácticas",
+        tok3Title: "RED",
+        tok3Desc: "Velocidad luz asegurada",
+        arcadeTitle: "TRANSMISOR ESPACIAL PUG",
+        arcadeDesc: "¡Presiona el botón para disparar una ráfaga láser manual!",
+        btnClicker: "¡DISPARAR LÁSER!",
+        btnMinigame: "🎮 JUGAR MINIJUEGO",
+        initialQuote: "✨ ¡Presiona el control para iniciar comunicación!",
+        disclaimerTitle: "⚠️ DESCARGO DE RESPONSABILIDAD",
+        disclaimerText: "Este proyecto es solo para fines de entretenimiento y comunidad. No ofrecemos asesoramiento financiero y todas las decisiones de inversión son responsabilidad del usuario. El viaje espacial está lleno de aventuras, pero también de riesgos; asegúrate de investigar antes de unirte a cualquier expedición."
+      },
+      en: {
+        heroTitle: "THE SOLANA COMMANDER",
+        heroSubtitle: "Powered by Astralis Network. The only Pug traveling at light speed while button-mashing through deep space.",
+        launchHeader: "🚨 OFFICIAL LAUNCH",
+        launchText: "<strong>$PUGASTR</strong> will be officially launched on <strong>Solana</strong>, the platform where the most viral memecoins are born.",
+        lblDays: "Days",
+        lblHours: "Hours",
+        lblMins: "Mins",
+        lblSecs: "Secs",
+        btnCopy: "COPY CA",
+        btnBuy: "🚀 BUY ON SOLANA",
+        storyTitle: "[ THE GALACTIC LEGEND ]",
+        storyBody: "In the far reaches of the cosmos, where the <strong>Astralis Network</strong> broadcasts through <strong>Solana</strong>, a legend was born. Our Pug was no ordinary dog: he accidentally hit the hyperdrive button on his controller and rocketed straight into deep orbit.<br><br>Now, equipped with his Astralis helmet and arcade controller, he cruises through star systems dodging meteors, blasting them with tactical lasers, and leading the funniest fleet in the crypto universe.",
+        tokenomicsTitle: "[ TOKENOMICS ]",
+        tok1Title: "TOTAL SUPPLY",
+        tok1Desc: "Tokens to conquer the galaxy",
+        tok2Desc: "Zero intergalactic taxes",
+        tok3Title: "NETWORK",
+        tok3Desc: "Guaranteed light speed",
+        arcadeTitle: "PUG SPACE TRANSMITTER",
+        arcadeDesc: "Press the button to fire a manual laser blast!",
+        btnClicker: "FIRE LASER!",
+        btnMinigame: "🎮 PLAY MINIGAME",
+        initialQuote: "✨ Press the controller to start transmission!",
+        disclaimerTitle: "⚠️ DISCLAIMER",
+        disclaimerText: "This project is for entertainment and community purposes only. We do not offer financial advice, and all investment decisions are the responsibility of the user. Pachu's journey is full of adventure, but also risks; be sure to do your research before joining any expedition."
+      }
+    };
+
+    function changeLanguage() {
+      const lang = document.getElementById("langSelect").value;
+      const t = i18n[lang];
+
+      document.getElementById("t-hero-title").innerText = t.heroTitle;
+      document.getElementById("t-hero-subtitle").innerText = t.heroSubtitle;
+      document.getElementById("t-launch-header").innerText = t.launchHeader;
+      document.getElementById("t-launch-text").innerHTML = t.launchText;
+      document.getElementById("t-lbl-days").innerText = t.lblDays;
+      document.getElementById("t-lbl-hours").innerText = t.lblHours;
+      document.getElementById("t-lbl-mins").innerText = t.lblMins;
+      document.getElementById("t-lbl-secs").innerText = t.lblSecs;
+      document.getElementById("t-btn-copy").innerText = t.btnCopy;
+      document.getElementById("t-btn-buy").innerText = t.btnBuy;
+      document.getElementById("t-story-title").innerText = t.storyTitle;
+      document.getElementById("t-story-body").innerHTML = t.storyBody;
+      document.getElementById("t-tokenomics-title").innerText = t.tokenomicsTitle;
+      document.getElementById("t-tok1-title").innerText = t.tok1Title;
+      document.getElementById("t-tok1-desc").innerText = t.tok1Desc;
+      document.getElementById("t-tok2-desc").innerText = t.tok2Desc;
+      document.getElementById("t-tok3-title").innerText = t.tok3Title;
+      document.getElementById("t-tok3-desc").innerText = t.tok3Desc;
+      document.getElementById("t-arcade-title").innerText = t.arcadeTitle;
+      document.getElementById("t-arcade-desc").innerText = t.arcadeDesc;
+      document.getElementById("t-btn-clicker").innerText = t.btnClicker;
+      document.getElementById("t-btn-minigame").innerText = t.btnMinigame;
+      document.getElementById("quoteDisplay").innerText = t.initialQuote;
+      document.getElementById("t-disclaimer-title").innerText = t.disclaimerTitle;
+      document.getElementById("t-disclaimer-text").innerText = t.disclaimerText;
+    }
+
+    /* ========================================================
+       3. CONTADOR Y ACCIÓN DEL MINIJUEGO
+       ======================================================== */
+    const launchTarget = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = launchTarget - now;
+
+      if (diff <= 0) return;
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById("cd-days").innerText = String(days).padStart(2, '0');
+      document.getElementById("cd-hours").innerText = String(hours).padStart(2, '0');
+      document.getElementById("cd-mins").innerText = String(minutes).padStart(2, '0');
+      document.getElementById("cd-secs").innerText = String(seconds).padStart(2, '0');
+    }
+
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    function copyCA() {
+      const caText = document.getElementById("caText").innerText;
+      navigator.clipboard.writeText(caText);
+      const btn = document.getElementById("t-btn-copy");
+      const currentLang = document.getElementById("langSelect").value;
+      btn.innerText = currentLang === 'es' ? "¡COPIADO!" : "COPIED!";
+      setTimeout(() => { btn.innerText = i18n[currentLang].btnCopy; }, 2000);
+    }
+
+    const spaceQuotes = [
+      "💥 '¡Cañón láser activado! Limpiando el cinturón en Solana.'",
+      "🛸 'Pug Commander reportando: Meteorito neutralizado.'",
+      "👾 '¡Boom! Trayectoria despejada de asteroides.'",
+      "⭐ 'Efecto de impacto confirmado en la órbita.'",
+      "🚀 '¡Navegando a través del cinturón intergaláctico!'"
+    ];
+
+    let minigameUnlocked = false;
+
+    function triggerSpaceTransmission() {
+      const shipX = width * 0.15;
+      const shipY = height * 0.35;
+      fireLaser(shipX + 150, shipY, width, shipY + (Math.random() - 0.5) * 200);
+      fireLaser(shipX + 150, shipY, width, shipY + (Math.random() - 0.5) * 150);
+
+      const randomQuote = spaceQuotes[Math.floor(Math.random() * spaceQuotes.length)];
+      document.getElementById("quoteDisplay").innerText = randomQuote;
+      triggerConfetti();
+
+      if (!minigameUnlocked) {
+        minigameUnlocked = true;
+        const minigameBtn = document.getElementById("t-btn-minigame");
+        minigameBtn.classList.add("unlocked");
+      }
+    }
+
+    function handleMinigameClick(event) {
+      if (!minigameUnlocked) {
+        event.preventDefault();
+        alert("¡Primero debes presionar el botón de disparar láser para activar el minijuego!");
+      }
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } });
+      }
+    }
+  </script>
+</body>
+</html>
