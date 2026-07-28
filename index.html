@@ -474,7 +474,7 @@
     <div class="grid-3">
       <div class="card">
         <h3 id="t-tok1-title">SUPPLY TOTAL</h3>
-        <p style="font-size: 1.4rem; color: #fff; font-weight: 900; margin: 8px 0;">1,000,000,000</p>
+        <p style="font-size: 1.4rem; color: #fff; font-weight: 900; margin: 8px 0;">500,000,000</p>
         <p id="t-tok1-desc">Tokens para conquistar la galaxia</p>
       </div>
       <div class="card">
@@ -570,10 +570,10 @@
     }
 
     let asteroids = [];
-    const MAX_ASTEROIDS = 6; // Límite estricto para evitar saturación y amontonamiento[cite: 4]
+    const MAX_ASTEROIDS = 6;
     
     function spawnAsteroid(fromRight = false, isSmall = false) {
-      if (asteroids.length >= MAX_ASTEROIDS && fromRight) return; // Controla la cantidad máxima[cite: 4]
+      if (asteroids.length >= MAX_ASTEROIDS && fromRight) return;
 
       const depth = isSmall ? 'back' : (Math.random() > 0.3 ? 'mid' : 'front');
       let radius = Math.random() * 18 + 14;
@@ -588,13 +588,11 @@
         speedX *= 0.4; 
       }
 
-      // Distribuir verticalmente de manera más ordenada por carriles o bandas
       const x = fromRight ? width + radius + 100 : Math.random() * width;
       const y = Math.random() * (height * 0.8) + (height * 0.1); 
 
-      // Verificación de distancia para evitar que aparezcan encima de otros
       let tooClose = asteroids.some(ast => Math.hypot(ast.x - x, ast.y - y) < 180);
-      if (tooClose && fromRight) return; // Si están muy juntos, descarta esta creación para mantener orden[cite: 4]
+      if (tooClose && fromRight) return;
 
       asteroids.push({
         x: x,
@@ -610,7 +608,6 @@
       });
     }
 
-    // Inicializar un número controlado y espaciado de asteroides
     for (let i = 0; i < 5; i++) {
       spawnAsteroid(false, Math.random() > 0.5);
     }
@@ -625,7 +622,6 @@
       time += 0.015;
       ctx.clearRect(0, 0, width, height);
 
-      // Generación controlada por tiempo para que salgan fluidos y ordenados
       if (Date.now() - lastSpawnTime > 2200 && asteroids.length < MAX_ASTEROIDS) {
         spawnAsteroid(true, Math.random() > 0.6);
         lastSpawnTime = Date.now();
