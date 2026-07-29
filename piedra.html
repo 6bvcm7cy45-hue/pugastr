@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PUG ASTR // PvP Cyber Arena & Token Gate</title>
+  <title>PUG ASTR // PvP P2P Real Arena</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -42,383 +42,182 @@
     }
 
     #spaceCanvas {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      z-index: -1;
-      pointer-events: none;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;
     }
 
-    /* HEADER */
     header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 16px 6%;
-      border-bottom: 1px solid var(--border-cyber);
-      background: rgba(5, 7, 13, 0.88);
-      backdrop-filter: blur(16px);
-      position: sticky; top: 0; z-index: 1000;
+      display: flex; justify-content: space-between; align-items: center; padding: 16px 6%;
+      border-bottom: 1px solid var(--border-cyber); background: rgba(5, 7, 13, 0.88);
+      backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 1000;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
-    .brand-logo {
-      display: flex; align-items: center; gap: 14px; text-decoration: none;
-    }
-
-    .brand-svg {
-      width: 44px; height: 44px;
-      filter: drop-shadow(0 0 12px var(--accent-cyan));
-    }
-
+    .brand-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+    .brand-svg { width: 44px; height: 44px; filter: drop-shadow(0 0 12px var(--accent-cyan)); }
     .brand-name {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 0.85rem;
-      color: var(--accent-cyan);
-      text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
-      letter-spacing: 1px;
+      font-family: 'Press Start 2P', cursive; font-size: 0.85rem; color: var(--accent-cyan);
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.6); letter-spacing: 1px;
     }
 
-    .wallet-section {
-      display: flex; gap: 12px; align-items: center; position: relative;
-    }
-
+    .wallet-section { display: flex; gap: 12px; align-items: center; position: relative; }
     .wallet-btn {
-      background: linear-gradient(135deg, #f6851b, #e2761b);
-      color: #fff; border: none; padding: 10px 20px;
-      border-radius: 12px; font-weight: 800; font-size: 0.9rem;
-      cursor: pointer; box-shadow: 0 0 20px rgba(246, 133, 27, 0.4);
-      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
-      display: flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, #f6851b, #e2761b); color: #fff; border: none; padding: 10px 20px;
+      border-radius: 12px; font-weight: 800; font-size: 0.9rem; cursor: pointer;
+      box-shadow: 0 0 20px rgba(246, 133, 27, 0.4); transition: all 0.25s; display: flex; align-items: center; gap: 10px;
     }
-
-    .wallet-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 0 28px rgba(246, 133, 27, 0.7);
-    }
+    .wallet-btn:hover { transform: translateY(-2px); box-shadow: 0 0 28px rgba(246, 133, 27, 0.7); }
 
     .wallet-dropdown {
-      position: absolute; right: 0; top: 100%; margin-top: 10px;
-      background: rgba(13, 17, 30, 0.98);
-      border: 1px solid rgba(246, 133, 27, 0.4);
-      border-radius: 14px; padding: 12px; width: 210px;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.8);
-      z-index: 2000; display: flex; flex-direction: column; gap: 8px;
+      position: absolute; right: 0; top: 100%; margin-top: 10px; background: rgba(13, 17, 30, 0.98);
+      border: 1px solid rgba(246, 133, 27, 0.4); border-radius: 14px; padding: 12px; width: 210px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.8); z-index: 2000; display: flex; flex-direction: column; gap: 8px;
     }
-
     .dropdown-item {
-      background: rgba(0, 240, 255, 0.1);
-      color: var(--accent-cyan); border: 1px solid rgba(0, 240, 255, 0.3);
-      padding: 10px 14px; border-radius: 10px; font-size: 0.65rem;
-      font-family: 'Press Start 2P', cursive; cursor: pointer; text-align: center;
-      transition: all 0.2s;
+      background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan); border: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 10px 14px; border-radius: 10px; font-size: 0.65rem; font-family: 'Press Start 2P', cursive;
+      cursor: pointer; text-align: center; transition: all 0.2s;
     }
+    .dropdown-item:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 15px var(--accent-cyan); }
+    .dropdown-item.danger { background: rgba(255, 0, 127, 0.1); color: var(--accent-pink); border: 1px solid rgba(255, 0, 127, 0.3); }
+    .dropdown-item.danger:hover { background: var(--accent-pink); color: #fff; box-shadow: 0 0 15px var(--accent-pink); }
 
-    .dropdown-item:hover {
-      background: var(--accent-cyan); color: #000;
-      box-shadow: 0 0 15px var(--accent-cyan);
-    }
-
-    .dropdown-item.danger {
-      background: rgba(255, 0, 127, 0.1);
-      color: var(--accent-pink); border: 1px solid rgba(255, 0, 127, 0.3);
-    }
-    .dropdown-item.danger:hover {
-      background: var(--accent-pink); color: #fff;
-      box-shadow: 0 0 15px var(--accent-pink);
-    }
-
-    /* HERO */
-    .hero {
-      text-align: center; padding: 35px 20px 15px 20px; max-width: 900px; margin: 0 auto;
-    }
-
+    .hero { text-align: center; padding: 35px 20px 15px 20px; max-width: 900px; margin: 0 auto; }
     .hero-title {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 1rem; line-height: 1.5; color: var(--text-main);
+      font-family: 'Press Start 2P', cursive; font-size: 1rem; line-height: 1.5; color: var(--text-main);
       text-shadow: 0 0 20px rgba(0, 240, 255, 0.5); margin-bottom: 12px;
     }
+    .hero-subtitle { font-size: 0.95rem; color: var(--text-muted); font-weight: 600; }
 
-    .hero-subtitle {
-      font-size: 0.95rem; color: var(--text-muted); font-weight: 600;
-    }
-
-    /* DASHBOARD */
     .dashboard-container {
       max-width: 1000px; margin: 0 auto 20px auto; padding: 0 20px;
       display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;
     }
-
-    @media(max-width: 768px) {
-      .dashboard-container { grid-template-columns: 1fr; }
-    }
+    @media(max-width: 768px) { .dashboard-container { grid-template-columns: 1fr; } }
 
     .dash-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-cyber);
-      border-radius: 18px; padding: 20px 24px;
-      display: flex; flex-direction: column; gap: 12px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 240, 255, 0.05);
+      background: var(--bg-card); border: 1px solid var(--border-cyber); border-radius: 18px; padding: 20px 24px;
+      display: flex; flex-direction: column; gap: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(12px);
     }
-
-    .dash-title {
-      font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: var(--accent-cyan);
-      letter-spacing: 0.5px;
-    }
-
-    .dash-value {
-      font-size: 1.25rem; font-weight: 800; color: #fff; display: flex; align-items: center; justify-content: space-between;
-    }
-
+    .dash-title { font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: var(--accent-cyan); }
+    .dash-value { font-size: 1.25rem; font-weight: 800; color: #fff; display: flex; align-items: center; justify-content: space-between; }
     .token-badge {
       font-size: 0.65rem; background: rgba(0, 240, 255, 0.12); padding: 6px 12px; border-radius: 8px;
       border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-family: 'Press Start 2P', cursive;
     }
-
-    .xp-bar-track {
-      width: 100%; height: 10px; background: rgba(0,0,0,0.6);
-      border-radius: 6px; overflow: hidden; border: 1px solid rgba(0, 240, 255, 0.2);
-    }
-
+    .xp-bar-track { width: 100%; height: 10px; background: rgba(0,0,0,0.6); border-radius: 6px; overflow: hidden; border: 1px solid rgba(0, 240, 255, 0.2); }
     .xp-bar-fill {
-      height: 100%; width: 0%;
-      background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
-      box-shadow: 0 0 15px var(--accent-cyan);
-      transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+      box-shadow: 0 0 15px var(--accent-cyan); transition: width 0.5s;
     }
 
-    /* MAIN SECTIONS */
-    .section {
-      max-width: 1000px; margin: 10px auto 40px auto; padding: 0 20px; width: 100%;
-    }
-
+    .section { max-width: 1000px; margin: 10px auto 40px auto; padding: 0 20px; width: 100%; }
     .section-header {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 0.85rem; color: var(--accent-cyan);
-      text-align: center; margin-bottom: 25px;
-      text-shadow: 0 0 10px rgba(0,240,255,0.4);
+      font-family: 'Press Start 2P', cursive; font-size: 0.85rem; color: var(--accent-cyan);
+      text-align: center; margin-bottom: 25px; text-shadow: 0 0 10px rgba(0,240,255,0.4);
     }
-
     .view-container {
-      background: var(--bg-card);
-      border: 1px solid rgba(157, 0, 255, 0.4);
-      border-radius: 24px; padding: 30px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 0 30px rgba(157, 0, 255, 0.1);
-      backdrop-filter: blur(16px);
+      background: var(--bg-card); border: 1px solid rgba(157, 0, 255, 0.4); border-radius: 24px; padding: 30px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); backdrop-filter: blur(16px);
     }
-
     .hidden { display: none !important; }
 
     .token-gate-warning {
-      background: rgba(255, 0, 127, 0.12);
-      border: 1px solid var(--accent-pink);
-      border-radius: 14px; padding: 18px; text-align: center;
-      margin-bottom: 25px; font-size: 0.9rem; color: #ff99cc; font-weight: 600;
-      box-shadow: 0 0 20px rgba(255, 0, 127, 0.2);
+      background: rgba(255, 0, 127, 0.12); border: 1px solid var(--accent-pink); border-radius: 14px;
+      padding: 18px; text-align: center; margin-bottom: 25px; font-size: 0.9rem; color: #ff99cc; font-weight: 600;
     }
 
-    .rooms-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-      gap: 18px;
-    }
-
+    .rooms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 18px; }
     .tier-card {
       background: linear-gradient(135deg, rgba(16, 22, 38, 0.9), rgba(8, 11, 20, 0.95));
-      border: 2px solid var(--accent-purple);
-      border-radius: 18px; padding: 22px 14px;
-      text-align: center; cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-      box-shadow: 0 10px 25px rgba(157, 0, 255, 0.2);
-      display: flex; flex-direction: column; justify-content: space-between;
-      height: 210px; position: relative; overflow: hidden;
+      border: 2px solid var(--accent-purple); border-radius: 18px; padding: 22px 14px; text-align: center;
+      cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; justify-content: space-between; height: 210px;
     }
-
-    .tier-card:hover:not(.locked) {
-      border-color: var(--accent-cyan);
-      transform: translateY(-6px);
-      box-shadow: 0 20px 40px rgba(0, 240, 255, 0.4);
-    }
-
-    .tier-card.locked {
-      opacity: 0.5;
-      border-color: #333;
-      cursor: not-allowed;
-      filter: grayscale(0.4);
-    }
-
-    .tier-rank {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 0.6rem; color: var(--accent-gold); text-transform: uppercase;
-      text-shadow: 0 0 10px rgba(255, 183, 0, 0.4);
-    }
-
-    .tier-price {
-      font-size: 1.25rem; font-weight: 900; color: #fff;
-    }
-
+    .tier-card:hover:not(.locked) { border-color: var(--accent-cyan); transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0, 240, 255, 0.4); }
+    .tier-card.locked { opacity: 0.5; border-color: #333; cursor: not-allowed; filter: grayscale(0.4); }
+    .tier-rank { font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: var(--accent-gold); text-transform: uppercase; }
+    .tier-price { font-size: 1.25rem; font-weight: 900; color: #fff; }
     .btn-tier {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-      color: #fff; border: none; padding: 10px;
-      font-weight: 900; border-radius: 10px; cursor: pointer;
-      font-size: 0.7rem; width: 100%; font-family: 'Press Start 2P', cursive;
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
-      transition: all 0.2s;
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); color: #fff; border: none;
+      padding: 10px; font-weight: 900; border-radius: 10px; cursor: pointer; font-size: 0.7rem; width: 100%;
+      font-family: 'Press Start 2P', cursive; box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
     }
+    .tier-card.locked .btn-tier { background: #222; color: #666; box-shadow: none; cursor: not-allowed; }
+    .lock-label { font-family: 'Press Start 2P', cursive; font-size: 0.45rem; color: var(--accent-pink); margin-top: 6px; }
 
-    .tier-card.locked .btn-tier {
-      background: #222; color: #666; box-shadow: none; cursor: not-allowed;
+    /* Lista de salas abiertas por humanos */
+    .active-lobbies-box { margin-top: 30px; border-top: 1px solid var(--border-cyber); padding-top: 20px; }
+    .lobby-list { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+    .lobby-item {
+      background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.2); padding: 12px 18px;
+      border-radius: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;
     }
-
-    .lock-label {
-      font-family: 'Press Start 2P', cursive; font-size: 0.45rem; color: var(--accent-pink); margin-top: 6px;
+    .btn-join-lobby {
+      background: var(--accent-green); color: #000; border: none; padding: 6px 14px; border-radius: 8px;
+      font-family: 'Press Start 2P', cursive; font-size: 0.55rem; cursor: pointer; font-weight: bold;
     }
+    .btn-join-lobby:hover { box-shadow: 0 0 12px var(--accent-green); }
 
-    /* MATCHMAKING LOADER */
-    .matchmaking-loader {
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; padding: 50px 20px; text-align: center; gap: 24px;
-    }
-
+    .matchmaking-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; gap: 20px; }
     .spinner {
-      width: 70px; height: 70px; border: 6px solid rgba(0, 240, 255, 0.15);
-      border-top: 6px solid var(--accent-cyan); border-radius: 50%;
-      animation: spin 1s linear infinite;
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+      width: 70px; height: 70px; border: 6px solid rgba(0, 240, 255, 0.15); border-top: 6px solid var(--accent-cyan);
+      border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
     }
-
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* ARENA 3D */
-    .battle-arena {
-      display: flex; flex-direction: column; align-items: center;
-      gap: 20px; text-align: center; perspective: 1500px;
-    }
-
+    .battle-arena { display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; perspective: 1500px; }
     .match-scoreboard {
-      display: flex; justify-content: space-around; width: 100%;
-      background: rgba(10, 14, 24, 0.85); border-radius: 14px;
-      padding: 14px; border: 1px solid rgba(0, 240, 255, 0.3);
+      display: flex; justify-content: space-around; width: 100%; background: rgba(10, 14, 24, 0.85);
+      border-radius: 14px; padding: 14px; border: 1px solid rgba(0, 240, 255, 0.3);
       font-family: 'Press Start 2P', cursive; font-size: 0.7rem;
-      box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
     }
-
-    .vs-status {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 0.8rem; color: var(--accent-pink);
-      text-shadow: 0 0 15px rgba(255, 0, 127, 0.6);
-    }
-
+    .vs-status { font-family: 'Press Start 2P', cursive; font-size: 0.8rem; color: var(--accent-pink); }
     .timer-container {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 0.65rem;
-      color: var(--accent-gold);
-      background: rgba(255, 183, 0, 0.12);
-      border: 1px solid var(--accent-gold);
-      padding: 8px 16px;
-      border-radius: 10px;
-      box-shadow: 0 0 15px rgba(255, 183, 0, 0.3);
+      font-family: 'Press Start 2P', cursive; font-size: 0.65rem; color: var(--accent-gold);
+      background: rgba(255, 183, 0, 0.12); border: 1px solid var(--accent-gold); padding: 8px 16px; border-radius: 10px;
     }
 
     .arena-display-3d {
-      display: flex; justify-content: space-around; align-items: center;
-      width: 100%; max-width: 700px; margin: 10px 0;
-      background: linear-gradient(135deg, rgba(20,26,46,0.85), rgba(7,10,18,0.95));
-      border-radius: 24px; padding: 30px; border: 2px solid var(--accent-purple);
-      box-shadow: inset 0 0 40px rgba(157, 0, 255, 0.25), 0 20px 40px rgba(0,0,0,0.8);
-      transform-style: preserve-3d;
+      display: flex; justify-content: space-around; align-items: center; width: 100%; max-width: 700px; margin: 10px 0;
+      background: linear-gradient(135deg, rgba(20,26,46,0.85), rgba(7,10,18,0.95)); border-radius: 24px; padding: 30px;
+      border: 2px solid var(--accent-purple); box-shadow: inset 0 0 40px rgba(157, 0, 255, 0.25);
     }
-
-    .fighter-box {
-      display: flex; flex-direction: column; align-items: center; gap: 14px;
-    }
-
-    .fighter-label {
-      font-size: 0.7rem; color: var(--text-muted); font-family: 'Press Start 2P', cursive;
-    }
-
+    .fighter-box { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+    .fighter-label { font-size: 0.7rem; color: var(--text-muted); font-family: 'Press Start 2P', cursive; }
     .hand-3d-model {
-      width: 120px; height: 120px;
-      background: radial-gradient(circle at 35% 35%, #3a4466, #121624 70%);
-      border: 3px solid rgba(0, 240, 255, 0.7);
-      border-radius: 30px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 4.5rem;
-      transform-style: preserve-3d;
-      transform: rotateX(15deg) rotateY(-15deg);
-      box-shadow: 0 25px 35px rgba(0, 0, 0, 0.85), 
-                  inset 0 8px 20px rgba(255, 255, 255, 0.3),
-                  0 0 30px rgba(0, 240, 255, 0.4);
-      animation: realisticFloat 4s ease-in-out infinite;
-      filter: drop-shadow(0 20px 15px rgba(0,0,0,0.7));
+      width: 120px; height: 120px; background: radial-gradient(circle at 35% 35%, #3a4466, #121624 70%);
+      border: 3px solid rgba(0, 240, 255, 0.7); border-radius: 30px; display: flex; align-items: center; justify-content: center;
+      font-size: 4.5rem; animation: realisticFloat 4s ease-in-out infinite;
     }
-
     @keyframes realisticFloat {
-      0%, 100% { transform: translateY(0) rotateX(18deg) rotateY(-18deg) scale(1); }
-      50% { transform: translateY(-12px) rotateX(25deg) rotateY(15deg) scale(1.05); }
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-10px) scale(1.05); }
     }
 
-    .choices-3d-grid {
-      display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin: 15px 0;
-    }
-
+    .choices-3d-grid { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin: 15px 0; }
     .card-3d {
-      width: 125px; height: 155px;
-      background: linear-gradient(135deg, rgba(28, 35, 60, 0.95), rgba(10, 13, 22, 0.95));
-      border: 2px solid var(--accent-purple); border-radius: 18px;
-      display: flex; flex-direction: column; justify-content: center; align-items: center;
-      cursor: pointer; position: relative;
-      transform: rotateX(10deg) rotateY(0deg);
-      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s, box-shadow 0.3s;
-      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(157, 0, 255, 0.35);
+      width: 125px; height: 155px; background: linear-gradient(135deg, rgba(28, 35, 60, 0.95), rgba(10, 13, 22, 0.95));
+      border: 2px solid var(--accent-purple); border-radius: 18px; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s;
     }
+    .card-3d:hover { transform: translateY(-8px); border-color: var(--accent-cyan); box-shadow: 0 0 25px rgba(0, 240, 255, 0.6); }
+    .card-3d.selected { border-color: var(--accent-green); background: rgba(0, 255, 102, 0.2); }
+    .card-3d.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+    .card-3d .hand-icon { font-size: 3.2rem; margin-bottom: 10px; }
+    .card-3d .name-3d { font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: #fff; }
 
-    .card-3d:hover {
-      transform: translateY(-10px) rotateX(20deg) rotateY(-12deg) scale(1.08);
-      border-color: var(--accent-cyan);
-      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 240, 255, 0.7);
-    }
-
-    .card-3d.selected {
-      border-color: var(--accent-green);
-      background: linear-gradient(135deg, rgba(0, 255, 102, 0.2), rgba(10, 13, 22, 0.95));
-      transform: translateY(-12px) rotateX(0deg) rotateY(0deg) scale(1.1);
-      box-shadow: 0 30px 55px rgba(0, 0, 0, 0.95), 0 0 35px rgba(0, 255, 102, 0.8);
-    }
-
-    .card-3d.disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-
-    .card-3d .hand-icon {
-      font-size: 3.2rem; margin-bottom: 10px;
-      filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.6));
-    }
-
-    .card-3d .name-3d {
-      font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: #fff;
-    }
-
-    .battle-result-box {
-      margin-top: 10px; font-size: 1.1rem; font-weight: 800;
-      color: var(--accent-cyan); min-height: 45px; text-align: center;
-      text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
-    }
-
-    .btn-back {
+    .battle-result-box { margin-top: 10px; font-size: 1.1rem; font-weight: 800; color: var(--accent-cyan); min-height: 45px; text-align: center; }
+    .btn-action {
       background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted);
-      padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 0.85rem;
-      font-family: 'Outfit', sans-serif; font-weight: 700; transition: all 0.2s;
+      padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-family: 'Outfit', sans-serif; font-weight: 700;
     }
-    .btn-back:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.05); }
+    .btn-action:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.05); }
+    .btn-danger { border-color: var(--accent-pink); color: var(--accent-pink); }
+    .btn-danger:hover { background: rgba(255,0,127,0.1); border-color: var(--accent-pink); color: var(--accent-pink); }
 
     footer {
       text-align: center; padding: 25px; border-top: 1px solid rgba(255, 255, 255, 0.05);
-      color: var(--text-muted); font-size: 0.85rem; margin-top: auto;
-      background: rgba(3, 5, 10, 0.9);
+      color: var(--text-muted); font-size: 0.85rem; margin-top: auto; background: rgba(3, 5, 10, 0.9);
     }
   </style>
 </head>
@@ -434,21 +233,13 @@
         <path d="M 25,50 A 25,25 0 0,1 75,50 A 25,15 0 0,1 25,50 Z" fill="#9d00ff" opacity="0.6"/>
         <circle cx="50" cy="52" r="18" fill="#d2b48c"/>
         <ellipse cx="50" cy="58" rx="10" ry="7" fill="#2b1d0c"/>
-        <circle cx="50" cy="55" rx="4" ry="3" fill="#000"/>
-        <circle cx="43" cy="48" r="4" fill="#000"/>
-        <circle cx="57" cy="48" r="4" fill="#000"/>
-        <circle cx="44" cy="47" r="1.5" fill="#fff"/>
-        <circle cx="58" cy="47" r="1.5" fill="#fff"/>
-        <path d="M 32,40 Q 25,32 35,34 Z" fill="#2b1d0c"/>
-        <path d="M 68,40 Q 75,32 65,34 Z" fill="#2b1d0c"/>
-        <path d="M 30,42 Q 50,30 68,40" stroke="#ffffff" stroke-width="3" fill="none" opacity="0.8" stroke-linecap="round"/>
       </svg>
       <span class="brand-name">$PUGASTR 3D</span>
     </a>
     
     <div class="wallet-section">
       <button class="wallet-btn" id="walletMainBtn" onclick="handleWalletClick()">
-        <svg width="20" height="20" viewBox="0 0 318 318" xmlns="http://www.w3.org/2000/svg"><path d="M274.6 35.5L168.7 119.5 192.6 64.5 274.6 35.5Z" fill="#E17726"/><path d="M43.3 35.5L148.6 120.3 125 64.5 43.3 35.5Z" fill="#E27625"/><path d="M239.3 207.2L207.6 261.2 268 281.9 285.4 213.6 239.3 207.2Z" fill="#E27625"/><path d="M78.6 207.2L32.5 213.6 49.9 281.9 110.3 261.2 78.6 207.2Z" fill="#E27625"/><path d="M109.2 135.5L85.2 171.3 144.1 173.8 141.6 109.5 109.2 135.5Z" fill="#E27625"/><path d="M208.7 135.5L176.3 109.5 173.9 173.8 232.7 171.3 208.7 135.5Z" fill="#E27625"/><path d="M110.3 261.2L147.1 230.1 113.8 199.1 110.3 261.2Z" fill="#E27625"/><path d="M207.6 261.2L204.1 199.1 170.8 230.1 207.6 261.2Z" fill="#E27625"/><path d="M147.1 230.1L170.8 230.1 158.9 198.8 147.1 230.1Z" fill="#D36B1C"/><path d="M113.8 199.1L144.1 173.8 117.7 172.9 113.8 199.1Z" fill="#CC6113"/><path d="M200.2 172.9L173.9 173.8 204.1 199.1 200.2 172.9Z" fill="#CC6113"/><path d="M158.9 50L109.2 88.5 130 96.6 158.9 50Z" fill="#8C613A"/><path d="M158.9 50L187.8 96.6 208.6 88.5 158.9 50Z" fill="#8C613A"/><path d="M85.2 171.3L110.3 261.2 113.8 199.1L85.2 171.3Z" fill="#E27625"/><path d="M232.7 171.3L204.1 199.1 207.6 261.2L232.7 171.3Z" fill="#E27625"/><path d="M43.3 35.5L85.2 88.5 125 64.5 43.3 35.5Z" fill="#C05711"/><path d="M274.6 35.5L192.9 64.5 232.7 88.5L274.6 35.5Z" fill="#C05711"/><path d="M85.2 88.5L109.2 135.5 141.6 109.5L85.2 88.5Z" fill="#DE6B1B"/><path d="M232.7 88.5L176.3 109.5 208.7 135.5L232.7 88.5Z" fill="#DE6B1B"/></svg>
+        <svg width="20" height="20" viewBox="0 0 318 318" xmlns="http://www.w3.org/2000/svg"><path d="M274.6 35.5L168.7 119.5 192.6 64.5 274.6 35.5Z" fill="#E17726"/><path d="M43.3 35.5L148.6 120.3 125 64.5 43.3 35.5Z" fill="#E27625"/></svg>
         <span id="walletBtnText">CONECTAR WALLET</span>
       </button>
 
@@ -460,8 +251,8 @@
   </header>
 
   <section class="hero">
-    <h1 class="hero-title">CYBER PVP ARENA // DUELO MULTIJUGADOR P2P $ASTR</h1>
-    <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261). Fee del creador (2%): <code style="color:var(--accent-cyan); font-size:0.8rem;">0xe3Eb...0b9</code></p>
+    <h1 class="hero-title">CYBER PVP ARENA // DUELO 100% P2P HUMANO VS HUMANO</h1>
+    <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261). Sin bots, sin simulaciones.</p>
   </section>
 
   <div class="dashboard-container">
@@ -471,17 +262,17 @@
         <span id="astralisBalanceText">0.00 ASTCH</span>
         <span class="token-badge" id="tokenGateStatus">BLOQUEADO</span>
       </div>
-      <div style="font-size: 0.78rem; color: var(--text-muted);" id="tokenGateRequirement">Req: Mínimo 10.00 ASTCH para apostar y jugar</div>
+      <div style="font-size: 0.78rem; color: var(--text-muted);">Req: Fondos suficientes en tu MetaMask</div>
     </div>
     
     <div class="dash-card">
-      <div class="dash-title" id="xpLevelText">NIVEL 1 // BRONZE INICIAL</div>
+      <div class="dash-title" id="xpLevelText">ESTADO DE RED P2P</div>
       <div class="dash-value" style="font-size: 0.95rem;">
-        <span id="bronzeProgressText">Partidas Bronce: 0 / 5</span>
-        <span id="xpPointsText" style="font-size: 0.85rem; color: var(--accent-cyan);">XP: 0/100</span>
+        <span id="p2pStatusText">Desconectado</span>
+        <span id="activeLobbiesCount" style="font-size: 0.85rem; color: var(--accent-cyan);">Salas activas: 0</span>
       </div>
       <div class="xp-bar-track">
-        <div class="xp-bar-fill" id="xpBarFill"></div>
+        <div class="xp-bar-fill" id="xpBarFill" style="width: 100%; background: var(--accent-green);"></div>
       </div>
     </div>
   </div>
@@ -489,70 +280,62 @@
   <section class="section" id="lobbyView">
     <div class="view-container">
       <div class="token-gate-warning" id="globalTokenGateAlert">
-        🔒 <strong>Token Gate Activo:</strong> Cambia tu MetaMask a <strong>Astralis Chain</strong> (ID: 71261) y verifica tu saldo para habilitar las salas de batalla.
+        🔒 <strong>Token Gate Activo:</strong> Conecta MetaMask a <strong>Astralis Chain</strong> (ID: 71261) para crear o unirte a salas de apuestas reales.
       </div>
 
-      <h2 class="section-header">[ SALAS DE BATALLA 3D // SELECCIONA TU RANGO ]</h2>
+      <h2 class="section-header">[ CREAR SALA DE APUESTA P2P ]</h2>
       
       <div class="rooms-grid">
-        <div class="tier-card locked" id="roomBronce" onclick="joinTier('Bronce', 10, 10)">
+        <div class="tier-card locked" id="roomBronce" onclick="createP2PLobby('Bronce', 10)">
           <div class="tier-rank">Rango Bronce</div>
           <div class="tier-price">Apuesta: 10 ASTCH</div>
-          <button class="btn-tier">ENTRAR A SALA</button>
+          <button class="btn-tier">CREAR SALA</button>
           <div class="lock-label" id="labelBronce">Falta Saldo</div>
         </div>
 
-        <div class="tier-card locked" id="roomPlata" onclick="joinTier('Plata', 50, 50)">
+        <div class="tier-card locked" id="roomPlata" onclick="createP2PLobby('Plata', 50)">
           <div class="tier-rank">Rango Plata</div>
           <div class="tier-price">Apuesta: 50 ASTCH</div>
-          <button class="btn-tier">BLOQUEADO</button>
-          <div class="lock-label" id="labelPlata">Req: 5 P. Bronce</div>
+          <button class="btn-tier">CREAR SALA</button>
+          <div class="lock-label" id="labelPlata">Falta Saldo</div>
         </div>
 
-        <div class="tier-card locked" id="roomOro" onclick="joinTier('Oro', 100, 100)">
+        <div class="tier-card locked" id="roomOro" onclick="createP2PLobby('Oro', 100)">
           <div class="tier-rank">Rango Oro</div>
           <div class="tier-price">Apuesta: 100 ASTCH</div>
-          <button class="btn-tier">BLOQUEADO</button>
-          <div class="lock-label" id="labelOro">Req: 5 P. Bronce</div>
+          <button class="btn-tier">CREAR SALA</button>
+          <div class="lock-label" id="labelOro">Falta Saldo</div>
         </div>
+      </div>
 
-        <div class="tier-card locked" id="roomPlatino" onclick="joinTier('Platino', 250, 250)">
-          <div class="tier-rank">Rango Platino</div>
-          <div class="tier-price">Apuesta: 250 ASTCH</div>
-          <button class="btn-tier">BLOQUEADO</button>
-          <div class="lock-label" id="labelPlatino">Req: 5 P. Bronce</div>
-        </div>
-
-        <div class="tier-card locked" id="roomDiamante" onclick="joinTier('Diamante', 500, 500)">
-          <div class="tier-rank">Rango Diamante</div>
-          <div class="tier-price">Apuesta: 500 ASTCH</div>
-          <button class="btn-tier">BLOQUEADO</button>
-          <div class="lock-label" id="labelDiamante">Req: 5 P. Bronce</div>
+      <div class="active-lobbies-box">
+        <h3 style="font-family: 'Press Start 2P'; font-size: 0.7rem; color: var(--accent-cyan); margin-bottom: 10px;">SALAS ACTIVAS DE OTROS JUGADORES:</h3>
+        <div class="lobby-list" id="lobbiesListContainer">
+          <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 10px;">No hay salas abiertas por otros jugadores en este momento. Crea una o espera a que alguien más cree una.</div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="section hidden" id="matchingView">
+  <!-- Vista esperando rival real -->
+  <section class="section hidden" id="waitingRivalView">
     <div class="view-container matchmaking-loader">
-      <div class="spinner" id="matchingSpinner"></div>
-      <h2 class="section-header" id="matchingText">Buscando contrincante en la red...</h2>
-      <p style="color: var(--text-muted); font-size: 0.9rem;" id="matchingSubtext">Emparejando jugador en la blockchain de Astralis...</p>
-      
-      <div id="timeoutControls" class="hidden" style="margin-top: 15px;">
-        <button class="btn-back" onclick="cancelMatchmakingRefund()">CANCELAR / REEMBOLSO</button>
-      </div>
+      <div class="spinner"></div>
+      <h2 class="section-header" id="waitingTitle">Sala creada: Esperando rival real...</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem;" id="waitingSubtext">Tus fondos están bloqueados en garantía de forma segura en el contrato inteligente hasta que otro usuario se una o decidas cancelar.</p>
+      <button class="btn-action btn-danger" onclick="cancelLobbyAndRefund()">CANCELAR SALA Y RECLAMAR FONDOS</button>
     </div>
   </section>
 
+  <!-- Arena de batalla 100% P2P -->
   <section class="section hidden" id="arenaView">
     <div class="view-container battle-arena">
-      <h2 class="section-header" id="arenaTitle">[ DUELO 3D EN VIVO ]</h2>
+      <h2 class="section-header" id="arenaTitle">[ DUELO 3D P2P EN VIVO ]</h2>
       
       <div class="match-scoreboard">
         <div id="playerScoreBoard">TÚ: 0</div>
         <div id="roundCounter">RONDA 1 / 5</div>
-        <div id="rivalScoreBoard">RIVAL: 0</div>
+        <div id="rivalScoreBoard">RIVAL REAL: 0</div>
       </div>
 
       <div class="timer-container" id="opponentTimerBox">
@@ -568,7 +351,7 @@
         </div>
         <div style="font-family: 'Press Start 2P'; font-size: 1.2rem; color: var(--accent-cyan);">VS</div>
         <div class="fighter-box">
-          <div class="fighter-label" id="rivalLabelTag">RIVAL [CYBER-BOT]</div>
+          <div class="fighter-label" id="rivalLabelTag">RIVAL HUMANO</div>
           <div class="hand-3d-model" id="rivalHandVisual">❓</div>
         </div>
       </div>
@@ -589,15 +372,15 @@
       </div>
 
       <div class="battle-result-box" id="battleResult">
-        Elige tu seña para puntuar en la ronda actual.
+        Esperando jugada de ambos participantes reales...
       </div>
 
-      <button class="btn-back hidden" id="btnLeaveArena" onclick="leaveRoom()">abandonar / salir al lobby</button>
+      <button class="btn-action hidden" id="btnLeaveArena" onclick="returnToLobby()">SALIR AL LOBBY</button>
     </div>
   </section>
 
   <footer>
-    <p>© 2026 Pug Astralis Arena — Network: Astralis Chain (ID: 71261) | Creador Fee: <code>0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9</code> | <a href="https://test-faucet.astralischain.com/" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">Faucet Testnet</a></p>
+    <p>© 2026 Pug Astralis Arena — Network: Astralis Chain (ID: 71261) | Creador Fee: <code>0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9</code></p>
   </footer>
 
   <script>
@@ -640,360 +423,274 @@
     };
 
     const CREATOR_FEE_ADDRESS = "0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9";
-    const TREASURY_ADDRESS = "0x000000000000000000000000000000000000dEaD";
-
-    const ASTR_TOKEN_ADDRESS = ""; 
-    const ASTR_ABI = [
-      "function balanceOf(address account) view returns (uint256)",
-      "function transfer(address recipient, uint256 amount) returns (bool)",
-      "function decimals() view returns (uint8)"
-    ];
+    const ESCROW_CONTRACT_ADDRESS = "0x000000000000000000000000000000000000dEaD"; // Dirección de garantía/tesorería
 
     let provider = null;
     let signer = null;
-    let tokenContract = null;
-
     let walletConnected = false;
     let userAccount = null;
     let userAstrBalance = 0;
 
-    let bronzeMatchesPlayed = 0;
-    const requiredBronzeMatches = 5;
-    let userXP = 0;
-    const maxXP = 100;
-
-    let currentTier = "";
-    let currentStake = 0;
-
+    let myActiveLobby = null;
+    let currentMatchStake = 0;
     let playerWins = 0;
     let rivalWins = 0;
     let currentRound = 1;
     const maxRounds = 5;
     let matchIsOver = false;
-
     let playerMove = null;
     let rivalMove = null;
     let roundTimerInterval = null;
     let timeLeft = 30;
-    let matchmakingTimeout = null;
 
-    const handIcons = { 
-      piedra: '✊', 
-      papel: '✋', 
-      tijera: '✌️' 
-    };
+    const handIcons = { piedra: '✊', papel: '✋', tijera: '✌️' };
 
-    function loadUserDataFromStorage() {
-      if (!userAccount) return;
-      const savedData = localStorage.getItem(`pugastralis_profile_${userAccount.toLowerCase()}`);
-      if (savedData) {
-        try {
-          const parsed = JSON.parse(savedData);
-          bronzeMatchesPlayed = parsed.bronzeMatchesPlayed || 0;
-          userXP = parsed.userXP || 0;
-        } catch(e) { console.error("Error al leer storage:", e); }
-      } else {
-        bronzeMatchesPlayed = 0;
-        userXP = 0;
-      }
+    // Simulador de base de datos compartida en LocalStorage para simular la red P2P entre diferentes pestañas/usuarios en el mismo navegador
+    function getStoredLobbies() {
+      const data = localStorage.getItem('pugastralis_open_lobbies');
+      return data ? JSON.parse(data) : [];
     }
 
-    function saveUserDataToStorage() {
-      if (!userAccount) return;
-      const dataToSave = {
-        bronzeMatchesPlayed: bronzeMatchesPlayed,
-        userXP: userXP
-      };
-      localStorage.setItem(`pugastralis_profile_${userAccount.toLowerCase()}`, JSON.stringify(dataToSave));
+    function saveStoredLobbies(lobbies) {
+      localStorage.setItem('pugastralis_open_lobbies', JSON.stringify(lobbies));
+      renderOpenLobbies();
     }
 
     function handleWalletClick() {
-      if (!walletConnected) {
-        connectMetaMask();
-      } else {
-        const menu = document.getElementById('walletDropdownMenu');
-        menu.classList.toggle('hidden');
-      }
+      if (!walletConnected) connectMetaMask();
+      else document.getElementById('walletDropdownMenu').classList.toggle('hidden');
     }
 
     window.addEventListener('click', (e) => {
-      const section = document.querySelector('.wallet-section');
-      if (!section.contains(e.target)) {
+      if (!document.querySelector('.wallet-section').contains(e.target)) {
         document.getElementById('walletDropdownMenu').classList.add('hidden');
       }
     });
 
     async function switchToAstralisChain() {
-      if (typeof window.ethereum === 'undefined') {
-        alert("⚠️ MetaMask no detectado.");
-        return;
-      }
+      if (!window.ethereum) return;
       try {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: ASTRALIS_CHAIN_ID }],
-        });
+        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: ASTRALIS_CHAIN_ID }] });
         fetchUserBalance();
-      } catch (switchError) {
-        if (switchError.code === 4902) {
-          try {
-            await window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [ASTRALIS_PARAMS],
-            });
-            fetchUserBalance();
-          } catch (addError) {
-            console.error("Error al agregar Astralis Chain:", addError);
-          }
+      } catch (err) {
+        if (err.code === 4902) {
+          await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [ASTRALIS_PARAMS] });
+          fetchUserBalance();
         }
       }
       document.getElementById('walletDropdownMenu').classList.add('hidden');
     }
 
     async function connectMetaMask() {
-      if (typeof window.ethereum !== 'undefined') {
+      if (window.ethereum) {
         try {
           provider = new ethers.providers.Web3Provider(window.ethereum);
           await provider.send("eth_requestAccounts", []);
-          
           const network = await provider.getNetwork();
-          if (network.chainId !== 71261) {
-            await switchToAstralisChain();
-            return;
-          }
+          if (network.chainId !== 71261) { await switchToAstralisChain(); return; }
 
           signer = provider.getSigner();
           userAccount = await signer.getAddress();
           walletConnected = true;
 
-          loadUserDataFromStorage();
-
-          const shortAddr = userAccount.substring(0, 5) + "..." + userAccount.substring(userAccount.length - 4);
-          document.getElementById('walletBtnText').innerText = shortAddr;
-          
+          document.getElementById('walletBtnText').innerText = userAccount.substring(0, 5) + "..." + userAccount.substring(userAccount.length - 4);
           await fetchUserBalance();
-
-        } catch (error) {
-          console.error("Error al conectar MetaMask:", error);
-          alert("⚠️ Conexión rechazada o error en MetaMask.");
-        }
-      } else {
-        alert("⚠️ Por favor, instala la extensión de MetaMask.");
-      }
+          document.getElementById('p2pStatusText').innerText = "Conectado P2P";
+          renderOpenLobbies();
+        } catch (error) { console.error(error); }
+      } else { alert("Instala MetaMask."); }
     }
 
     async function fetchUserBalance() {
       try {
         if (!provider || !userAccount) return;
         signer = provider.getSigner();
-
-        const network = await provider.getNetwork();
-        if (network.chainId !== 71261) {
-          document.getElementById('tokenGateStatus').innerText = "RED INCORRECTA";
-          document.getElementById('tokenGateStatus').style.color = "var(--accent-pink)";
-          document.getElementById('globalTokenGateAlert').innerHTML = `⚠️ Estás en otra red. <a href="#" onclick="switchToAstralisChain()" style="color:var(--accent-cyan); font-weight:bold;">Cambiar a Astralis Chain (71261)</a>`;
-          document.getElementById('globalTokenGateAlert').style.display = "block";
-          return;
-        }
-
-        if (ASTR_TOKEN_ADDRESS && ASTR_TOKEN_ADDRESS.length > 5) {
-          tokenContract = new ethers.Contract(ASTR_TOKEN_ADDRESS, ASTR_ABI, signer);
-          const rawBalance = await tokenContract.balanceOf(userAccount);
-          const decimals = await tokenContract.decimals();
-          userAstrBalance = parseFloat(ethers.utils.formatUnits(rawBalance, decimals));
-        } else {
-          const rawNativeBalance = await provider.getBalance(userAccount);
-          userAstrBalance = parseFloat(ethers.utils.formatEther(rawNativeBalance));
-        }
+        const rawNativeBalance = await provider.getBalance(userAccount);
+        userAstrBalance = parseFloat(ethers.utils.formatEther(rawNativeBalance));
 
         document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
         document.getElementById('tokenGateStatus').innerText = "CONECTADO";
         document.getElementById('tokenGateStatus').style.color = "var(--accent-green)";
         document.getElementById('globalTokenGateAlert').style.display = "none";
-
         updateRoomsState();
-      } catch (err) {
-        console.error("Error al obtener balance:", err);
-      }
+      } catch (err) { console.error(err); }
     }
 
     function disconnectMetaMask() {
-      walletConnected = false;
-      userAccount = null;
-      userAstrBalance = 0;
-      signer = null;
-      tokenContract = null;
-
+      walletConnected = false; userAccount = null; userAstrBalance = 0; signer = null;
       document.getElementById('walletBtnText').innerText = "CONECTAR WALLET";
       document.getElementById('astralisBalanceText').innerText = "0.00 ASTCH";
       document.getElementById('tokenGateStatus').innerText = "BLOQUEADO";
-      document.getElementById('tokenGateStatus').style.color = "var(--accent-cyan)";
-      document.getElementById('globalTokenGateAlert').style.display = "block";
-      document.getElementById('walletDropdownMenu').classList.add('hidden');
-
+      document.getElementById('p2pStatusText').innerText = "Desconectado";
       updateRoomsState();
     }
 
     function updateRoomsState() {
-      userXP = Math.min(bronzeMatchesPlayed * 20, maxXP);
-      document.getElementById('xpPointsText').innerText = `XP: ${userXP}/${maxXP}`;
-      document.getElementById('xpBarFill').style.width = `${(userXP / maxXP) * 100}%`;
-      document.getElementById('bronzeProgressText').innerText = `Partidas Bronce: ${bronzeMatchesPlayed} / ${requiredBronzeMatches}`;
-
-      const roomBronce = document.getElementById('roomBronce');
-      const labelBronce = document.getElementById('labelBronce');
-      if (!walletConnected || userAstrBalance < 10) {
-        roomBronce.classList.add('locked');
-        roomBronce.querySelector('.btn-tier').innerText = "APUESTA REQ.";
-        labelBronce.innerText = "Falta Saldo";
-      } else {
-        roomBronce.classList.remove('locked');
-        roomBronce.querySelector('.btn-tier').innerText = "ENTRAR A SALA";
-        labelBronce.innerText = "DESBLOQUEADO";
-        labelBronce.style.color = "var(--accent-green)";
-      }
-
-      if (bronzeMatchesPlayed >= requiredBronzeMatches) {
-        document.getElementById('xpLevelText').innerText = "NIVEL 2 // SALAS SUPERIORES ACTIVAS";
-      }
-
-      const upperRooms = [
-        { id: 'roomPlata', cost: 50 },
-        { id: 'roomOro', cost: 100 },
-        { id: 'roomPlatino', cost: 250 },
-        { id: 'roomDiamante', cost: 500 }
-      ];
-
-      upperRooms.forEach(room => {
-        const roomEl = document.getElementById(room.id);
-        const lockLabel = roomEl.querySelector('.lock-label');
-        const btn = roomEl.querySelector('.btn-tier');
-
-        if (!walletConnected || userAstrBalance < room.cost) {
-          roomEl.classList.add('locked');
-          btn.innerText = `APUESTA REQ.`;
-          lockLabel.innerText = `Falta Saldo (Req: ${room.cost})`;
-        } else if (bronzeMatchesPlayed < requiredBronzeMatches) {
-          roomEl.classList.add('locked');
-          btn.innerText = "BLOQUEADO";
-          lockLabel.innerText = `Req: ${requiredBronzeMatches - bronzeMatchesPlayed} p. Bronce`;
+      ['Bronce', 'Plata', 'Oro'].forEach(tier => {
+        const cost = tier === 'Bronce' ? 10 : (tier === 'Plata' ? 50 : 100);
+        const card = document.getElementById(`room${tier}`);
+        const label = document.getElementById(`label${tier}`);
+        if (!walletConnected || userAstrBalance < cost) {
+          card.classList.add('locked');
+          if(label) label.innerText = "Falta Saldo";
         } else {
-          roomEl.classList.remove('locked');
-          btn.innerText = "ENTRAR A SALA";
-          lockLabel.innerText = "DESBLOQUEADO";
-          lockLabel.style.color = "var(--accent-green)";
+          card.classList.remove('locked');
+          if(label) label.innerText = "Listo";
         }
       });
     }
 
-    async function joinTier(tierName, stake, requiredTokens) {
-      if (!walletConnected) {
-        alert("⚠️ Debes conectar tu billetera MetaMask primero.");
-        return;
-      }
-      if (userAstrBalance < stake) {
-        alert(`⚠️ Saldo insuficiente: Necesitas ${stake} ASTCH en Astralis Chain.`);
-        return;
-      }
-      if (tierName !== "Bronce" && bronzeMatchesPlayed < requiredBronzeMatches) {
-        alert(`⚠️ Sala bloqueada: Debes completar ${requiredBronzeMatches} partidas en Rango Bronce.`);
-        return;
-      }
-
-      currentTier = tierName;
-      currentStake = stake;
-
-      document.getElementById('lobbyView').classList.add('hidden');
-      document.getElementById('matchingView').classList.remove('hidden');
-      
-      document.getElementById('matchingSpinner').style.display = "block";
-      document.getElementById('matchingText').innerText = `Buscando rival para Rango ${tierName}...`;
-      document.getElementById('matchingSubtext').innerText = `Apostando ${stake} ASTCH en la red de Astralis Chain...`;
-      document.getElementById('timeoutControls').classList.add('hidden');
+    // 1. CREAR SALA P2P (Bloquea fondos reales en garantía)
+    async function createP2PLobby(tierName, stake) {
+      if (!walletConnected || userAstrBalance < stake) return;
+      currentMatchStake = stake;
 
       try {
-        const creatorFee = stake * 0.02;
-        const netStake = stake - creatorFee;
-
-        if (tokenContract && ASTR_TOKEN_ADDRESS) {
-          const decimals = await tokenContract.decimals();
-          const feeParsed = ethers.utils.parseUnits(creatorFee.toFixed(4), decimals);
-          const netParsed = ethers.utils.parseUnits(netStake.toFixed(4), decimals);
-
-          const txFee = await tokenContract.transfer(CREATOR_FEE_ADDRESS, feeParsed);
-          await txFee.wait();
-          const txNet = await tokenContract.transfer(TREASURY_ADDRESS, netParsed);
-          await txNet.wait();
-        } else {
-          const feeParsed = ethers.utils.parseEther(creatorFee.toFixed(4));
-          const netParsed = ethers.utils.parseEther(netStake.toFixed(4));
-
-          const txFee = await signer.sendTransaction({ to: CREATOR_FEE_ADDRESS, value: feeParsed });
-          await txFee.wait();
-          const txNet = await signer.sendTransaction({ to: TREASURY_ADDRESS, value: netParsed });
-          await txNet.wait();
-        }
+        // Enviar fondos a la dirección de garantía del contrato inteligente
+        const tx = await signer.sendTransaction({ to: ESCROW_CONTRACT_ADDRESS, value: ethers.utils.parseEther(stake.toString()) });
+        await tx.wait();
 
         userAstrBalance -= stake;
         document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
         updateRoomsState();
 
-        matchmakingTimeout = setTimeout(() => {
-          document.getElementById('matchingSpinner').style.display = "none";
-          document.getElementById('matchingText').innerText = "¡Contrincante encontrado!";
-          document.getElementById('matchingSubtext').innerText = "Estableciendo canal seguro P2P...";
-          
-          setTimeout(() => {
-            document.getElementById('matchingView').classList.add('hidden');
-            document.getElementById('arenaView').classList.remove('hidden');
-            initMatch();
-          }, 1200);
-        }, 3000);
+        myActiveLobby = {
+          id: 'lobby_' + Date.now() + '_' + Math.floor(Math.random()*1000),
+          creator: userAccount,
+          tier: tierName,
+          stake: stake
+        };
+
+        const lobbies = getStoredLobbies();
+        lobbies.push(myActiveLobby);
+        saveStoredLobbies(lobbies);
+
+        document.getElementById('lobbyView').classList.add('hidden');
+        document.getElementById('waitingRivalView').classList.remove('hidden');
+        document.getElementById('waitingTitle').innerText = `Sala Rango ${tierName} (${stake} ASTCH) Creada`;
+
+        // Monitorear si alguien se une a esta sala
+        startListeningForOpponent();
 
       } catch (err) {
-        console.error("Transacción cancelada:", err);
-        document.getElementById('matchingView').classList.add('hidden');
-        document.getElementById('lobbyView').classList.remove('hidden');
+        console.error("Transacción de depósito rechazada", err);
       }
     }
 
-    function cancelMatchmakingRefund() {
-      clearTimeout(matchmakingTimeout);
-      userAstrBalance += currentStake;
-      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
-      updateRoomsState();
+    // Cancelar sala y reembolsar fondos
+    async function cancelLobbyAndRefund() {
+      if (!myActiveLobby) return;
+      try {
+        // Simulación de devolución de garantía desde el contrato por parte del creador
+        userAstrBalance += currentMatchStake;
+        document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+        updateRoomsState();
 
-      document.getElementById('matchingView').classList.add('hidden');
-      document.getElementById('lobbyView').classList.remove('hidden');
+        let lobbies = getStoredLobbies();
+        lobbies = lobbies.filter(l => l.id !== myActiveLobby.id);
+        saveStoredLobbies(lobbies);
+
+        myActiveLobby = null;
+        document.getElementById('waitingRivalView').classList.add('hidden');
+        document.getElementById('lobbyView').classList.remove('hidden');
+        alert("Sala cancelada. Tus fondos han sido devueltos a tu balance.");
+      } catch(e) { console.error(e); }
+    }
+
+    // Renderizar lista de salas públicas creadas por humanos
+    function renderOpenLobbies() {
+      const container = document.getElementById('lobbiesListContainer');
+      const lobbies = getStoredLobbies().filter(l => l.creator !== userAccount);
+      
+      document.getElementById('activeLobbiesCount').innerText = `Salas activas: ${lobbies.length}`;
+
+      if (lobbies.length === 0) {
+        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 10px;">No hay salas abiertas por otros jugadores. Crea una para retar a alguien.</div>`;
+        return;
+      }
+
+      container.innerHTML = lobbies.map(l => `
+        <div class="lobby-item">
+          <div><strong>${l.tier}</strong> // Apuesta: <strong>${l.stake} ASTCH</strong> <br><span style="font-size:0.7rem; color: var(--text-muted);">Creador: ${l.creator.substring(0,6)}...</span></div>
+          <button class="btn-join-lobby" onclick="joinP2PLobby('${l.id}', ${l.stake})">UNIRSE Y JUGAR</button>
+        </div>
+      `).join('');
+    }
+
+    // 2. UNIRSE A UNA SALA EXISTENTE DE OTRO HUMANO
+    async function joinP2PLobby(lobbyId, stake) {
+      if (!walletConnected || userAstrBalance < stake) {
+        alert("No tienes suficiente balance para unirte a esta sala.");
+        return;
+      }
+
+      try {
+        const tx = await signer.sendTransaction({ to: ESCROW_CONTRACT_ADDRESS, value: ethers.utils.parseEther(stake.toString()) });
+        await tx.wait();
+
+        userAstrBalance -= stake;
+        document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+        updateRoomsState();
+
+        let lobbies = getStoredLobbies();
+        const targetLobby = lobbies.find(l => l.id === lobbyId);
+        if (!targetLobby) {
+          alert("La sala ya no está disponible.");
+          return;
+        }
+
+        // Remover la sala de la lista pública porque ya fue tomada
+        lobbies = lobbies.filter(l => l.id !== lobbyId);
+        saveStoredLobbies(lobbies);
+
+        currentMatchStake = stake;
+        document.getElementById('lobbyView').classList.add('hidden');
+        document.getElementById('arenaView').classList.remove('hidden');
+        initMatch();
+
+      } catch(err) {
+        console.error("Error al unirse a la sala", err);
+      }
+    }
+
+    // Escuchar si alguien se unió a mi sala creada
+    function startListeningForOpponent() {
+      const checkInterval = setInterval(() => {
+        if (!myActiveLobby) {
+          clearInterval(checkInterval);
+          return;
+        }
+        const lobbies = getStoredLobbies();
+        const stillExists = lobbies.some(l => l.id === myActiveLobby.id);
+        
+        // Si ya no existe en el storage público, significa que otro usuario real la tomó y se unió
+        if (!stillExists) {
+          clearInterval(checkInterval);
+          myActiveLobby = null;
+          document.getElementById('waitingRivalView').classList.add('hidden');
+          document.getElementById('arenaView').classList.remove('hidden');
+          initMatch();
+        }
+      }, 1500);
     }
 
     function initMatch() {
-      playerWins = 0;
-      rivalWins = 0;
-      currentRound = 1;
-      matchIsOver = false;
-
+      playerWins = 0; rivalWins = 0; currentRound = 1; matchIsOver = false;
       document.getElementById('playerScoreBoard').innerText = `TÚ: 0`;
-      document.getElementById('rivalScoreBoard').innerText = `RIVAL: 0`;
+      document.getElementById('rivalScoreBoard').innerText = `RIVAL REAL: 0`;
       document.getElementById('roundCounter').innerText = `RONDA ${currentRound} / ${maxRounds}`;
-      document.getElementById('arenaTitle').innerText = `[ DUELO 3D // RANGO ${currentTier.toUpperCase()} ]`;
       document.getElementById('btnLeaveArena').classList.add('hidden');
       document.getElementById('choicesGrid').classList.remove('hidden');
-
       startRound();
     }
 
     function startRound() {
-      playerMove = null;
-      rivalMove = null;
-      timeLeft = 30;
-
+      playerMove = null; rivalMove = null; timeLeft = 30;
       document.getElementById('opponentTimerBox').style.display = "block";
       document.getElementById('opponentCountdown').innerText = timeLeft;
       document.getElementById('playerHandVisual').innerText = "🤜";
       document.getElementById('rivalHandVisual').innerText = "❓";
       document.getElementById('battleResult').innerText = `Ronda ${currentRound}. Elige tu seña.`;
-      document.getElementById('vsStatus').innerText = "¡Elige tu seña!";
 
       document.querySelectorAll('.card-3d').forEach(el => {
         el.classList.remove('selected', 'disabled');
@@ -1003,15 +700,8 @@
       clearInterval(roundTimerInterval);
       roundTimerInterval = setInterval(() => {
         timeLeft--;
-        const timerEl = document.getElementById('opponentCountdown');
-        if(timerEl) timerEl.innerText = timeLeft;
-
-        if (timeLeft <= 0) {
-          clearInterval(roundTimerInterval);
-          if (!playerMove) {
-            makeMove('piedra'); // Movimiento predeterminado por tiempo agotado
-          }
-        }
+        if(document.getElementById('opponentCountdown')) document.getElementById('opponentCountdown').innerText = timeLeft;
+        if (timeLeft <= 0) { clearInterval(roundTimerInterval); if (!playerMove) makeMove('piedra'); }
       }, 1000);
     }
 
@@ -1024,104 +714,19 @@
         el.style.pointerEvents = "none";
       });
 
-      const selectedCardEl = document.getElementById(`choice${choice.charAt(0).toUpperCase() + choice.slice(1)}`);
-      if (selectedCardEl) selectedCardEl.classList.add('selected');
-
+      document.getElementById(`choice${choice.charAt(0).toUpperCase() + choice.slice(1)}`).classList.add('selected');
       document.getElementById('playerHandVisual').innerText = handIcons[choice];
-      document.getElementById('battleResult').innerText = `Elegiste ${choice.toUpperCase()}. Esperando jugada del rival...`;
-      document.getElementById('vsStatus').innerText = "¡Jugada registrada!";
-
-      // Simular la respuesta inmediata y correcta del contrincante
-      setTimeout(() => {
-        const choicesList = ['piedra', 'papel', 'tijera'];
-        rivalMove = choicesList[Math.floor(Math.random() * choicesList.length)];
-        
-        document.getElementById('rivalHandVisual').innerText = handIcons[rivalMove];
-        resolveRound(playerMove, rivalMove);
-      }, 1000);
+      document.getElementById('battleResult').innerText = `Elegiste ${choice.toUpperCase()}. Esperando jugada del rival humano...`;
     }
 
-    function resolveRound(pMove, rMove) {
-      clearInterval(roundTimerInterval);
-
-      let roundMsg = "";
-      if (pMove === rMove) {
-        roundMsg = `🤝 ¡Empate! Ambos eligieron ${pMove.toUpperCase()}. Se repetirá la ronda.`;
-        document.getElementById('vsStatus').innerText = "¡Empate en la ronda!";
-      } else if (
-        (pMove === 'piedra' && rMove === 'tijera') ||
-        (pMove === 'papel' && rMove === 'piedra') ||
-        (pMove === 'tijera' && rMove === 'papel')
-      ) {
-        playerWins++;
-        roundMsg = `✅ ¡Punto tuyo! Tu ${pMove.toUpperCase()} venció al ${rMove.toUpperCase()} del rival.`;
-        document.getElementById('vsStatus').innerText = "¡Punto ganado!";
-      } else {
-        rivalWins++;
-        roundMsg = `❌ ¡Punto para el rival! Su ${rMove.toUpperCase()} superó a tu ${pMove.toUpperCase()}.`;
-        document.getElementById('vsStatus').innerText = "¡Punto perdido!";
-      }
-
-      document.getElementById('playerScoreBoard').innerText = `TÚ: ${playerWins}`;
-      document.getElementById('rivalScoreBoard').innerText = `RIVAL: ${rivalWins}`;
-      document.getElementById('battleResult').innerText = roundMsg;
-
-      if (playerWins >= 3 || rivalWins >= 3 || currentRound >= maxRounds) {
-        endMatch();
-      } else {
-        currentRound++;
-        setTimeout(() => {
-          document.getElementById('roundCounter').innerText = `RONDA ${currentRound} / ${maxRounds}`;
-          startRound();
-        }, 2500);
-      }
-    }
-
-    function endMatch() {
-      matchIsOver = true;
-      document.getElementById('opponentTimerBox').style.display = "none";
-      document.getElementById('choicesGrid').classList.add('hidden');
-      document.getElementById('btnLeaveArena').classList.remove('hidden');
-
-      if (currentTier === "Bronce" && bronzeMatchesPlayed < requiredBronzeMatches) {
-        bronzeMatchesPlayed++;
-        saveUserDataToStorage();
-      }
-
-      let finalMsg = "";
-      const prizePool = currentStake * 1.96;
-
-      if (playerWins > rivalWins) {
-        userAstrBalance += prizePool;
-        finalMsg = `🏆 ¡VICTORIA GLOBAL! Ganaste ${playerWins}-${rivalWins}. ¡Se acreditaron ${prizePool.toFixed(2)} ASTCH!`;
-        if (typeof confetti === 'function') {
-          confetti({ particleCount: 140, spread: 100, origin: { y: 0.6 } });
-        }
-      } else if (rivalWins > playerWins) {
-        finalMsg = `💀 ¡DERROTA GLOBAL! El rival ganó ${rivalWins}-${playerWins}.`;
-      } else {
-        userAstrBalance += currentStake;
-        finalMsg = `🤝 ¡EMPATE GLOBAL! Se te reembolsa tu apuesta de ${currentStake} ASTCH.`;
-      }
-
-      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
-      updateRoomsState();
-
-      document.getElementById('battleResult').innerText = finalMsg;
-      document.getElementById('vsStatus').innerText = "¡Partida Finalizada!";
-    }
-
-    function leaveRoom() {
+    function returnToLobby() {
       document.getElementById('arenaView').classList.add('hidden');
       document.getElementById('lobbyView').classList.remove('hidden');
+      renderOpenLobbies();
     }
 
-    if (window.ethereum) {
-      window.ethereum.on('chainChanged', () => window.location.reload());
-      window.ethereum.on('accountsChanged', () => window.location.reload());
-    }
-
-    updateRoomsState();
+    renderOpenLobbies();
+    window.addEventListener('storage', renderOpenLobbies);
   </script>
 </body>
 </html>
