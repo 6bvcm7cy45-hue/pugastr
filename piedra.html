@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PUG ASTR // Real 3D Hands & Matchmaking Timeout</title>
+  <title>PUG ASTR // Token Gate & XP System</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,6 +71,10 @@
       text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
     }
 
+    .wallet-section {
+      display: flex; gap: 10px; align-items: center;
+    }
+
     .wallet-btn {
       background: linear-gradient(135deg, #f6851b, #e2761b);
       color: #fff; border: none; padding: 10px 18px;
@@ -92,7 +96,7 @@
 
     .hero-title {
       font-family: 'Press Start 2P', cursive;
-      font-size: 1rem; line-height: 1.4; color: var(--text-white);
+      font-size: 0.95rem; line-height: 1.4; color: var(--text-white);
       text-shadow: 0 0 15px rgba(0, 240, 255, 0.6); margin-bottom: 10px;
     }
 
@@ -100,8 +104,51 @@
       font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;
     }
 
+    /* Panel de Estado del Token $ASTR y XP */
+    .dashboard-container {
+      max-width: 950px; margin: 0 auto 15px auto; padding: 0 20px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+    }
+
+    @media(max-width: 768px) {
+      .dashboard-container { grid-template-columns: 1fr; }
+    }
+
+    .dash-card {
+      background: rgba(15, 18, 32, 0.9);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      border-radius: 14px; padding: 15px 20px;
+      display: flex; flex-direction: column; gap: 8px;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+    }
+
+    .dash-title {
+      font-family: 'Press Start 2P', cursive; font-size: 0.55rem; color: var(--accent-cyan);
+    }
+
+    .dash-value {
+      font-size: 1.1rem; font-weight: 900; color: #fff; display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .token-badge {
+      font-size: 0.7rem; background: rgba(0, 240, 255, 0.15); padding: 4px 8px; border-radius: 6px;
+      border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-family: 'Press Start 2P', cursive;
+    }
+
+    .xp-bar-track {
+      width: 100%; height: 8px; background: rgba(0,0,0,0.5);
+      border-radius: 4px; overflow: hidden; border: 1px solid rgba(0, 240, 255, 0.2);
+    }
+
+    .xp-bar-fill {
+      height: 100%; width: 0%;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+      box-shadow: 0 0 10px var(--accent-cyan);
+      transition: width 0.4s ease;
+    }
+
     .section {
-      max-width: 950px; margin: 20px auto 40px auto; padding: 0 20px;
+      max-width: 950px; margin: 10px auto 40px auto; padding: 0 20px;
     }
 
     .section-header {
@@ -119,7 +166,15 @@
 
     .hidden { display: none !important; }
 
-    /* Salas de Matchmaking por Rango */
+    /* Alerta de Token Gate global */
+    .token-gate-warning {
+      background: rgba(255, 0, 127, 0.1);
+      border: 1px solid var(--accent-pink);
+      border-radius: 12px; padding: 15px; text-align: center;
+      margin-bottom: 20px; font-size: 0.85rem; color: #ff99cc;
+    }
+
+    /* Salas de Matchmaking */
     .rooms-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -134,13 +189,20 @@
       transition: all 0.25s ease;
       box-shadow: 0 0 10px rgba(138, 43, 226, 0.2);
       display: flex; flex-direction: column; justify-content: space-between;
-      height: 190px; position: relative; overflow: hidden;
+      height: 200px; position: relative; overflow: hidden;
     }
 
-    .tier-card:hover {
+    .tier-card:hover:not(.locked) {
       border-color: var(--accent-cyan);
       transform: translateY(-5px);
       box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+    }
+
+    .tier-card.locked {
+      opacity: 0.55;
+      border-color: #444;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
     }
 
     .tier-rank {
@@ -149,8 +211,7 @@
     }
 
     .tier-price {
-      font-size: 1.3rem; font-weight: 900; color: #fff;
-      text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+      font-size: 1.2rem; font-weight: 900; color: #fff;
     }
 
     .btn-tier {
@@ -159,6 +220,14 @@
       font-weight: 900; border-radius: 8px; cursor: pointer;
       font-size: 0.7rem; width: 100%;
       box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+    }
+
+    .tier-card.locked .btn-tier {
+      background: #333; color: #777; box-shadow: none; cursor: not-allowed;
+    }
+
+    .lock-label {
+      font-family: 'Press Start 2P', cursive; font-size: 0.42rem; color: var(--accent-pink); margin-top: 4px;
     }
 
     /* Buscador de Matchmaking */
@@ -175,7 +244,7 @@
 
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Arena 3D Avanzada y Manos Realistas */
+    /* Arena 3D y Manos Fotorrealistas */
     .battle-arena {
       display: flex; flex-direction: column; align-items: center;
       gap: 15px; text-align: center; perspective: 1400px;
@@ -211,7 +280,6 @@
       font-size: 0.65rem; color: var(--text-dim); font-family: 'Press Start 2P', cursive;
     }
 
-    /* Estilo de Mano 3D Realista con Iluminación Volumétrica y Rotación Profunda */
     .hand-3d-model {
       width: 110px; height: 110px;
       background: radial-gradient(circle at 35% 35%, #3a4466, #121624 70%);
@@ -233,7 +301,6 @@
       50% { transform: translateY(-10px) rotateX(25deg) rotateY(15deg) scale(1.04); }
     }
 
-    /* Cartas 3D de Selección Estilo Holograma */
     .choices-3d-grid {
       display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin: 10px 0;
     }
@@ -322,60 +389,98 @@
       </svg>
       <span class="brand-name">$PUGASTR 3D</span>
     </a>
-    <div>
+    <div class="wallet-section">
       <button class="wallet-btn" onclick="connectMetaMask()">
         <svg width="20" height="20" viewBox="0 0 318 318" xmlns="http://www.w3.org/2000/svg"><path d="M274.6 35.5L168.7 119.5 192.6 64.5 274.6 35.5Z" fill="#E17726"/><path d="M43.3 35.5L148.6 120.3 125 64.5 43.3 35.5Z" fill="#E27625"/><path d="M239.3 207.2L207.6 261.2 268 281.9 285.4 213.6 239.3 207.2Z" fill="#E27625"/><path d="M78.6 207.2L32.5 213.6 49.9 281.9 110.3 261.2 78.6 207.2Z" fill="#E27625"/><path d="M109.2 135.5L85.2 171.3 144.1 173.8 141.6 109.5 109.2 135.5Z" fill="#E27625"/><path d="M208.7 135.5L176.3 109.5 173.9 173.8 232.7 171.3 208.7 135.5Z" fill="#E27625"/><path d="M110.3 261.2L147.1 230.1 113.8 199.1 110.3 261.2Z" fill="#E27625"/><path d="M207.6 261.2L204.1 199.1 170.8 230.1 207.6 261.2Z" fill="#E27625"/><path d="M147.1 230.1L170.8 230.1 158.9 198.8 147.1 230.1Z" fill="#D36B1C"/><path d="M113.8 199.1L144.1 173.8 117.7 172.9 113.8 199.1Z" fill="#CC6113"/><path d="M200.2 172.9L173.9 173.8 204.1 199.1 200.2 172.9Z" fill="#CC6113"/><path d="M158.9 50L109.2 88.5 130 96.6 158.9 50Z" fill="#8C613A"/><path d="M158.9 50L187.8 96.6 208.6 88.5 158.9 50Z" fill="#8C613A"/><path d="M85.2 171.3L110.3 261.2 113.8 199.1 85.2 171.3Z" fill="#E27625"/><path d="M232.7 171.3L204.1 199.1 207.6 261.2 232.7 171.3Z" fill="#E27625"/><path d="M43.3 35.5L85.2 88.5 125 64.5 43.3 35.5Z" fill="#C05711"/><path d="M274.6 35.5L192.9 64.5 232.7 88.5 274.6 35.5Z" fill="#C05711"/><path d="M85.2 88.5L109.2 135.5 141.6 109.5 85.2 88.5Z" fill="#DE6B1B"/><path d="M232.7 88.5L176.3 109.5 208.7 135.5 232.7 88.5Z" fill="#DE6B1B"/></svg>
-        <span id="walletBtnText">CONECTAR METAMASK</span>
+        <span id="walletBtnText">CONECTAR WALLET</span>
       </button>
     </div>
   </header>
 
   <section class="hero">
-    <h1 class="hero-title">MATCHMAKING 3D // RONDAS DE 5 (BEST OF 5)</h1>
-    <p class="hero-subtitle">Salas por rango de juego, manos 3D fotorrealistas y control de rival no encontrado.</p>
+    <h1 class="hero-title">TOKEN GATE & MATCHMAKING 3D</h1>
+    <p class="hero-subtitle">Se requiere un mínimo de tokens <strong>$ASTR</strong> en tu billetera para acceder a las salas de juego y combate.</p>
   </section>
 
-  <!-- LOBBY DE MATCHMAKING POR RANGO -->
+  <!-- PANEL DE BALANCE DE TOKEN $ASTR Y BARRA DE XP -->
+  <div class="dashboard-container">
+    <div class="dash-card">
+      <div class="dash-title">BALANCE DE TOKEN $ASTR</div>
+      <div class="dash-value">
+        <span id="astralisBalanceText">0.00 ASTR</span>
+        <span class="token-badge" id="tokenGateStatus">BLOQUEADO</span>
+      </div>
+      <div style="font-size: 0.72rem; color: var(--text-dim);" id="tokenGateRequirement">Req: Mínimo 10.00 ASTR para jugar</div>
+    </div>
+    
+    <div class="dash-card">
+      <div class="dash-title" id="xpLevelText">NIVEL 1 // BRONZE INICIAL</div>
+      <div class="dash-value" style="font-size: 0.9rem;">
+        <span id="bronzeProgressText">Partidas Bronce: 0 / 5</span>
+        <span id="xpPointsText" style="font-size: 0.8rem; color: var(--accent-cyan);">XP: 0/100</span>
+      </div>
+      <div class="xp-bar-track">
+        <div class="xp-bar-fill" id="xpBarFill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOBBY DE MATCHMAKING POR RANGO (CON TOKEN GATE Y BLOQUEO DE 5 PARTIDAS) -->
   <section class="section" id="lobbyView">
     <div class="view-container">
-      <h2 class="section-header">[ SALAS DE MATCHMAKING POR RANGO ]</h2>
+      <div class="token-gate-warning" id="globalTokenGateAlert">
+        🔒 <strong>Token Gate Activo:</strong> Conecta tu billetera y verifica tu saldo de $ASTR para habilitar las salas de juego.
+      </div>
+
+      <h2 class="section-header">[ SALAS DE MATCHMAKING PROTEGIDAS ]</h2>
       
       <div class="rooms-grid">
-        <div class="tier-card" onclick="startMatchmaking('Bronce', 1)">
+        <!-- Sala Bronce (Requiere Token + Siempre activa para iniciar las 5 partidas) -->
+        <div class="tier-card locked" id="roomBronce" onclick="tryOpenRoom('Bronce', 1, 10)">
           <div class="tier-rank">Rango Bronce</div>
           <div class="tier-price">$1 USD</div>
-          <button class="btn-tier">BUSCAR RIVAL</button>
+          <button class="btn-tier">TOKEN REQ.</button>
+          <div class="lock-label" id="labelBronce">Falta $ASTR</div>
         </div>
-        <div class="tier-card" onclick="startMatchmaking('Plata', 10)">
+
+        <!-- Salas Superiores (Requieren Token + 5 Partidas en Bronce) -->
+        <div class="tier-card locked" id="roomPlata" onclick="tryOpenRoom('Plata', 10, 50)">
           <div class="tier-rank">Rango Plata</div>
           <div class="tier-price">$10 USD</div>
-          <button class="btn-tier">BUSCAR RIVAL</button>
+          <button class="btn-tier">BLOQUEADO</button>
+          <div class="lock-label" id="labelPlata">Req: 5 P. Bronce</div>
         </div>
-        <div class="tier-card" onclick="startMatchmaking('Oro', 20)">
+
+        <div class="tier-card locked" id="roomOro" onclick="tryOpenRoom('Oro', 20, 100)">
           <div class="tier-rank">Rango Oro</div>
           <div class="tier-price">$20 USD</div>
-          <button class="btn-tier">BUSCAR RIVAL</button>
+          <button class="btn-tier">BLOQUEADO</button>
+          <div class="lock-label" id="labelOro">Req: 5 P. Bronce</div>
         </div>
-        <div class="tier-card" onclick="startMatchmaking('Platino', 35)">
+
+        <div class="tier-card locked" id="roomPlatino" onclick="tryOpenRoom('Platino', 35, 250)">
           <div class="tier-rank">Rango Platino</div>
           <div class="tier-price">$35 USD</div>
-          <button class="btn-tier">BUSCAR RIVAL</button>
+          <button class="btn-tier">BLOQUEADO</button>
+          <div class="lock-label" id="labelPlatino">Req: 5 P. Bronce</div>
         </div>
-        <div class="tier-card" onclick="startMatchmaking('Diamante', 50)">
+
+        <div class="tier-card locked" id="roomDiamante" onclick="tryOpenRoom('Diamante', 50, 500)">
           <div class="tier-rank">Rango Diamante</div>
           <div class="tier-price">$50 USD</div>
-          <button class="btn-tier">BUSCAR RIVAL</button>
+          <button class="btn-tier">BLOQUEADO</button>
+          <div class="lock-label" id="labelDiamante">Req: 5 P. Bronce</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PANTALLA DE CARGA DE MATCHMAKING CON TIMEOUT (RIVAL NO ENCONTRADO) -->
+  <!-- PANTALLA DE CARGA DE MATCHMAKING -->
   <section class="section hidden" id="matchingView">
     <div class="view-container matchmaking-loader">
       <div class="spinner" id="matchingSpinner"></div>
       <h2 class="section-header" id="matchingText">Buscando oponente en el ranking...</h2>
-      <p style="color: var(--text-dim); font-size: 0.85rem;" id="matchingSubtext">Emparejando por contrato inteligente en Astralis Network.</p>
+      <p style="color: var(--text-dim); font-size: 0.85rem;" id="matchingSubtext">Validando contratos inteligentes y saldo de $ASTR.</p>
       
       <div id="timeoutControls" class="hidden" style="margin-top: 15px; display: flex; gap: 10px;">
         <button class="btn-action-custom" onclick="retryMatchmaking()">REINTENTAR</button>
@@ -397,7 +502,6 @@
 
       <div class="vs-status" id="vsStatus">¡Realiza tu jugada con las manos 3D!</div>
 
-      <!-- ESCENARIO VISUAL 3D CON MANOS REALISTAS -->
       <div class="arena-display-3d">
         <div class="fighter-box">
           <div class="fighter-label">TUS MANOS 3D</div>
@@ -410,7 +514,6 @@
         </div>
       </div>
 
-      <!-- CARTAS DE SELECCIÓN CON MANOS -->
       <div class="choices-3d-grid" id="choicesGrid">
         <div class="card-3d" onclick="makeMove('piedra')">
           <div class="hand-icon">✊</div>
@@ -435,11 +538,11 @@
   </section>
 
   <footer>
-    <p>© 2026 Pug Astralis Arena — Real 3D Hands & Matchmaking Timeout.</p>
+    <p>© 2026 Pug Astralis Arena — Token Gate $ASTR & XP Matchmaking System.</p>
   </footer>
 
   <script>
-    // Fondo de estrellas dinámico
+    // Fondo de estrellas parpadeantes
     const canvas = document.getElementById('spaceCanvas');
     const ctx = canvas.getContext('2d');
     let width = canvas.width = window.innerWidth;
@@ -469,30 +572,127 @@
     }
     animateSpace();
 
-    // Variables globales
-    let userAccount = null;
+    // Estado de Billetera y Token Gate
+    let walletConnected = false;
+    let userAstrBalance = 0; // Balance de tokens $ASTR simulado en la wallet
+    const minTokenRequiredToPlay = 10; // Mínimo de $ASTR requerido globalmente
+
+    // Estado de Progreso (XP y 5 partidas en Bronce)
+    let bronzeMatchesPlayed = 0;
+    const requiredBronzeMatches = 5;
+    let userXP = 0;
+    const maxXP = 100;
+
     let currentTier = "";
     let currentStake = 0;
     let matchmakingTimer = null;
-    
+
     let playerWins = 0;
     let rivalWins = 0;
     let currentRound = 1;
     const maxRounds = 5;
     let matchIsOver = false;
 
-    const handIcons = {
-      piedra: '✊',
-      papel: '✋',
-      tijera: '✌️'
-    };
+    const handIcons = { piedra: '✊', papel: '✋', tijera: '✌️' };
 
     function connectMetaMask() {
-      userAccount = "0x71C...39A2";
+      walletConnected = true;
+      // Simulamos que la billetera conectada posee 50 tokens $ASTR (Suficiente para jugar y desbloquear)
+      userAstrBalance = 50.00; 
+
       document.getElementById('walletBtnText').innerText = "0x71C...39A2";
+      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTR`;
+      document.getElementById('tokenGateStatus').innerText = "VERIFICADO";
+      document.getElementById('tokenGateStatus').style.color = "var(--accent-green)";
+      document.getElementById('tokenGateStatus.style.borderColor') = "var(--accent-green)";
+
+      document.getElementById('globalTokenGateAlert').style.display = "none";
+      
+      updateRoomsState();
     }
 
-    // Sistema de Matchmaking con Timeout (Rival No Encontrado)
+    // Actualizar lógica de Bloqueo por Token Gate + 5 Partidas de Bronce
+    function updateRoomsState() {
+      // 1. Validar Token Gate general (Mínimo 10 $ASTR)
+      const hasEnoughTokens = walletConnected && (userAstrBalance >= minTokenRequiredToPlay);
+
+      // Actualizar Barra de XP
+      userXP = Math.min(bronzeMatchesPlayed * 20, maxXP);
+      document.getElementById('xpPointsText').innerText = `XP: ${userXP}/${maxXP}`;
+      document.getElementById('xpBarFill').style.width = `${(userXP / maxXP) * 100}%`;
+      document.getElementById('bronzeProgressText').innerText = `Partidas Bronce: ${bronzeMatchesPlayed} / ${requiredBronzeMatches}`;
+
+      // --- SALA BRONCE ---
+      const roomBronce = document.getElementById('roomBronce');
+      const labelBronce = document.getElementById('labelBronce');
+      if (!hasEnoughTokens) {
+        roomBronce.classList.add('locked');
+        roomBronce.querySelector('.btn-tier').innerText = "TOKEN REQ.";
+        labelBronce.innerText = "Falta $ASTR";
+      } else {
+        roomBronce.classList.remove('locked');
+        roomBronce.querySelector('.btn-tier').innerText = "BUSCAR RIVAL";
+        labelBronce.innerText = "DESBLOQUEADO";
+        labelBronce.style.color = "var(--accent-green)";
+      }
+
+      // --- SALAS SUPERIORES (Plata, Oro, Platino, Diamante) ---
+      // Requieren tanto tener los tokens $ASTR como haber completado las 5 partidas en Bronce
+      const upperRoomsUnlocked = hasEnoughTokens && (bronzeMatchesPlayed >= requiredBronzeMatches);
+
+      if (bronzeMatchesPlayed >= requiredBronzeMatches) {
+        document.getElementById('xpLevelText').innerText = "NIVEL 2 // SALAS SUPERIORES ACTIVAS";
+      }
+
+      const upperRooms = [
+        { id: 'roomPlata', name: 'Plata' },
+        { id: 'roomOro', name: 'Oro' },
+        { id: 'roomPlatino', name: 'Platino' },
+        { id: 'roomDiamante', name: 'Diamante' }
+      ];
+
+      upperRooms.forEach(room => {
+        const roomEl = document.getElementById(room.id);
+        const lockLabel = roomEl.querySelector('.lock-label');
+        const btn = roomEl.querySelector('.btn-tier');
+
+        if (!hasEnoughTokens) {
+          roomEl.classList.add('locked');
+          btn.innerText = "TOKEN REQ.";
+          lockLabel.innerText = "Falta $ASTR";
+        } else if (bronzeMatchesPlayed < requiredBronzeMatches) {
+          roomEl.classList.add('locked');
+          btn.innerText = "BLOQUEADO";
+          lockLabel.innerText = `Req: ${requiredBronzeMatches - bronzeMatchesPlayed} p. Bronce`;
+        } else {
+          roomEl.classList.remove('locked');
+          btn.innerText = "BUSCAR RIVAL";
+          lockLabel.innerText = "DESBLOQUEADO";
+          lockLabel.style.color = "var(--accent-green)";
+        }
+      });
+    }
+
+    function tryOpenRoom(tierName, stake, requiredTokens) {
+      if (!walletConnected) {
+        alert("⚠️ Debes conectar tu billetera MetaMask primero.");
+        return;
+      }
+      if (userAstrBalance < minTokenRequiredToPlay) {
+        alert(`⚠️ Saldo insuficiente: Necesitas al menos ${minTokenRequiredToPlay} tokens $ASTR en tu billetera para jugar.`);
+        return;
+      }
+
+      // Si intentan entrar a salas superiores sin las 5 partidas de bronce
+      if (tierName !== "Bronce" && bronzeMatchesPlayed < requiredBronzeMatches) {
+        alert(`⚠️ Sala bloqueada: Debes completar primero ${requiredBronzeMatches} partidas en el Rango Bronce (Llevas ${bronzeMatchesPlayed}/${requiredBronzeMatches}).`);
+        return;
+      }
+
+      startMatchmaking(tierName, stake);
+    }
+
+    // Sistema de Matchmaking con Timeout
     function startMatchmaking(tierName, stake) {
       currentTier = tierName;
       currentStake = stake;
@@ -500,29 +700,25 @@
       document.getElementById('lobbyView').classList.add('hidden');
       document.getElementById('matchingView').classList.remove('hidden');
       
-      // Resetear estado visual de carga
       document.getElementById('matchingSpinner').style.display = "block";
-      document.getElementById('matchingText').innerText = `Buscando rival en Rango ${tierName.toUpperCase()}...`;
-      document.getElementById('matchingSubtext').innerText = "Emparejando por contrato inteligente en Astralis Network.";
+      document.getElementById('matchingText').innerText = `Buscando oponente en Rango ${tierName.toUpperCase()}...`;
+      document.getElementById('matchingSubtext').innerText = "Validando saldo de $ASTR y contrato inteligente.";
       document.getElementById('timeoutControls').classList.add('hidden');
 
-      // Simulación de búsqueda con límite de 3.5 segundos. 
-      // 70% de probabilidad de éxito, 30% de probabilidad de "Rival no encontrado" para probar la función.
       matchmakingTimer = setTimeout(() => {
-        const foundRival = Math.random() > 0.3; 
+        const foundRival = Math.random() > 0.2; 
 
         if (foundRival) {
           document.getElementById('matchingView').classList.add('hidden');
           document.getElementById('arenaView').classList.remove('hidden');
           initMatch();
         } else {
-          // Trigger: Rival no encontrado
           document.getElementById('matchingSpinner').style.display = "none";
           document.getElementById('matchingText').innerText = "¡Rival no encontrado!";
-          document.getElementById('matchingSubtext').innerText = `No hay oponentes disponibles en el Rango ${tierName.toUpperCase()} en este momento.`;
+          document.getElementById('matchingSubtext').innerText = `No hay suficientes oponentes activos en el Rango ${tierName.toUpperCase()}.`;
           document.getElementById('timeoutControls').classList.remove('hidden');
         }
-      }, 3500);
+      }, 3000);
     }
 
     function retryMatchmaking() {
@@ -596,9 +792,16 @@
       document.getElementById('choicesGrid').classList.add('hidden');
       document.getElementById('btnLeaveArena').classList.remove('hidden');
 
+      // Si completó una partida en la sala de Bronce, sumamos al contador para desbloquear el resto
+      if (currentTier === "Bronce" && bronzeMatchesPlayed < requiredBronzeMatches) {
+        bronzeMatchesPlayed++;
+      }
+
+      updateRoomsState();
+
       let finalMsg = "";
       if (playerWins > rivalWins) {
-        finalMsg = `🏆 ¡VICTORIA TOTAL! Ganaste el duelo ${playerWins}-${rivalWins}. Premio acreditado.`;
+        finalMsg = `🏆 ¡VICTORIA TOTAL! Ganaste el duelo ${playerWins}-${rivalWins}. Premio en tokens acreditado.`;
         if (typeof confetti === 'function') {
           confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
         }
@@ -616,6 +819,9 @@
       document.getElementById('arenaView').classList.add('hidden');
       document.getElementById('lobbyView').classList.remove('hidden');
     }
+
+    // Inicializar estado visual al cargar
+    updateRoomsState();
   </script>
 </body>
 </html>
