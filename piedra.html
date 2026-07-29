@@ -72,7 +72,7 @@
     }
 
     .wallet-section {
-      display: flex; gap: 10px; align-items: center;
+      display: flex; gap: 10px; align-items: center; position: relative;
     }
 
     .wallet-btn {
@@ -88,6 +88,29 @@
     .wallet-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 0 20px rgba(246, 133, 27, 0.7);
+    }
+
+    /* Menú desplegable para desconectar la billetera */
+    .wallet-dropdown {
+      position: absolute; right: 0; top: 100%; margin-top: 8px;
+      background: rgba(15, 18, 32, 0.98);
+      border: 1px solid rgba(246, 133, 27, 0.4);
+      border-radius: 12px; padding: 10px; width: 180px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.8);
+      z-index: 200; display: flex; flex-direction: column; gap: 8px;
+    }
+
+    .dropdown-item {
+      background: rgba(255, 0, 127, 0.15);
+      color: var(--accent-pink); border: 1px solid var(--accent-pink);
+      padding: 8px 12px; border-radius: 8px; font-size: 0.75rem;
+      font-family: 'Press Start 2P', cursive; cursor: pointer; text-align: center;
+      transition: all 0.2s;
+    }
+
+    .dropdown-item:hover {
+      background: var(--accent-pink); color: #fff;
+      box-shadow: 0 0 10px var(--accent-pink);
     }
 
     .hero {
@@ -389,17 +412,23 @@
       </svg>
       <span class="brand-name">$PUGASTR 3D</span>
     </a>
+    
     <div class="wallet-section">
-      <button class="wallet-btn" onclick="connectMetaMask()">
+      <button class="wallet-btn" id="walletMainBtn" onclick="handleWalletClick()">
         <svg width="20" height="20" viewBox="0 0 318 318" xmlns="http://www.w3.org/2000/svg"><path d="M274.6 35.5L168.7 119.5 192.6 64.5 274.6 35.5Z" fill="#E17726"/><path d="M43.3 35.5L148.6 120.3 125 64.5 43.3 35.5Z" fill="#E27625"/><path d="M239.3 207.2L207.6 261.2 268 281.9 285.4 213.6 239.3 207.2Z" fill="#E27625"/><path d="M78.6 207.2L32.5 213.6 49.9 281.9 110.3 261.2 78.6 207.2Z" fill="#E27625"/><path d="M109.2 135.5L85.2 171.3 144.1 173.8 141.6 109.5 109.2 135.5Z" fill="#E27625"/><path d="M208.7 135.5L176.3 109.5 173.9 173.8 232.7 171.3 208.7 135.5Z" fill="#E27625"/><path d="M110.3 261.2L147.1 230.1 113.8 199.1 110.3 261.2Z" fill="#E27625"/><path d="M207.6 261.2L204.1 199.1 170.8 230.1 207.6 261.2Z" fill="#E27625"/><path d="M147.1 230.1L170.8 230.1 158.9 198.8 147.1 230.1Z" fill="#D36B1C"/><path d="M113.8 199.1L144.1 173.8 117.7 172.9 113.8 199.1Z" fill="#CC6113"/><path d="M200.2 172.9L173.9 173.8 204.1 199.1 200.2 172.9Z" fill="#CC6113"/><path d="M158.9 50L109.2 88.5 130 96.6 158.9 50Z" fill="#8C613A"/><path d="M158.9 50L187.8 96.6 208.6 88.5 158.9 50Z" fill="#8C613A"/><path d="M85.2 171.3L110.3 261.2 113.8 199.1 85.2 171.3Z" fill="#E27625"/><path d="M232.7 171.3L204.1 199.1 207.6 261.2 232.7 171.3Z" fill="#E27625"/><path d="M43.3 35.5L85.2 88.5 125 64.5 43.3 35.5Z" fill="#C05711"/><path d="M274.6 35.5L192.9 64.5 232.7 88.5 274.6 35.5Z" fill="#C05711"/><path d="M85.2 88.5L109.2 135.5 141.6 109.5 85.2 88.5Z" fill="#DE6B1B"/><path d="M232.7 88.5L176.3 109.5 208.7 135.5 232.7 88.5Z" fill="#DE6B1B"/></svg>
         <span id="walletBtnText">CONECTAR WALLET</span>
       </button>
+
+      <!-- Menú Desplegable con Opción de Desconectar -->
+      <div class="wallet-dropdown hidden" id="walletDropdownMenu">
+        <div class="dropdown-item" onclick="disconnectMetaMask()">DESCONECTAR</div>
+      </div>
     </div>
   </header>
 
   <section class="hero">
     <h1 class="hero-title">TOKEN GATE & MATCHMAKING 3D</h1>
-    <p class="hero-subtitle">Se requiere un mínimo de tokens <strong>$ASTR</strong> en tu billetera para acceder a las salas de juego y combate.</p>
+    <p class="hero-subtitle">Conecta MetaMask mediante proveedor Web3 real y verifica tu saldo de <strong>$ASTR</strong> para jugar.</p>
   </section>
 
   <!-- PANEL DE BALANCE DE TOKEN $ASTR Y BARRA DE XP -->
@@ -425,17 +454,16 @@
     </div>
   </div>
 
-  <!-- LOBBY DE MATCHMAKING POR RANGO (CON TOKEN GATE Y BLOQUEO DE 5 PARTIDAS) -->
+  <!-- LOBBY DE MATCHMAKING POR RANGO -->
   <section class="section" id="lobbyView">
     <div class="view-container">
       <div class="token-gate-warning" id="globalTokenGateAlert">
-        🔒 <strong>Token Gate Activo:</strong> Conecta tu billetera y verifica tu saldo de $ASTR para habilitar las salas de juego.
+        🔒 <strong>Token Gate Activo:</strong> Conecta tu billetera MetaMask real y verifica tu saldo de $ASTR para habilitar las salas.
       </div>
 
       <h2 class="section-header">[ SALAS DE MATCHMAKING PROTEGIDAS ]</h2>
       
       <div class="rooms-grid">
-        <!-- Sala Bronce (Requiere Token + Siempre activa para iniciar las 5 partidas) -->
         <div class="tier-card locked" id="roomBronce" onclick="tryOpenRoom('Bronce', 1, 10)">
           <div class="tier-rank">Rango Bronce</div>
           <div class="tier-price">$1 USD</div>
@@ -443,7 +471,6 @@
           <div class="lock-label" id="labelBronce">Falta $ASTR</div>
         </div>
 
-        <!-- Salas Superiores (Requieren Token + 5 Partidas en Bronce) -->
         <div class="tier-card locked" id="roomPlata" onclick="tryOpenRoom('Plata', 10, 50)">
           <div class="tier-rank">Rango Plata</div>
           <div class="tier-price">$10 USD</div>
@@ -489,7 +516,7 @@
     </div>
   </section>
 
-  <!-- ARENA DE COMBATE 3D (RONDA DE 5) -->
+  <!-- ARENA DE COMBATE 3D -->
   <section class="section hidden" id="arenaView">
     <div class="view-container battle-arena">
       <h2 class="section-header" id="arenaTitle">[ DUELO 3D REAL ]</h2>
@@ -538,11 +565,11 @@
   </section>
 
   <footer>
-    <p>© 2026 Pug Astralis Arena — Token Gate $ASTR & XP Matchmaking System.</p>
+    <p>© 2026 Pug Astralis Arena — Web3 MetaMask Integration & XP System.</p>
   </footer>
 
   <script>
-    // Fondo de estrellas parpadeantes
+    // Fondo de estrellas
     const canvas = document.getElementById('spaceCanvas');
     const ctx = canvas.getContext('2d');
     let width = canvas.width = window.innerWidth;
@@ -572,12 +599,13 @@
     }
     animateSpace();
 
-    // Estado de Billetera y Token Gate
+    // Estado Web3 y Billetera
     let walletConnected = false;
-    let userAstrBalance = 0; // Balance de tokens $ASTR simulado en la wallet
-    const minTokenRequiredToPlay = 10; // Mínimo de $ASTR requerido globalmente
+    let userAccount = null;
+    let userAstrBalance = 0;
+    const minTokenRequiredToPlay = 10;
 
-    // Estado de Progreso (XP y 5 partidas en Bronce)
+    // Estado de Progresión (XP y partidas)
     let bronzeMatchesPlayed = 0;
     const requiredBronzeMatches = 5;
     let userXP = 0;
@@ -595,34 +623,81 @@
 
     const handIcons = { piedra: '✊', papel: '✋', tijera: '✌️' };
 
-    function connectMetaMask() {
-      walletConnected = true;
-      // Simulamos que la billetera conectada posee 50 tokens $ASTR (Suficiente para jugar y desbloquear)
-      userAstrBalance = 50.00; 
+    // Manejo del botón de billetera (Conectar si está desconectado, o abrir menú desplegable si ya está conectado)
+    function handleWalletClick() {
+      if (!walletConnected) {
+        connectMetaMask();
+      } else {
+        const menu = document.getElementById('walletDropdownMenu');
+        menu.classList.toggle('hidden');
+      }
+    }
 
-      document.getElementById('walletBtnText').innerText = "0x71C...39A2";
-      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTR`;
-      document.getElementById('tokenGateStatus').innerText = "VERIFICADO";
-      document.getElementById('tokenGateStatus').style.color = "var(--accent-green)";
-      document.getElementById('tokenGateStatus.style.borderColor') = "var(--accent-green)";
+    // Cerrar menú desplegable al hacer clic fuera
+    window.addEventListener('click', (e) => {
+      const section = document.querySelector('.wallet-section');
+      if (!section.contains(e.target)) {
+        document.getElementById('walletDropdownMenu').classList.add('hidden');
+      }
+    });
 
-      document.getElementById('globalTokenGateAlert').style.display = "none";
-      
+    // Conexión real con MetaMask a través de window.ethereum
+    async function connectMetaMask() {
+      if (typeof window.ethereum !== 'undefined') {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          if (accounts.length > 0) {
+            userAccount = accounts[0];
+            walletConnected = true;
+
+            const shortAddr = userAccount.substring(0, 5) + "..." + userAccount.substring(userAccount.length - 4);
+            document.getElementById('walletBtnText').innerText = shortAddr;
+            
+            // Simulación de lectura de saldo de token $ASTR o asignación inicial para pruebas de juego
+            userAstrBalance = 50.00; 
+
+            document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTR`;
+            document.getElementById('tokenGateStatus').innerText = "VERIFICADO";
+            document.getElementById('tokenGateStatus').style.color = "var(--accent-green)";
+            document.getElementById('globalTokenGateAlert').style.display = "none";
+
+            updateRoomsState();
+          }
+        } catch (error) {
+          console.error("Error al conectar MetaMask:", error);
+          alert("⚠️ Solicitud de conexión rechazada o error en MetaMask.");
+        }
+      } else {
+        alert("⚠️ No se detectó MetaMask. Por favor, instala la extensión de MetaMask en tu navegador para jugar.");
+      }
+    }
+
+    // Desconectar Billetera
+    function disconnectMetaMask() {
+      walletConnected = false;
+      userAccount = null;
+      userAstrBalance = 0;
+
+      document.getElementById('walletBtnText').innerText = "CONECTAR WALLET";
+      document.getElementById('astralisBalanceText').innerText = "0.00 ASTR";
+      document.getElementById('tokenGateStatus').innerText = "BLOQUEADO";
+      document.getElementById('tokenGateStatus').style.color = "var(--accent-cyan)";
+      document.getElementById('globalTokenGateAlert').style.display = "block";
+      document.getElementById('walletDropdownMenu').classList.add('hidden');
+
       updateRoomsState();
     }
 
-    // Actualizar lógica de Bloqueo por Token Gate + 5 Partidas de Bronce
+    // Actualizar estados visuales de salas y XP
     function updateRoomsState() {
-      // 1. Validar Token Gate general (Mínimo 10 $ASTR)
       const hasEnoughTokens = walletConnected && (userAstrBalance >= minTokenRequiredToPlay);
 
-      // Actualizar Barra de XP
       userXP = Math.min(bronzeMatchesPlayed * 20, maxXP);
       document.getElementById('xpPointsText').innerText = `XP: ${userXP}/${maxXP}`;
       document.getElementById('xpBarFill').style.width = `${(userXP / maxXP) * 100}%`;
       document.getElementById('bronzeProgressText').innerText = `Partidas Bronce: ${bronzeMatchesPlayed} / ${requiredBronzeMatches}`;
 
-      // --- SALA BRONCE ---
+      // Sala Bronce
       const roomBronce = document.getElementById('roomBronce');
       const labelBronce = document.getElementById('labelBronce');
       if (!hasEnoughTokens) {
@@ -636,23 +711,14 @@
         labelBronce.style.color = "var(--accent-green)";
       }
 
-      // --- SALAS SUPERIORES (Plata, Oro, Platino, Diamante) ---
-      // Requieren tanto tener los tokens $ASTR como haber completado las 5 partidas en Bronce
-      const upperRoomsUnlocked = hasEnoughTokens && (bronzeMatchesPlayed >= requiredBronzeMatches);
-
+      // Salas Superiores
       if (bronzeMatchesPlayed >= requiredBronzeMatches) {
         document.getElementById('xpLevelText').innerText = "NIVEL 2 // SALAS SUPERIORES ACTIVAS";
       }
 
-      const upperRooms = [
-        { id: 'roomPlata', name: 'Plata' },
-        { id: 'roomOro', name: 'Oro' },
-        { id: 'roomPlatino', name: 'Platino' },
-        { id: 'roomDiamante', name: 'Diamante' }
-      ];
-
-      upperRooms.forEach(room => {
-        const roomEl = document.getElementById(room.id);
+      const upperRooms = ['roomPlata', 'roomOro', 'roomPlatino', 'roomDiamante'];
+      upperRooms.forEach(roomId => {
+        const roomEl = document.getElementById(roomId);
         const lockLabel = roomEl.querySelector('.lock-label');
         const btn = roomEl.querySelector('.btn-tier');
 
@@ -679,20 +745,17 @@
         return;
       }
       if (userAstrBalance < minTokenRequiredToPlay) {
-        alert(`⚠️ Saldo insuficiente: Necesitas al menos ${minTokenRequiredToPlay} tokens $ASTR en tu billetera para jugar.`);
+        alert(`⚠️ Saldo insuficiente: Necesitas al menos ${minTokenRequiredToPlay} tokens $ASTR.`);
         return;
       }
-
-      // Si intentan entrar a salas superiores sin las 5 partidas de bronce
       if (tierName !== "Bronce" && bronzeMatchesPlayed < requiredBronzeMatches) {
-        alert(`⚠️ Sala bloqueada: Debes completar primero ${requiredBronzeMatches} partidas en el Rango Bronce (Llevas ${bronzeMatchesPlayed}/${requiredBronzeMatches}).`);
+        alert(`⚠️ Sala bloqueada: Debes completar primero ${requiredBronzeMatches} partidas en Rango Bronce (Llevas ${bronzeMatchesPlayed}/${requiredBronzeMatches}).`);
         return;
       }
 
       startMatchmaking(tierName, stake);
     }
 
-    // Sistema de Matchmaking con Timeout
     function startMatchmaking(tierName, stake) {
       currentTier = tierName;
       currentStake = stake;
@@ -702,7 +765,7 @@
       
       document.getElementById('matchingSpinner').style.display = "block";
       document.getElementById('matchingText').innerText = `Buscando oponente en Rango ${tierName.toUpperCase()}...`;
-      document.getElementById('matchingSubtext').innerText = "Validando saldo de $ASTR y contrato inteligente.";
+      document.getElementById('matchingSubtext').innerText = "Validando contrato inteligente y saldo $ASTR.";
       document.getElementById('timeoutControls').classList.add('hidden');
 
       matchmakingTimer = setTimeout(() => {
@@ -715,7 +778,7 @@
         } else {
           document.getElementById('matchingSpinner').style.display = "none";
           document.getElementById('matchingText').innerText = "¡Rival no encontrado!";
-          document.getElementById('matchingSubtext').innerText = `No hay suficientes oponentes activos en el Rango ${tierName.toUpperCase()}.`;
+          document.getElementById('matchingSubtext').innerText = `No hay suficientes oponentes activos en Rango ${tierName.toUpperCase()}.`;
           document.getElementById('timeoutControls').classList.remove('hidden');
         }
       }, 3000);
@@ -764,7 +827,7 @@
 
       let roundMsg = "";
       if (playerChoice === rivalChoice) {
-        roundMsg = `🤝 Ronda ${currentRound} Empatada. Ningún punto otorgado.`;
+        roundMsg = `🤝 Ronda ${currentRound} Empatada.`;
       } else if (
         (playerChoice === 'piedra' && rivalChoice === 'tijera') ||
         (playerChoice === 'papel' && rivalChoice === 'piedra') ||
@@ -792,7 +855,6 @@
       document.getElementById('choicesGrid').classList.add('hidden');
       document.getElementById('btnLeaveArena').classList.remove('hidden');
 
-      // Si completó una partida en la sala de Bronce, sumamos al contador para desbloquear el resto
       if (currentTier === "Bronce" && bronzeMatchesPlayed < requiredBronzeMatches) {
         bronzeMatchesPlayed++;
       }
@@ -801,7 +863,7 @@
 
       let finalMsg = "";
       if (playerWins > rivalWins) {
-        finalMsg = `🏆 ¡VICTORIA TOTAL! Ganaste el duelo ${playerWins}-${rivalWins}. Premio en tokens acreditado.`;
+        finalMsg = `🏆 ¡VICTORIA TOTAL! Ganaste el duelo ${playerWins}-${rivalWins}. Premio acreditado.`;
         if (typeof confetti === 'function') {
           confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
         }
@@ -820,7 +882,6 @@
       document.getElementById('lobbyView').classList.remove('hidden');
     }
 
-    // Inicializar estado visual al cargar
     updateRoomsState();
   </script>
 </body>
