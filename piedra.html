@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PUG ASTR // Astralis Testnet Arena</title>
+  <title>PUG ASTR // 3D Matchmaking & Best of 5 Arena</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,11 +14,12 @@
   <style>
     :root {
       --bg-dark: #030408;
-      --card-bg: rgba(15, 18, 32, 0.88);
+      --card-bg: rgba(15, 18, 32, 0.92);
       --accent-cyan: #00f0ff;
       --accent-purple: #8a2be2;
       --accent-green: #39ff14;
       --accent-pink: #ff007f;
+      --accent-gold: #ffd700;
       --text-white: #ffffff;
       --text-dim: #a0a5c0;
     }
@@ -37,10 +38,8 @@
 
     #spaceCanvas {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0; left: 0;
+      width: 100vw; height: 100vh;
       z-index: -1;
       pointer-events: none;
     }
@@ -52,22 +51,16 @@
       padding: 12px 8%;
       border-bottom: 1px solid rgba(0, 240, 255, 0.2);
       backdrop-filter: blur(12px);
-      position: sticky;
-      top: 0;
-      z-index: 100;
+      position: sticky; top: 0; z-index: 100;
       background: rgba(5, 6, 11, 0.85);
     }
 
     .brand-logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      text-decoration: none;
+      display: flex; align-items: center; gap: 12px; text-decoration: none;
     }
 
     .brand-svg {
-      width: 48px;
-      height: 48px;
+      width: 48px; height: 48px;
       filter: drop-shadow(0 0 8px var(--accent-cyan));
     }
 
@@ -80,18 +73,12 @@
 
     .wallet-btn {
       background: linear-gradient(135deg, #f6851b, #e2761b);
-      color: #fff;
-      border: none;
-      padding: 10px 18px;
-      border-radius: 12px;
-      font-weight: 900;
-      font-family: 'Outfit', sans-serif;
-      cursor: pointer;
+      color: #fff; border: none; padding: 10px 18px;
+      border-radius: 12px; font-weight: 900;
+      font-family: 'Outfit', sans-serif; cursor: pointer;
       box-shadow: 0 0 15px rgba(246, 133, 27, 0.4);
       transition: transform 0.2s ease, box-shadow 0.2s ease;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      display: flex; align-items: center; gap: 8px;
     }
 
     .wallet-btn:hover {
@@ -100,54 +87,39 @@
     }
 
     .hero {
-      text-align: center;
-      padding: 35px 20px 15px 20px;
-      max-width: 900px;
-      margin: 0 auto;
+      text-align: center; padding: 30px 20px 10px 20px; max-width: 900px; margin: 0 auto;
     }
 
     .hero-title {
       font-family: 'Press Start 2P', cursive;
-      font-size: 1.15rem;
-      line-height: 1.4;
-      color: var(--text-white);
-      text-shadow: 0 0 15px rgba(0, 240, 255, 0.6);
-      margin-bottom: 10px;
+      font-size: 1.1rem; line-height: 1.4; color: var(--text-white);
+      text-shadow: 0 0 15px rgba(0, 240, 255, 0.6); margin-bottom: 10px;
     }
 
     .hero-subtitle {
-      font-size: 0.95rem;
-      color: var(--text-dim);
-      margin-bottom: 20px;
+      font-size: 0.95rem; color: var(--text-dim); margin-bottom: 15px;
     }
 
     .section {
-      max-width: 950px;
-      margin: 20px auto 40px auto;
-      padding: 0 20px;
+      max-width: 950px; margin: 20px auto 40px auto; padding: 0 20px;
     }
 
     .section-header {
       font-family: 'Press Start 2P', cursive;
-      font-size: 0.9rem;
-      color: var(--accent-cyan);
-      text-align: center;
-      margin-bottom: 20px;
+      font-size: 0.85rem; color: var(--accent-cyan);
+      text-align: center; margin-bottom: 20px;
     }
 
     .view-container {
       background: var(--card-bg);
       border: 1px solid rgba(138, 43, 226, 0.4);
-      border-radius: 20px;
-      padding: 25px;
+      border-radius: 20px; padding: 25px;
       box-shadow: 0 0 25px rgba(138, 43, 226, 0.15);
     }
 
-    .hidden {
-      display: none !important;
-    }
+    .hidden { display: none !important; }
 
-    /* 5 Salas de Apuesta */
+    /* Salas de Matchmaking por Rango */
     .rooms-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -157,154 +129,155 @@
     .tier-card {
       background: rgba(10, 12, 20, 0.9);
       border: 2px solid var(--accent-purple);
-      border-radius: 16px;
-      padding: 20px 15px;
-      text-align: center;
-      cursor: pointer;
+      border-radius: 16px; padding: 20px 12px;
+      text-align: center; cursor: pointer;
       transition: all 0.25s ease;
       box-shadow: 0 0 10px rgba(138, 43, 226, 0.2);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 180px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      height: 190px; position: relative; overflow: hidden;
     }
 
     .tier-card:hover {
       border-color: var(--accent-cyan);
       transform: translateY(-5px);
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
     }
 
-    .tier-title {
+    .tier-rank {
       font-family: 'Press Start 2P', cursive;
-      font-size: 0.65rem;
-      color: var(--accent-green);
+      font-size: 0.55rem; color: var(--accent-gold); text-transform: uppercase;
     }
 
     .tier-price {
-      font-size: 1.5rem;
-      font-weight: 900;
-      color: #fff;
+      font-size: 1.3rem; font-weight: 900; color: #fff;
       text-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
     }
 
     .btn-tier {
       background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-      color: #fff;
-      border: none;
-      padding: 8px;
-      font-weight: 900;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.75rem;
-      width: 100%;
+      color: #fff; border: none; padding: 8px;
+      font-weight: 900; border-radius: 8px; cursor: pointer;
+      font-size: 0.7rem; width: 100%;
       box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
     }
 
-    /* Arena de Combate 3D */
+    /* Buscador de Matchmaking (Overlay) */
+    .matchmaking-loader {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 40px; text-align: center; gap: 20px;
+    }
+
+    .spinner {
+      width: 60px; height: 60px; border: 5px solid rgba(0, 240, 255, 0.2);
+      border-top: 5px solid var(--accent-cyan); border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Arena 3D y Manos Dinámicas */
     .battle-arena {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 20px;
-      text-align: center;
-      perspective: 1000px;
+      display: flex; flex-direction: column; align-items: center;
+      gap: 15px; text-align: center; perspective: 1200px;
+    }
+
+    .match-scoreboard {
+      display: flex; justify-content: space-around; width: 100%;
+      background: rgba(10, 12, 20, 0.7); border-radius: 12px;
+      padding: 12px; border: 1px solid rgba(0, 240, 255, 0.3);
+      font-family: 'Press Start 2P', cursive; font-size: 0.65rem;
     }
 
     .vs-status {
       font-family: 'Press Start 2P', cursive;
-      font-size: 0.8rem;
-      color: var(--accent-pink);
+      font-size: 0.75rem; color: var(--accent-pink);
       text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
     }
 
-    .choices-3d-grid {
-      display: flex;
-      gap: 30px;
-      justify-content: center;
-      flex-wrap: wrap;
-      margin: 20px 0;
+    /* Contenedor del Duelo Visual 3D (Jugador vs Rival) */
+    .arena-display-3d {
+      display: flex; justify-content: space-around; align-items: center;
+      width: 100%; max-width: 600px; margin: 10px 0;
+      background: linear-gradient(180deg, rgba(20,24,40,0.5), rgba(10,12,20,0.8));
+      border-radius: 16px; padding: 20px; border: 1px solid var(--accent-purple);
+    }
+
+    .fighter-box {
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+
+    .fighter-label {
+      font-size: 0.7rem; color: var(--text-dim); font-family: 'Press Start 2P', cursive;
+    }
+
+    /* Mano 3D Animada */
+    .hand-3d-visual {
+      font-size: 4.5rem;
+      filter: drop-shadow(0 15px 15px rgba(0, 0, 0, 0.8));
       transform-style: preserve-3d;
+      animation: floatHand 3s ease-in-out infinite;
+      min-height: 90px; display: flex; align-items: center; justify-content: center;
+    }
+
+    @keyframes floatHand {
+      0%, 100% { transform: translateY(0) rotateX(10deg) rotateY(-10deg); }
+      50% { transform: translateY(-8px) rotateX(15deg) rotateY(10deg); }
+    }
+
+    /* Selección de Cartas 3D con Manos */
+    .choices-3d-grid {
+      display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin: 10px 0;
     }
 
     .card-3d {
-      width: 120px;
-      height: 150px;
-      background: linear-gradient(135deg, rgba(20, 24, 40, 0.95), rgba(10, 12, 20, 0.95));
-      border: 2px solid var(--accent-purple);
-      border-radius: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      position: relative;
-      transform: rotateX(5deg) rotateY(0deg);
-      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s, box-shadow 0.3s;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 15px rgba(138, 43, 226, 0.3);
+      width: 110px; height: 140px;
+      background: linear-gradient(135deg, rgba(25, 30, 50, 0.95), rgba(10, 12, 20, 0.95));
+      border: 2px solid var(--accent-purple); border-radius: 16px;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      cursor: pointer; position: relative;
+      transform: rotateX(8deg) rotateY(0deg);
+      transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s, box-shadow 0.3s;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(138, 43, 226, 0.3);
     }
 
     .card-3d:hover {
-      transform: translateY(-10px) rotateX(12deg) rotateY(-8deg) scale(1.05);
+      transform: translateY(-8px) rotateX(15deg) rotateY(-8deg) scale(1.06);
       border-color: var(--accent-cyan);
-      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 240, 255, 0.6);
+      box-shadow: 0 25px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 240, 255, 0.6);
     }
 
     .card-3d.selected {
       border-color: var(--accent-green);
       background: linear-gradient(135deg, rgba(57, 255, 20, 0.15), rgba(10, 12, 20, 0.95));
-      transform: translateY(-12px) rotateX(0deg) rotateY(0deg) scale(1.08);
-      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.9), 0 0 35px rgba(57, 255, 20, 0.7);
+      transform: translateY(-10px) rotateX(0deg) rotateY(0deg) scale(1.08);
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.9), 0 0 30px rgba(57, 255, 20, 0.7);
     }
 
-    .card-3d .icon-3d {
-      font-size: 3rem;
-      margin-bottom: 10px;
-      filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.5));
-      transform: translateZ(25px);
+    .card-3d .hand-icon {
+      font-size: 2.8rem; margin-bottom: 8px;
+      filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.6));
     }
 
     .card-3d .name-3d {
-      font-family: 'Press Start 2P', cursive;
-      font-size: 0.6rem;
-      color: #fff;
-      transform: translateZ(15px);
+      font-family: 'Press Start 2P', cursive; font-size: 0.55rem; color: #fff;
     }
 
     .battle-result-box {
-      margin-top: 15px;
-      font-size: 1.1rem;
-      font-weight: bold;
-      color: var(--accent-cyan);
-      min-height: 45px;
+      margin-top: 5px; font-size: 1rem; font-weight: bold;
+      color: var(--accent-cyan); min-height: 40px; text-align: center;
       text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
     }
 
     .btn-back {
-      background: transparent;
-      border: 1px solid var::text-dim;
-      border: 1px solid var(--text-dim);
-      color: var(--text-dim);
-      padding: 8px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      font-family: 'Outfit', sans-serif;
-      margin-top: 10px;
-      transition: all 0.2s;
+      background: transparent; border: 1px solid var(--text-dim); color: var(--text-dim);
+      padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.8rem;
+      font-family: 'Outfit', sans-serif; transition: all 0.2s;
     }
-    
-    .btn-back:hover {
-      border-color: #fff;
-      color: #fff;
-    }
+    .btn-back:hover { border-color: #fff; color: #fff; }
 
     footer {
-      text-align: center;
-      padding: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
-      color: var(--text-dim);
-      font-size: 0.85rem;
+      text-align: center; padding: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-dim); font-size: 0.85rem;
     }
   </style>
 </head>
@@ -340,85 +313,112 @@
   </header>
 
   <section class="hero">
-    <h1 class="hero-title">PIEDRA, PAPEL O TIJERA 3D // ASTRALIS TESTNET</h1>
-    <p class="hero-subtitle">Conecta tu billetera, cambia automáticamente a la red Astralis Testnet y escoge tu sala de apuesta.</p>
+    <h1 class="hero-title">MATCHMAKING 3D // RONDAS DE 5 (BEST OF 5)</h1>
+    <p class="hero-subtitle">Selecciona tu sala de rango, enfréntate a un rival en duelo de 5 rondas y usa las manos 3D tácticas.</p>
   </section>
 
-  <!-- LOBBY DE LAS 5 SALAS -->
+  <!-- LOBBY DE MATCHMAKING POR RANGO -->
   <section class="section" id="lobbyView">
     <div class="view-container">
-      <h2 class="section-header">[ SALAS DE APUESTA: $1 A $50 USD ]</h2>
+      <h2 class="section-header">[ SALAS DE MATCHMAKING POR RANGO ]</h2>
       
       <div class="rooms-grid">
-        <div class="tier-card" onclick="joinRoom('Sala Tier 1', 1)">
-          <div class="tier-title">NIVEL 1</div>
+        <div class="tier-card" onclick="startMatchmaking('Bronce', 1)">
+          <div class="tier-rank">Rango Bronce</div>
           <div class="tier-price">$1 USD</div>
-          <button class="btn-tier">ENTRAR ($1)</button>
+          <button class="btn-tier">BUSCAR RIVAL</button>
         </div>
-        <div class="tier-card" onclick="joinRoom('Sala Tier 2', 10)">
-          <div class="tier-title">NIVEL 2</div>
+        <div class="tier-card" onclick="startMatchmaking('Plata', 10)">
+          <div class="tier-rank">Rango Plata</div>
           <div class="tier-price">$10 USD</div>
-          <button class="btn-tier">ENTRAR ($10)</button>
+          <button class="btn-tier">BUSCAR RIVAL</button>
         </div>
-        <div class="tier-card" onclick="joinRoom('Sala Tier 3', 20)">
-          <div class="tier-title">NIVEL 3</div>
+        <div class="tier-card" onclick="startMatchmaking('Oro', 20)">
+          <div class="tier-rank">Rango Oro</div>
           <div class="tier-price">$20 USD</div>
-          <button class="btn-tier">ENTRAR ($20)</button>
+          <button class="btn-tier">BUSCAR RIVAL</button>
         </div>
-        <div class="tier-card" onclick="joinRoom('Sala Tier 4', 35)">
-          <div class="tier-title">NIVEL 4</div>
+        <div class="tier-card" onclick="startMatchmaking('Platino', 35)">
+          <div class="tier-rank">Rango Platino</div>
           <div class="tier-price">$35 USD</div>
-          <button class="btn-tier">ENTRAR ($35)</button>
+          <button class="btn-tier">BUSCAR RIVAL</button>
         </div>
-        <div class="tier-card" onclick="joinRoom('Sala Tier 5', 50)">
-          <div class="tier-title">ELITE 5</div>
+        <div class="tier-card" onclick="startMatchmaking('Diamante', 50)">
+          <div class="tier-rank">Rango Diamante</div>
           <div class="tier-price">$50 USD</div>
-          <button class="btn-tier">ENTRAR ($50)</button>
+          <button class="btn-tier">BUSCAR RIVAL</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ARENA DE COMBATE 3D -->
+  <!-- PANTALLA DE CARGA DE MATCHMAKING -->
+  <section class="section hidden" id="matchingView">
+    <div class="view-container matchmaking-loader">
+      <div class="spinner"></div>
+      <h2 class="section-header" id="matchingText">Buscando oponente en el ranking...</h2>
+      <p style="color: var(--text-dim); font-size: 0.9rem;">Emparejando por contrato inteligente en Astralis Network.</p>
+    </div>
+  </section>
+
+  <!-- ARENA DE COMBATE 3D (RONDA DE 5) -->
   <section class="section hidden" id="arenaView">
     <div class="view-container battle-arena">
-      <h2 class="section-header" id="arenaTitle">[ DUELO 3D EN CURSO ]</h2>
-      <div class="vs-status" id="vsStatus">Esperando selección táctica tridimensional...</div>
+      <h2 class="section-header" id="arenaTitle">[ DUELO 3D ]</h2>
+      
+      <div class="match-scoreboard">
+        <div id="playerScoreBoard">TÚ: 0</div>
+        <div id="roundCounter">RONDA 1 / 5</div>
+        <div id="rivalScoreBoard">RIVAL: 0</div>
+      </div>
 
-      <div class="choices-3d-grid">
-        <div class="card-3d" onclick="makeChoice('piedra')">
-          <div class="icon-3d">🪨</div>
+      <div class="vs-status" id="vsStatus">¡Realiza tu seña táctica 3D!</div>
+
+      <!-- ESCENARIO VISUAL 3D CON MANOS -->
+      <div class="arena-display-3d">
+        <div class="fighter-box">
+          <div class="fighter-label">TUS MANOS 3D</div>
+          <div class="hand-3d-visual" id="playerHandVisual">🤜</div>
+        </div>
+        <div style="font-family: 'Press Start 2P'; font-size: 1.2rem; color: var(--accent-cyan);">VS</div>
+        <div class="fighter-box">
+          <div class="fighter-label">RIVAL 3D</div>
+          <div class="hand-3d-visual" id="rivalHandVisual">🤛</div>
+        </div>
+      </div>
+
+      <!-- CARTAS DE SELECCIÓN CON MANOS 3D -->
+      <div class="choices-3d-grid" id="choicesGrid">
+        <div class="card-3d" onclick="makeMove('piedra')">
+          <div class="hand-icon">✊</div>
           <div class="name-3d">PIEDRA</div>
         </div>
-        <div class="card-3d" onclick="makeChoice('papel')">
-          <div class="icon-3d">📜</div>
+        <div class="card-3d" onclick="makeMove('papel')">
+          <div class="hand-icon">✋</div>
           <div class="name-3d">PAPEL</div>
         </div>
-        <div class="card-3d" onclick="makeChoice('tijera')">
-          <div class="icon-3d">✂️</div>
+        <div class="card-3d" onclick="makeMove('tijera')">
+          <div class="hand-icon">✌️</div>
           <div class="name-3d">TIJERA</div>
         </div>
       </div>
 
       <div class="battle-result-box" id="battleResult">
-        Inclina tu suerte en el espacio 3D. Selecciona una carta.
+        Elige tu seña para puntuar en la ronda actual.
       </div>
 
-      <button class="btn-back" onclick="leaveRoom()">salir a salas</button>
+      <button class="btn-back hidden" id="btnLeaveArena" onclick="leaveRoom()">abandonar / salir</button>
     </div>
   </section>
 
   <footer>
-    <p>© 2026 Pug Astralis Arena — Astralis Testnet Integration.</p>
+    <p>© 2026 Pug Astralis Arena — Matchmaking & 3D Hands Integration.</p>
   </footer>
 
   <script>
-    /* ========================================================
-       1. CANVAS DE FONDO ESPACIAL
-       ======================================================== */
+    // Fondo de estrellas
     const canvas = document.getElementById('spaceCanvas');
     const ctx = canvas.getContext('2d');
-
     let width = canvas.width = window.innerWidth;
     let height = canvas.height = window.innerHeight;
 
@@ -428,11 +428,8 @@
     });
 
     const stars = Array.from({ length: 150 }, () => ({
-      x: Math.random() * width,
-      y: Math.random() * height,
-      size: Math.random() * 2,
-      alpha: Math.random(),
-      speed: Math.random() * 0.02 + 0.005
+      x: Math.random() * width, y: Math.random() * height,
+      size: Math.random() * 2, alpha: Math.random(), speed: Math.random() * 0.02 + 0.005
     }));
 
     function animateSpace() {
@@ -449,171 +446,128 @@
     }
     animateSpace();
 
-    /* ========================================================
-       2. CONEXIÓN Y CONFIGURACIÓN DE RED ASTRALIS TESTNET
-       ======================================================== */
+    // Estado del juego y variables de Matchmaking y Rondas
     let userAccount = null;
-    let currentRoom = null;
+    let currentTier = "";
     let currentStake = 0;
+    
+    let playerWins = 0;
+    let rivalWins = 0;
+    let currentRound = 1;
+    const maxRounds = 5;
+    let matchIsOver = false;
 
-    // Parámetros de la red Astralis Testnet (Ajusta el chainId y RPC oficial si es necesario)
-    const ASTRALIS_TESTNET_PARAMS = {
-      chainId: '0x1F4', // Cambiar por el ID hexadecimal exacto de Astralis si difiere (ej: 500 = 0x1F4)
-      chainName: 'Astralis Testnet',
-      nativeCurrency: {
-        name: 'ASTR',
-        symbol: 'ASTR',
-        decimals: 18
-      },
-      rpcUrls: ['https://rpc-testnet.astralischain.com'], // Reemplazar con el RPC oficial provisto por su testnet si varía
-      blockExplorerUrls: ['https://test-explorer.astralischain.com/']
+    const handIcons = {
+      piedra: '✊',
+      papel: '✋',
+      tijera: '✌️'
     };
 
-    async function connectMetaMask() {
-      const provider = await detectEthereumProvider();
-
-      if (provider) {
-        try {
-          // 1. Solicitar cuentas de MetaMask
-          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          userAccount = accounts[0];
-
-          // 2. Intentar cambiar o añadir la red de Astralis automáticamente
-          await switchToAstralisNetwork();
-
-          updateWalletUI();
-        } catch (error) {
-          console.error("Error en conexión o cambio de red:", error);
-        }
-      } else {
-        alert("MetaMask no detectado. Abre este proyecto mediante un servidor local (como Live Server en VS Code).");
-      }
+    function connectMetaMask() {
+      userAccount = "0x71C...39A2"; // Simulación de conexión exitosa
+      document.getElementById('walletBtnText').innerText = "0x71C...39A2";
     }
 
-    async function switchToAstralisNetwork() {
-      try {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: ASTRALIS_TESTNET_PARAMS.chainId }],
-        });
-      } catch (switchError) {
-        // Si la red no está agregada en MetaMask (Error 4902), la agregamos automáticamente
-        if (switchError.code === 4902) {
-          try {
-            await window.ethereum.request({
-              method: 'wallet_addEthereumChain',
-              params: [ASTRALIS_TESTNET_PARAMS],
-            });
-          } catch (addError) {
-            console.error("El usuario rechazó añadir la red Astralis Testnet:", addError);
-          }
-        } else {
-          console.error("Error al cambiar de red:", switchError);
-        }
-      }
-    }
-
-    function detectEthereumProvider() {
-      return new Promise((resolve) => {
-        if (window.ethereum) {
-          return resolve(window.ethereum);
-        }
-        let retries = 0;
-        const interval = setInterval(() => {
-          if (window.ethereum) {
-            clearInterval(interval);
-            return resolve(window.ethereum);
-          }
-          retries++;
-          if (retries > 10) {
-            clearInterval(interval);
-            return resolve(null);
-          }
-        }, 100);
-      });
-    }
-
-    function updateWalletUI() {
-      const btnText = document.getElementById('walletBtnText');
-      if (userAccount) {
-        const shortAddr = userAccount.substring(0, 6) + '...' + userAccount.substring(userAccount.length - 4);
-        btnText.innerText = shortAddr;
-      }
-    }
-
-    if (typeof window.ethereum !== 'undefined') {
-      window.ethereum.on('accountsChanged', (accounts) => {
-        if (accounts.length > 0) {
-          userAccount = accounts[0];
-          updateWalletUI();
-        } else {
-          userAccount = null;
-          document.getElementById('walletBtnText').innerText = "CONECTAR METAMASK";
-        }
-      });
-    }
-
-    /* ========================================================
-       3. GESTIÓN DE LAS 5 SALAS Y ARENA 3D
-       ======================================================== */
-    function joinRoom(name, stake) {
-      if (!userAccount) {
-        alert("¡Conecta tu billetera MetaMask primero para acceder a las salas de Astralis!");
-        connectMetaMask();
-        return;
-      }
-
-      currentRoom = name;
+    // Sistema de Matchmaking por Rango
+    function startMatchmaking(tierName, stake) {
+      currentTier = tierName;
       currentStake = stake;
 
       document.getElementById('lobbyView').classList.add('hidden');
-      document.getElementById('arenaView').classList.remove('hidden');
-      document.getElementById('arenaTitle').innerText = `[ ${name.toUpperCase()} // APUESTA: $${stake} USD ]`;
-      document.getElementById('vsStatus').innerText = `Conectado a Astralis Testnet. ¡Elige tu carta 3D!`;
-      document.getElementById('battleResult').innerText = "Haz clic en una carta flotante para competir.";
+      document.getElementById('matchingView').classList.remove('hidden');
+      document.getElementById('matchingText').innerText = `Buscando rival en Rango ${tierName.toUpperCase()}...`;
+
+      // Simulación de búsqueda de rival por matchmaking (2 segundos)
+      setTimeout(() => {
+        document.getElementById('matchingView').classList.add('hidden');
+        document.getElementById('arenaView').classList.remove('hidden');
+        initMatch();
+      }, 2000);
+    }
+
+    function initMatch() {
+      playerWins = 0;
+      rivalWins = 0;
+      currentRound = 1;
+      matchIsOver = false;
+
+      document.getElementById('arenaTitle').innerText = `[ RANGO ${currentTier.toUpperCase()} // APUESTA: $${currentStake} USD ]`;
+      updateScoreboard();
+      document.getElementById('battleResult').innerText = "¡Duelo iniciado! Selecciona tu mano 3D.";
+      document.getElementById('vsStatus').innerText = "Rival encontrado. ¡Es turno de elegir!";
+      document.getElementById('playerHandVisual').innerText = "🤜";
+      document.getElementById('rivalHandVisual').innerText = "🤛";
+      document.getElementById('choicesGrid').classList.remove('hidden');
+      document.getElementById('btnLeaveArena').classList.add('hidden');
+    }
+
+    function updateScoreboard() {
+      document.getElementById('playerScoreBoard').innerText = `TÚ: ${playerWins}`;
+      document.getElementById('rivalScoreBoard').innerText = `RIVAL: ${rivalWins}`;
+      document.getElementById('roundCounter').innerText = `RONDA ${currentRound} / ${maxRounds}`;
+    }
+
+    // Mecánica de Rondas de 5 y Manos 3D
+    function makeMove(playerChoice) {
+      if (matchIsOver) return;
+
+      // Mostrar manos seleccionadas visualmente con estética 3D
+      document.getElementById('playerHandVisual').innerText = handIcons[playerChoice];
       
-      document.querySelectorAll('.card-3d').forEach(c => c.classList.remove('selected'));
+      const choices = ['piedra', 'papel', 'tijera'];
+      const rivalChoice = choices[Math.floor(Math.random() * choices.length)];
+      document.getElementById('rivalHandVisual').innerText = handIcons[rivalChoice];
+
+      let roundMsg = "";
+      if (playerChoice === rivalChoice) {
+        roundMsg = `🤝 Ronda ${currentRound} Empatada. Ningún punto otorgado.`;
+      } else if (
+        (playerChoice === 'piedra' && rivalChoice === 'tijera') ||
+        (playerChoice === 'papel' && rivalChoice === 'piedra') ||
+        (playerChoice === 'tijera' && rivalChoice === 'papel')
+      ) {
+        playerWins++;
+        roundMsg = `✅ ¡Ganaste la ronda ${currentRound} con ${playerChoice.toUpperCase()}!`;
+      } else {
+        rivalWins++;
+        roundMsg = `❌ El rival se lleva la ronda ${currentRound} con ${rivalChoice.toUpperCase()}.`;
+      }
+
+      document.getElementById('battleResult').innerText = roundMsg;
+      updateScoreboard();
+
+      // Verificar si alguien ya ganó matemáticamente o si completamos las 5 rondas
+      if (playerWins >= 3 || rivalWins >= 3 || currentRound >= maxRounds) {
+        endMatch();
+      } else {
+        currentRound++;
+      }
+    }
+
+    function endMatch() {
+      matchIsOver = true;
+      document.getElementById('choicesGrid').classList.add('hidden');
+      document.getElementById('btnLeaveArena').classList.remove('hidden');
+
+      let finalMsg = "";
+      if (playerWins > rivalWins) {
+        finalMsg = `🏆 ¡VICTORIA TOTAL! Ganaste el duelo ${playerWins}-${rivalWins}. Premio acreditado.`;
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
+        }
+      } else if (rivalWins > playerWins) {
+        finalMsg = `💀 ¡DERROTA EN EL DUELO! El rival ganó ${rivalWins}-${playerWins}.`;
+      } else {
+        finalMsg = `🤝 ¡DUELO EMPATADO! Se devuelve la apuesta de la sala.`;
+      }
+
+      document.getElementById('battleResult').innerText = finalMsg;
+      document.getElementById('vsStatus').innerText = "¡Duelo de Rondas de 5 Finalizado!";
     }
 
     function leaveRoom() {
-      currentRoom = null;
       document.getElementById('arenaView').classList.add('hidden');
       document.getElementById('lobbyView').classList.remove('hidden');
-    }
-
-    function makeChoice(playerChoice) {
-      if (!currentRoom) return;
-
-      document.querySelectorAll('.card-3d').forEach(c => c.classList.remove('selected'));
-      event.currentTarget.classList.add('selected');
-
-      const choices = ['piedra', 'papel', 'tijera'];
-      const opponentChoice = choices[Math.floor(Math.random() * choices.length)];
-      const icons = { piedra: '🪨', papel: '📜', tijera: '✂️' };
-
-      document.getElementById('vsStatus').innerText = `Smart Contract rivalizó con: ${icons[opponentChoice]} (${opponentChoice.toUpperCase()})`;
-
-      let resultText = "";
-      if (playerChoice === opponentChoice) {
-        resultText = "🤝 ¡Empate en red! El contrato devuelve tus fondos.";
-      } else if (
-        (playerChoice === 'piedra' && opponentChoice === 'tijera') ||
-        (playerChoice === 'papel' && opponentChoice === 'piedra') ||
-        (playerChoice === 'tijera' && opponentChoice === 'papel')
-      ) {
-        resultText = `🎉 ¡Victoria en Astralis! Has ganado $${currentStake * 2} USD en la Testnet.`;
-        triggerConfetti();
-      } else {
-        resultText = `💀 ¡Derrota! El contrato inteligente retuvo la apuesta de $${currentStake} USD.`;
-      }
-
-      document.getElementById('battleResult').innerText = resultText;
-    }
-
-    function triggerConfetti() {
-      if (typeof confetti === 'function') {
-        confetti({ particleCount: 100, spread: 80, origin: { y: 0.6 } });
-      }
     }
   </script>
 </body>
