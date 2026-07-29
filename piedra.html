@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PUG ASTR // 3D Matchmaking & Best of 5 Arena</title>
+  <title>PUG ASTR // Real 3D Hands & Matchmaking Timeout</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,7 +14,7 @@
   <style>
     :root {
       --bg-dark: #030408;
-      --card-bg: rgba(15, 18, 32, 0.92);
+      --card-bg: rgba(15, 18, 32, 0.94);
       --accent-cyan: #00f0ff;
       --accent-purple: #8a2be2;
       --accent-green: #39ff14;
@@ -87,17 +87,17 @@
     }
 
     .hero {
-      text-align: center; padding: 30px 20px 10px 20px; max-width: 900px; margin: 0 auto;
+      text-align: center; padding: 25px 20px 10px 20px; max-width: 900px; margin: 0 auto;
     }
 
     .hero-title {
       font-family: 'Press Start 2P', cursive;
-      font-size: 1.1rem; line-height: 1.4; color: var(--text-white);
+      font-size: 1rem; line-height: 1.4; color: var(--text-white);
       text-shadow: 0 0 15px rgba(0, 240, 255, 0.6); margin-bottom: 10px;
     }
 
     .hero-subtitle {
-      font-size: 0.95rem; color: var(--text-dim); margin-bottom: 15px;
+      font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;
     }
 
     .section {
@@ -106,7 +106,7 @@
 
     .section-header {
       font-family: 'Press Start 2P', cursive;
-      font-size: 0.85rem; color: var(--accent-cyan);
+      font-size: 0.8rem; color: var(--accent-cyan);
       text-align: center; margin-bottom: 20px;
     }
 
@@ -161,7 +161,7 @@
       box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
     }
 
-    /* Buscador de Matchmaking (Overlay) */
+    /* Buscador de Matchmaking */
     .matchmaking-loader {
       display: flex; flex-direction: column; align-items: center;
       justify-content: center; padding: 40px; text-align: center; gap: 20px;
@@ -175,10 +175,10 @@
 
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Arena 3D y Manos Dinámicas */
+    /* Arena 3D Avanzada y Manos Realistas */
     .battle-arena {
       display: flex; flex-direction: column; align-items: center;
-      gap: 15px; text-align: center; perspective: 1200px;
+      gap: 15px; text-align: center; perspective: 1400px;
     }
 
     .match-scoreboard {
@@ -194,54 +194,63 @@
       text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
     }
 
-    /* Contenedor del Duelo Visual 3D (Jugador vs Rival) */
     .arena-display-3d {
       display: flex; justify-content: space-around; align-items: center;
-      width: 100%; max-width: 600px; margin: 10px 0;
-      background: linear-gradient(180deg, rgba(20,24,40,0.5), rgba(10,12,20,0.8));
-      border-radius: 16px; padding: 20px; border: 1px solid var(--accent-purple);
+      width: 100%; max-width: 650px; margin: 10px 0;
+      background: linear-gradient(135deg, rgba(20,24,40,0.8), rgba(8,10,18,0.95));
+      border-radius: 20px; padding: 25px; border: 2px solid var(--accent-purple);
+      box-shadow: inset 0 0 30px rgba(138, 43, 226, 0.2), 0 15px 35px rgba(0,0,0,0.6);
+      transform-style: preserve-3d;
     }
 
     .fighter-box {
-      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
     }
 
     .fighter-label {
-      font-size: 0.7rem; color: var(--text-dim); font-family: 'Press Start 2P', cursive;
+      font-size: 0.65rem; color: var(--text-dim); font-family: 'Press Start 2P', cursive;
     }
 
-    /* Mano 3D Animada */
-    .hand-3d-visual {
-      font-size: 4.5rem;
-      filter: drop-shadow(0 15px 15px rgba(0, 0, 0, 0.8));
+    /* Estilo de Mano 3D Realista con Iluminación Volumétrica y Rotación Profunda */
+    .hand-3d-model {
+      width: 110px; height: 110px;
+      background: radial-gradient(circle at 35% 35%, #3a4466, #121624 70%);
+      border: 3px solid rgba(0, 240, 255, 0.6);
+      border-radius: 28px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4.2rem;
       transform-style: preserve-3d;
-      animation: floatHand 3s ease-in-out infinite;
-      min-height: 90px; display: flex; align-items: center; justify-content: center;
+      transform: rotateX(15deg) rotateY(-15deg);
+      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.8), 
+                  inset 0 5px 15px rgba(255, 255, 255, 0.25),
+                  0 0 25px rgba(0, 240, 255, 0.35);
+      animation: realisticFloat 4s ease-in-out infinite;
+      filter: drop-shadow(0 15px 10px rgba(0,0,0,0.7));
     }
 
-    @keyframes floatHand {
-      0%, 100% { transform: translateY(0) rotateX(10deg) rotateY(-10deg); }
-      50% { transform: translateY(-8px) rotateX(15deg) rotateY(10deg); }
+    @keyframes realisticFloat {
+      0%, 100% { transform: translateY(0) rotateX(18deg) rotateY(-18deg) scale(1); }
+      50% { transform: translateY(-10px) rotateX(25deg) rotateY(15deg) scale(1.04); }
     }
 
-    /* Selección de Cartas 3D con Manos */
+    /* Cartas 3D de Selección Estilo Holograma */
     .choices-3d-grid {
       display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin: 10px 0;
     }
 
     .card-3d {
       width: 110px; height: 140px;
-      background: linear-gradient(135deg, rgba(25, 30, 50, 0.95), rgba(10, 12, 20, 0.95));
+      background: linear-gradient(135deg, rgba(30, 36, 60, 0.95), rgba(10, 12, 20, 0.95));
       border: 2px solid var(--accent-purple); border-radius: 16px;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       cursor: pointer; position: relative;
-      transform: rotateX(8deg) rotateY(0deg);
+      transform: rotateX(10deg) rotateY(0deg);
       transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s, box-shadow 0.3s;
       box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(138, 43, 226, 0.3);
     }
 
     .card-3d:hover {
-      transform: translateY(-8px) rotateX(15deg) rotateY(-8deg) scale(1.06);
+      transform: translateY(-8px) rotateX(18deg) rotateY(-10deg) scale(1.06);
       border-color: var(--accent-cyan);
       box-shadow: 0 25px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 240, 255, 0.6);
     }
@@ -267,6 +276,15 @@
       color: var(--accent-cyan); min-height: 40px; text-align: center;
       text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
     }
+
+    .btn-action-custom {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+      color: #fff; border: none; padding: 10px 20px;
+      border-radius: 8px; cursor: pointer; font-size: 0.75rem;
+      font-family: 'Press Start 2P', cursive; box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+      transition: all 0.2s;
+    }
+    .btn-action-custom:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(0, 240, 255, 0.7); }
 
     .btn-back {
       background: transparent; border: 1px solid var(--text-dim); color: var(--text-dim);
@@ -314,7 +332,7 @@
 
   <section class="hero">
     <h1 class="hero-title">MATCHMAKING 3D // RONDAS DE 5 (BEST OF 5)</h1>
-    <p class="hero-subtitle">Selecciona tu sala de rango, enfréntate a un rival en duelo de 5 rondas y usa las manos 3D tácticas.</p>
+    <p class="hero-subtitle">Salas por rango de juego, manos 3D fotorrealistas y control de rival no encontrado.</p>
   </section>
 
   <!-- LOBBY DE MATCHMAKING POR RANGO -->
@@ -352,19 +370,24 @@
     </div>
   </section>
 
-  <!-- PANTALLA DE CARGA DE MATCHMAKING -->
+  <!-- PANTALLA DE CARGA DE MATCHMAKING CON TIMEOUT (RIVAL NO ENCONTRADO) -->
   <section class="section hidden" id="matchingView">
     <div class="view-container matchmaking-loader">
-      <div class="spinner"></div>
+      <div class="spinner" id="matchingSpinner"></div>
       <h2 class="section-header" id="matchingText">Buscando oponente en el ranking...</h2>
-      <p style="color: var(--text-dim); font-size: 0.9rem;">Emparejando por contrato inteligente en Astralis Network.</p>
+      <p style="color: var(--text-dim); font-size: 0.85rem;" id="matchingSubtext">Emparejando por contrato inteligente en Astralis Network.</p>
+      
+      <div id="timeoutControls" class="hidden" style="margin-top: 15px; display: flex; gap: 10px;">
+        <button class="btn-action-custom" onclick="retryMatchmaking()">REINTENTAR</button>
+        <button class="btn-back" onclick="cancelMatchmaking()">VOLVER AL LOBBY</button>
+      </div>
     </div>
   </section>
 
   <!-- ARENA DE COMBATE 3D (RONDA DE 5) -->
   <section class="section hidden" id="arenaView">
     <div class="view-container battle-arena">
-      <h2 class="section-header" id="arenaTitle">[ DUELO 3D ]</h2>
+      <h2 class="section-header" id="arenaTitle">[ DUELO 3D REAL ]</h2>
       
       <div class="match-scoreboard">
         <div id="playerScoreBoard">TÚ: 0</div>
@@ -372,22 +395,22 @@
         <div id="rivalScoreBoard">RIVAL: 0</div>
       </div>
 
-      <div class="vs-status" id="vsStatus">¡Realiza tu seña táctica 3D!</div>
+      <div class="vs-status" id="vsStatus">¡Realiza tu jugada con las manos 3D!</div>
 
-      <!-- ESCENARIO VISUAL 3D CON MANOS -->
+      <!-- ESCENARIO VISUAL 3D CON MANOS REALISTAS -->
       <div class="arena-display-3d">
         <div class="fighter-box">
           <div class="fighter-label">TUS MANOS 3D</div>
-          <div class="hand-3d-visual" id="playerHandVisual">🤜</div>
+          <div class="hand-3d-model" id="playerHandVisual">🤜</div>
         </div>
         <div style="font-family: 'Press Start 2P'; font-size: 1.2rem; color: var(--accent-cyan);">VS</div>
         <div class="fighter-box">
           <div class="fighter-label">RIVAL 3D</div>
-          <div class="hand-3d-visual" id="rivalHandVisual">🤛</div>
+          <div class="hand-3d-model" id="rivalHandVisual">🤛</div>
         </div>
       </div>
 
-      <!-- CARTAS DE SELECCIÓN CON MANOS 3D -->
+      <!-- CARTAS DE SELECCIÓN CON MANOS -->
       <div class="choices-3d-grid" id="choicesGrid">
         <div class="card-3d" onclick="makeMove('piedra')">
           <div class="hand-icon">✊</div>
@@ -412,11 +435,11 @@
   </section>
 
   <footer>
-    <p>© 2026 Pug Astralis Arena — Matchmaking & 3D Hands Integration.</p>
+    <p>© 2026 Pug Astralis Arena — Real 3D Hands & Matchmaking Timeout.</p>
   </footer>
 
   <script>
-    // Fondo de estrellas
+    // Fondo de estrellas dinámico
     const canvas = document.getElementById('spaceCanvas');
     const ctx = canvas.getContext('2d');
     let width = canvas.width = window.innerWidth;
@@ -446,10 +469,11 @@
     }
     animateSpace();
 
-    // Estado del juego y variables de Matchmaking y Rondas
+    // Variables globales
     let userAccount = null;
     let currentTier = "";
     let currentStake = 0;
+    let matchmakingTimer = null;
     
     let playerWins = 0;
     let rivalWins = 0;
@@ -464,25 +488,51 @@
     };
 
     function connectMetaMask() {
-      userAccount = "0x71C...39A2"; // Simulación de conexión exitosa
+      userAccount = "0x71C...39A2";
       document.getElementById('walletBtnText').innerText = "0x71C...39A2";
     }
 
-    // Sistema de Matchmaking por Rango
+    // Sistema de Matchmaking con Timeout (Rival No Encontrado)
     function startMatchmaking(tierName, stake) {
       currentTier = tierName;
       currentStake = stake;
 
       document.getElementById('lobbyView').classList.add('hidden');
       document.getElementById('matchingView').classList.remove('hidden');
+      
+      // Resetear estado visual de carga
+      document.getElementById('matchingSpinner').style.display = "block";
       document.getElementById('matchingText').innerText = `Buscando rival en Rango ${tierName.toUpperCase()}...`;
+      document.getElementById('matchingSubtext').innerText = "Emparejando por contrato inteligente en Astralis Network.";
+      document.getElementById('timeoutControls').classList.add('hidden');
 
-      // Simulación de búsqueda de rival por matchmaking (2 segundos)
-      setTimeout(() => {
-        document.getElementById('matchingView').classList.add('hidden');
-        document.getElementById('arenaView').classList.remove('hidden');
-        initMatch();
-      }, 2000);
+      // Simulación de búsqueda con límite de 3.5 segundos. 
+      // 70% de probabilidad de éxito, 30% de probabilidad de "Rival no encontrado" para probar la función.
+      matchmakingTimer = setTimeout(() => {
+        const foundRival = Math.random() > 0.3; 
+
+        if (foundRival) {
+          document.getElementById('matchingView').classList.add('hidden');
+          document.getElementById('arenaView').classList.remove('hidden');
+          initMatch();
+        } else {
+          // Trigger: Rival no encontrado
+          document.getElementById('matchingSpinner').style.display = "none";
+          document.getElementById('matchingText').innerText = "¡Rival no encontrado!";
+          document.getElementById('matchingSubtext').innerText = `No hay oponentes disponibles en el Rango ${tierName.toUpperCase()} en este momento.`;
+          document.getElementById('timeoutControls').classList.remove('hidden');
+        }
+      }, 3500);
+    }
+
+    function retryMatchmaking() {
+      startMatchmaking(currentTier, currentStake);
+    }
+
+    function cancelMatchmaking() {
+      clearTimeout(matchmakingTimer);
+      document.getElementById('matchingView').classList.add('hidden');
+      document.getElementById('lobbyView').classList.remove('hidden');
     }
 
     function initMatch() {
@@ -494,7 +544,7 @@
       document.getElementById('arenaTitle').innerText = `[ RANGO ${currentTier.toUpperCase()} // APUESTA: $${currentStake} USD ]`;
       updateScoreboard();
       document.getElementById('battleResult').innerText = "¡Duelo iniciado! Selecciona tu mano 3D.";
-      document.getElementById('vsStatus').innerText = "Rival encontrado. ¡Es turno de elegir!";
+      document.getElementById('vsStatus').innerText = "Rival conectado. ¡Elige tu seña!";
       document.getElementById('playerHandVisual').innerText = "🤜";
       document.getElementById('rivalHandVisual').innerText = "🤛";
       document.getElementById('choicesGrid').classList.remove('hidden');
@@ -507,11 +557,9 @@
       document.getElementById('roundCounter').innerText = `RONDA ${currentRound} / ${maxRounds}`;
     }
 
-    // Mecánica de Rondas de 5 y Manos 3D
     function makeMove(playerChoice) {
       if (matchIsOver) return;
 
-      // Mostrar manos seleccionadas visualmente con estética 3D
       document.getElementById('playerHandVisual').innerText = handIcons[playerChoice];
       
       const choices = ['piedra', 'papel', 'tijera'];
@@ -536,7 +584,6 @@
       document.getElementById('battleResult').innerText = roundMsg;
       updateScoreboard();
 
-      // Verificar si alguien ya ganó matemáticamente o si completamos las 5 rondas
       if (playerWins >= 3 || rivalWins >= 3 || currentRound >= maxRounds) {
         endMatch();
       } else {
