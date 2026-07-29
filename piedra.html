@@ -3,39 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PUG ASTR // PvP Real & Token Gate (Astralis Chain)</title>
+  <title>PUG ASTR // PvP Cyber Arena & Token Gate</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
   
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- CDN de Ethers.js para llamadas Web3 reales al contrato de $ASTR en Astralis Chain -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 
   <style>
     :root {
-      --bg-dark: #030408;
-      --card-bg: rgba(15, 18, 32, 0.94);
+      --bg-deep: #05070d;
+      --bg-card: rgba(13, 17, 30, 0.85);
+      --border-cyber: rgba(0, 240, 255, 0.3);
       --accent-cyan: #00f0ff;
-      --accent-purple: #8a2be2;
-      --accent-green: #39ff14;
+      --accent-purple: #9d00ff;
       --accent-pink: #ff007f;
-      --accent-gold: #ffd700;
-      --text-white: #ffffff;
-      --text-dim: #a0a5c0;
+      --accent-green: #00ff66;
+      --accent-gold: #ffb700;
+      --text-main: #f0f4f8;
+      --text-muted: #8b9bb4;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--bg-dark);
-      color: var(--text-white);
+      background-color: var(--bg-deep);
+      color: var(--text-main);
       font-family: 'Outfit', sans-serif;
       overflow-x: hidden;
       position: relative;
       user-select: none;
       -webkit-user-select: none;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
     #spaceCanvas {
@@ -46,100 +49,104 @@
       pointer-events: none;
     }
 
+    /* HEADER */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 12px 8%;
-      border-bottom: 1px solid rgba(0, 240, 255, 0.2);
-      backdrop-filter: blur(12px);
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(5, 6, 11, 0.85);
+      padding: 16px 6%;
+      border-bottom: 1px solid var(--border-cyber);
+      background: rgba(5, 7, 13, 0.88);
+      backdrop-filter: blur(16px);
+      position: sticky; top: 0; z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
 
     .brand-logo {
-      display: flex; align-items: center; gap: 12px; text-decoration: none;
+      display: flex; align-items: center; gap: 14px; text-decoration: none;
     }
 
     .brand-svg {
-      width: 48px; height: 48px;
-      filter: drop-shadow(0 0 8px var(--accent-cyan));
+      width: 44px; height: 44px;
+      filter: drop-shadow(0 0 12px var(--accent-cyan));
     }
 
     .brand-name {
       font-family: 'Press Start 2P', cursive;
       font-size: 0.85rem;
       color: var(--accent-cyan);
-      text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
+      letter-spacing: 1px;
     }
 
     .wallet-section {
-      display: flex; gap: 10px; align-items: center; position: relative;
+      display: flex; gap: 12px; align-items: center; position: relative;
     }
 
     .wallet-btn {
       background: linear-gradient(135deg, #f6851b, #e2761b);
-      color: #fff; border: none; padding: 10px 18px;
-      border-radius: 12px; font-weight: 900;
-      font-family: 'Outfit', sans-serif; cursor: pointer;
-      box-shadow: 0 0 15px rgba(246, 133, 27, 0.4);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      display: flex; align-items: center; gap: 8px;
+      color: #fff; border: none; padding: 10px 20px;
+      border-radius: 12px; font-weight: 800; font-size: 0.9rem;
+      cursor: pointer; box-shadow: 0 0 20px rgba(246, 133, 27, 0.4);
+      transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+      display: flex; align-items: center; gap: 10px;
     }
 
     .wallet-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 0 20px rgba(246, 133, 27, 0.7);
+      box-shadow: 0 0 28px rgba(246, 133, 27, 0.7);
     }
 
     .wallet-dropdown {
-      position: absolute; right: 0; top: 100%; margin-top: 8px;
-      background: rgba(15, 18, 32, 0.98);
+      position: absolute; right: 0; top: 100%; margin-top: 10px;
+      background: rgba(13, 17, 30, 0.98);
       border: 1px solid rgba(246, 133, 27, 0.4);
-      border-radius: 12px; padding: 10px; width: 190px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.8);
-      z-index: 200; display: flex; flex-direction: column; gap: 8px;
+      border-radius: 14px; padding: 12px; width: 210px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+      z-index: 2000; display: flex; flex-direction: column; gap: 8px;
     }
 
     .dropdown-item {
-      background: rgba(0, 240, 255, 0.15);
-      color: var(--accent-cyan); border: 1px solid var(--accent-cyan);
-      padding: 8px 12px; border-radius: 8px; font-size: 0.68rem;
+      background: rgba(0, 240, 255, 0.1);
+      color: var(--accent-cyan); border: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 10px 14px; border-radius: 10px; font-size: 0.65rem;
       font-family: 'Press Start 2P', cursive; cursor: pointer; text-align: center;
       transition: all 0.2s;
     }
 
     .dropdown-item:hover {
       background: var(--accent-cyan); color: #000;
-      box-shadow: 0 0 10px var(--accent-cyan);
+      box-shadow: 0 0 15px var(--accent-cyan);
     }
 
     .dropdown-item.danger {
-      background: rgba(255, 0, 127, 0.15);
-      color: var(--accent-pink); border: 1px solid var(--accent-pink);
+      background: rgba(255, 0, 127, 0.1);
+      color: var(--accent-pink); border: 1px solid rgba(255, 0, 127, 0.3);
     }
     .dropdown-item.danger:hover {
       background: var(--accent-pink); color: #fff;
-      box-shadow: 0 0 10px var(--accent-pink);
+      box-shadow: 0 0 15px var(--accent-pink);
     }
 
+    /* HERO */
     .hero {
-      text-align: center; padding: 25px 20px 10px 20px; max-width: 900px; margin: 0 auto;
+      text-align: center; padding: 35px 20px 15px 20px; max-width: 900px; margin: 0 auto;
     }
 
     .hero-title {
       font-family: 'Press Start 2P', cursive;
-      font-size: 0.95rem; line-height: 1.4; color: var(--text-white);
-      text-shadow: 0 0 15px rgba(0, 240, 255, 0.6); margin-bottom: 10px;
+      font-size: 1rem; line-height: 1.5; color: var(--text-main);
+      text-shadow: 0 0 20px rgba(0, 240, 255, 0.5); margin-bottom: 12px;
     }
 
     .hero-subtitle {
-      font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;
+      font-size: 0.95rem; color: var(--text-muted); font-weight: 600;
     }
 
+    /* DASHBOARD */
     .dashboard-container {
-      max-width: 950px; margin: 0 auto 15px auto; padding: 0 20px;
-      display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+      max-width: 1000px; margin: 0 auto 20px auto; padding: 0 20px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;
     }
 
     @media(max-width: 768px) {
@@ -147,261 +154,280 @@
     }
 
     .dash-card {
-      background: rgba(15, 18, 32, 0.9);
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      border-radius: 14px; padding: 15px 20px;
-      display: flex; flex-direction: column; gap: 8px;
-      box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+      background: var(--bg-card);
+      border: 1px solid var(--border-cyber);
+      border-radius: 18px; padding: 20px 24px;
+      display: flex; flex-direction: column; gap: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), inset 0 0 15px rgba(0, 240, 255, 0.05);
+      backdrop-filter: blur(12px);
     }
 
     .dash-title {
-      font-family: 'Press Start 2P', cursive; font-size: 0.55rem; color: var(--accent-cyan);
+      font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: var(--accent-cyan);
+      letter-spacing: 0.5px;
     }
 
     .dash-value {
-      font-size: 1.1rem; font-weight: 900; color: #fff; display: flex; align-items: center; justify-content: space-between;
+      font-size: 1.25rem; font-weight: 800; color: #fff; display: flex; align-items: center; justify-content: space-between;
     }
 
     .token-badge {
-      font-size: 0.7rem; background: rgba(0, 240, 255, 0.15); padding: 4px 8px; border-radius: 6px;
+      font-size: 0.65rem; background: rgba(0, 240, 255, 0.12); padding: 6px 12px; border-radius: 8px;
       border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-family: 'Press Start 2P', cursive;
     }
 
     .xp-bar-track {
-      width: 100%; height: 8px; background: rgba(0,0,0,0.5);
-      border-radius: 4px; overflow: hidden; border: 1px solid rgba(0, 240, 255, 0.2);
+      width: 100%; height: 10px; background: rgba(0,0,0,0.6);
+      border-radius: 6px; overflow: hidden; border: 1px solid rgba(0, 240, 255, 0.2);
     }
 
     .xp-bar-fill {
       height: 100%; width: 0%;
       background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
-      box-shadow: 0 0 10px var(--accent-cyan);
-      transition: width 0.4s ease;
+      box-shadow: 0 0 15px var(--accent-cyan);
+      transition: width 0.5s cubic-bezier(0.25, 1, 0.5, 1);
     }
 
+    /* MAIN SECTIONS */
     .section {
-      max-width: 950px; margin: 10px auto 40px auto; padding: 0 20px;
+      max-width: 1000px; margin: 10px auto 40px auto; padding: 0 20px; width: 100%;
     }
 
     .section-header {
       font-family: 'Press Start 2P', cursive;
-      font-size: 0.8rem; color: var(--accent-cyan);
-      text-align: center; margin-bottom: 20px;
+      font-size: 0.85rem; color: var(--accent-cyan);
+      text-align: center; margin-bottom: 25px;
+      text-shadow: 0 0 10px rgba(0,240,255,0.4);
     }
 
     .view-container {
-      background: var(--card-bg);
-      border: 1px solid rgba(138, 43, 226, 0.4);
-      border-radius: 20px; padding: 25px;
-      box-shadow: 0 0 25px rgba(138, 43, 226, 0.15);
+      background: var(--bg-card);
+      border: 1px solid rgba(157, 0, 255, 0.4);
+      border-radius: 24px; padding: 30px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), inset 0 0 30px rgba(157, 0, 255, 0.1);
+      backdrop-filter: blur(16px);
     }
 
     .hidden { display: none !important; }
 
     .token-gate-warning {
-      background: rgba(255, 0, 127, 0.1);
+      background: rgba(255, 0, 127, 0.12);
       border: 1px solid var(--accent-pink);
-      border-radius: 12px; padding: 15px; text-align: center;
-      margin-bottom: 20px; font-size: 0.85rem; color: #ff99cc;
+      border-radius: 14px; padding: 18px; text-align: center;
+      margin-bottom: 25px; font-size: 0.9rem; color: #ff99cc; font-weight: 600;
+      box-shadow: 0 0 20px rgba(255, 0, 127, 0.2);
     }
 
     .rooms-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 15px;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 18px;
     }
 
     .tier-card {
-      background: rgba(10, 12, 20, 0.9);
+      background: linear-gradient(135deg, rgba(16, 22, 38, 0.9), rgba(8, 11, 20, 0.95));
       border: 2px solid var(--accent-purple);
-      border-radius: 16px; padding: 20px 12px;
+      border-radius: 18px; padding: 22px 14px;
       text-align: center; cursor: pointer;
-      transition: all 0.25s ease;
-      box-shadow: 0 0 10px rgba(138, 43, 226, 0.2);
+      transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      box-shadow: 0 10px 25px rgba(157, 0, 255, 0.2);
       display: flex; flex-direction: column; justify-content: space-between;
-      height: 200px; position: relative; overflow: hidden;
+      height: 210px; position: relative; overflow: hidden;
     }
 
     .tier-card:hover:not(.locked) {
       border-color: var(--accent-cyan);
-      transform: translateY(-5px);
-      box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0, 240, 255, 0.4);
     }
 
     .tier-card.locked {
-      opacity: 0.55;
-      border-color: #444;
+      opacity: 0.5;
+      border-color: #333;
       cursor: not-allowed;
-      filter: grayscale(0.5);
+      filter: grayscale(0.4);
     }
 
     .tier-rank {
       font-family: 'Press Start 2P', cursive;
-      font-size: 0.55rem; color: var(--accent-gold); text-transform: uppercase;
+      font-size: 0.6rem; color: var(--accent-gold); text-transform: uppercase;
+      text-shadow: 0 0 10px rgba(255, 183, 0, 0.4);
     }
 
     .tier-price {
-      font-size: 1.2rem; font-weight: 900; color: #fff;
+      font-size: 1.25rem; font-weight: 900; color: #fff;
     }
 
     .btn-tier {
       background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-      color: #fff; border: none; padding: 8px;
-      font-weight: 900; border-radius: 8px; cursor: pointer;
-      font-size: 0.7rem; width: 100%;
-      box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+      color: #fff; border: none; padding: 10px;
+      font-weight: 900; border-radius: 10px; cursor: pointer;
+      font-size: 0.7rem; width: 100%; font-family: 'Press Start 2P', cursive;
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+      transition: all 0.2s;
     }
 
     .tier-card.locked .btn-tier {
-      background: #333; color: #777; box-shadow: none; cursor: not-allowed;
+      background: #222; color: #666; box-shadow: none; cursor: not-allowed;
     }
 
     .lock-label {
-      font-family: 'Press Start 2P', cursive; font-size: 0.42rem; color: var(--accent-pink); margin-top: 4px;
+      font-family: 'Press Start 2P', cursive; font-size: 0.45rem; color: var(--accent-pink); margin-top: 6px;
     }
 
+    /* MATCHMAKING LOADER */
     .matchmaking-loader {
       display: flex; flex-direction: column; align-items: center;
-      justify-content: center; padding: 40px; text-align: center; gap: 20px;
+      justify-content: center; padding: 50px 20px; text-align: center; gap: 24px;
     }
 
     .spinner {
-      width: 60px; height: 60px; border: 5px solid rgba(0, 240, 255, 0.2);
-      border-top: 5px solid var(--accent-cyan); border-radius: 50%;
+      width: 70px; height: 70px; border: 6px solid rgba(0, 240, 255, 0.15);
+      border-top: 6px solid var(--accent-cyan); border-radius: 50%;
       animation: spin 1s linear infinite;
+      box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
     }
 
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+    /* ARENA 3D */
     .battle-arena {
       display: flex; flex-direction: column; align-items: center;
-      gap: 15px; text-align: center; perspective: 1400px;
+      gap: 20px; text-align: center; perspective: 1500px;
     }
 
     .match-scoreboard {
       display: flex; justify-content: space-around; width: 100%;
-      background: rgba(10, 12, 20, 0.7); border-radius: 12px;
-      padding: 12px; border: 1px solid rgba(0, 240, 255, 0.3);
-      font-family: 'Press Start 2P', cursive; font-size: 0.65rem;
+      background: rgba(10, 14, 24, 0.85); border-radius: 14px;
+      padding: 14px; border: 1px solid rgba(0, 240, 255, 0.3);
+      font-family: 'Press Start 2P', cursive; font-size: 0.7rem;
+      box-shadow: inset 0 0 15px rgba(0,0,0,0.6);
     }
 
     .vs-status {
       font-family: 'Press Start 2P', cursive;
-      font-size: 0.75rem; color: var(--accent-pink);
-      text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
+      font-size: 0.8rem; color: var(--accent-pink);
+      text-shadow: 0 0 15px rgba(255, 0, 127, 0.6);
     }
 
     .timer-container {
       font-family: 'Press Start 2P', cursive;
-      font-size: 0.6rem;
+      font-size: 0.65rem;
       color: var(--accent-gold);
-      background: rgba(255, 215, 0, 0.1);
+      background: rgba(255, 183, 0, 0.12);
       border: 1px solid var(--accent-gold);
-      padding: 6px 12px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+      padding: 8px 16px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255, 183, 0, 0.3);
     }
 
     .arena-display-3d {
       display: flex; justify-content: space-around; align-items: center;
-      width: 100%; max-width: 650px; margin: 10px 0;
-      background: linear-gradient(135deg, rgba(20,24,40,0.8), rgba(8,10,18,0.95));
-      border-radius: 20px; padding: 25px; border: 2px solid var(--accent-purple);
-      box-shadow: inset 0 0 30px rgba(138, 43, 226, 0.2), 0 15px 35px rgba(0,0,0,0.6);
+      width: 100%; max-width: 700px; margin: 10px 0;
+      background: linear-gradient(135deg, rgba(20,26,46,0.85), rgba(7,10,18,0.95));
+      border-radius: 24px; padding: 30px; border: 2px solid var(--accent-purple);
+      box-shadow: inset 0 0 40px rgba(157, 0, 255, 0.25), 0 20px 40px rgba(0,0,0,0.8);
       transform-style: preserve-3d;
     }
 
     .fighter-box {
-      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      display: flex; flex-direction: column; align-items: center; gap: 14px;
     }
 
     .fighter-label {
-      font-size: 0.65rem; color: var(--text-dim); font-family: 'Press Start 2P', cursive;
+      font-size: 0.7rem; color: var(--text-muted); font-family: 'Press Start 2P', cursive;
     }
 
     .hand-3d-model {
-      width: 110px; height: 110px;
+      width: 120px; height: 120px;
       background: radial-gradient(circle at 35% 35%, #3a4466, #121624 70%);
-      border: 3px solid rgba(0, 240, 255, 0.6);
-      border-radius: 28px;
+      border: 3px solid rgba(0, 240, 255, 0.7);
+      border-radius: 30px;
       display: flex; align-items: center; justify-content: center;
-      font-size: 4.2rem;
+      font-size: 4.5rem;
       transform-style: preserve-3d;
       transform: rotateX(15deg) rotateY(-15deg);
-      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.8), 
-                  inset 0 5px 15px rgba(255, 255, 255, 0.25),
-                  0 0 25px rgba(0, 240, 255, 0.35);
+      box-shadow: 0 25px 35px rgba(0, 0, 0, 0.85), 
+                  inset 0 8px 20px rgba(255, 255, 255, 0.3),
+                  0 0 30px rgba(0, 240, 255, 0.4);
       animation: realisticFloat 4s ease-in-out infinite;
-      filter: drop-shadow(0 15px 10px rgba(0,0,0,0.7));
+      filter: drop-shadow(0 20px 15px rgba(0,0,0,0.7));
     }
 
     @keyframes realisticFloat {
       0%, 100% { transform: translateY(0) rotateX(18deg) rotateY(-18deg) scale(1); }
-      50% { transform: translateY(-10px) rotateX(25deg) rotateY(15deg) scale(1.04); }
+      50% { transform: translateY(-12px) rotateX(25deg) rotateY(15deg) scale(1.05); }
     }
 
     .choices-3d-grid {
-      display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin: 10px 0;
+      display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin: 15px 0;
     }
 
     .card-3d {
-      width: 110px; height: 140px;
-      background: linear-gradient(135deg, rgba(30, 36, 60, 0.95), rgba(10, 12, 20, 0.95));
-      border: 2px solid var(--accent-purple); border-radius: 16px;
+      width: 125px; height: 155px;
+      background: linear-gradient(135deg, rgba(28, 35, 60, 0.95), rgba(10, 13, 22, 0.95));
+      border: 2px solid var(--accent-purple); border-radius: 18px;
       display: flex; flex-direction: column; justify-content: center; align-items: center;
       cursor: pointer; position: relative;
       transform: rotateX(10deg) rotateY(0deg);
       transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.3s, box-shadow 0.3s;
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6), 0 0 15px rgba(138, 43, 226, 0.3);
+      box-shadow: 0 20px 35px rgba(0, 0, 0, 0.7), 0 0 20px rgba(157, 0, 255, 0.35);
     }
 
     .card-3d:hover {
-      transform: translateY(-8px) rotateX(18deg) rotateY(-10deg) scale(1.06);
+      transform: translateY(-10px) rotateX(20deg) rotateY(-12deg) scale(1.08);
       border-color: var(--accent-cyan);
-      box-shadow: 0 25px 40px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 240, 255, 0.6);
+      box-shadow: 0 30px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 240, 255, 0.7);
     }
 
     .card-3d.selected {
       border-color: var(--accent-green);
-      background: linear-gradient(135deg, rgba(57, 255, 20, 0.15), rgba(10, 12, 20, 0.95));
-      transform: translateY(-10px) rotateX(0deg) rotateY(0deg) scale(1.08);
-      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.9), 0 0 30px rgba(57, 255, 20, 0.7);
+      background: linear-gradient(135deg, rgba(0, 255, 102, 0.2), rgba(10, 13, 22, 0.95));
+      transform: translateY(-12px) rotateX(0deg) rotateY(0deg) scale(1.1);
+      box-shadow: 0 30px 55px rgba(0, 0, 0, 0.95), 0 0 35px rgba(0, 255, 102, 0.8);
+    }
+
+    .card-3d.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
     }
 
     .card-3d .hand-icon {
-      font-size: 2.8rem; margin-bottom: 8px;
-      filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.6));
+      font-size: 3.2rem; margin-bottom: 10px;
+      filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.6));
     }
 
     .card-3d .name-3d {
-      font-family: 'Press Start 2P', cursive; font-size: 0.55rem; color: #fff;
+      font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: #fff;
     }
 
     .battle-result-box {
-      margin-top: 5px; font-size: 1rem; font-weight: bold;
-      color: var(--accent-cyan); min-height: 40px; text-align: center;
-      text-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+      margin-top: 10px; font-size: 1.1rem; font-weight: 800;
+      color: var(--accent-cyan); min-height: 45px; text-align: center;
+      text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
     }
 
     .btn-action-custom {
       background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-      color: #fff; border: none; padding: 10px 20px;
-      border-radius: 8px; cursor: pointer; font-size: 0.75rem;
-      font-family: 'Press Start 2P', cursive; box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+      color: #fff; border: none; padding: 12px 24px;
+      border-radius: 10px; cursor: pointer; font-size: 0.8rem;
+      font-family: 'Press Start 2P', cursive; box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
       transition: all 0.2s;
     }
-    .btn-action-custom:hover { transform: translateY(-2px); box-shadow: 0 0 25px rgba(0, 240, 255, 0.7); }
+    .btn-action-custom:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(0, 240, 255, 0.8); }
 
     .btn-back {
-      background: transparent; border: 1px solid var(--text-dim); color: var(--text-dim);
-      padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.8rem;
-      font-family: 'Outfit', sans-serif; transition: all 0.2s;
+      background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted);
+      padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 0.85rem;
+      font-family: 'Outfit', sans-serif; font-weight: 700; transition: all 0.2s;
     }
-    .btn-back:hover { border-color: #fff; color: #fff; }
+    .btn-back:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.05); }
 
     footer {
-      text-align: center; padding: 20px; border-top: 1px solid rgba(255, 255, 255, 0.05);
-      color: var(--text-dim); font-size: 0.85rem;
+      text-align: center; padding: 25px; border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--text-muted); font-size: 0.85rem; margin-top: auto;
+      background: rgba(3, 5, 10, 0.9);
     }
   </style>
 </head>
@@ -414,7 +440,7 @@
       <svg class="brand-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <circle cx="50" cy="50" r="46" fill="#0f1220" stroke="#00f0ff" stroke-width="4"/>
         <path d="M 22,52 A 28,28 0 0,1 78,52 A 28,18 0 0,1 22,52 Z" fill="#00f0ff" opacity="0.3"/>
-        <path d="M 25,50 A 25,25 0 0,1 75,50 A 25,15 0 0,1 25,50 Z" fill="#8a2be2" opacity="0.6"/>
+        <path d="M 25,50 A 25,25 0 0,1 75,50 A 25,15 0 0,1 25,50 Z" fill="#9d00ff" opacity="0.6"/>
         <circle cx="50" cy="52" r="18" fill="#d2b48c"/>
         <ellipse cx="50" cy="58" rx="10" ry="7" fill="#2b1d0c"/>
         <circle cx="50" cy="55" rx="4" ry="3" fill="#000"/>
@@ -431,7 +457,7 @@
     
     <div class="wallet-section">
       <button class="wallet-btn" id="walletMainBtn" onclick="handleWalletClick()">
-        <svg width="20" height="20" viewBox="0 0 318 318" xmlns="http://www.w3.org/2000/svg"><path d="M274.6 35.5L168.7 119.5 192.6 64.5 274.6 35.5Z" fill="#E17726"/><path d="M43.3 35.5L148.6 120.3 125 64.5 43.3 35.5Z" fill="#E27625"/><path d="M239.3 207.2L207.6 261.2 268 281.9 285.4 213.6 239.3 207.2Z" fill="#E27625"/><path d="M78.6 207.2L32.5 213.6 49.9 281.9 110.3 261.2 78.6 207.2Z" fill="#E27625"/><path d="M109.2 135.5L85.2 171.3 144.1 173.8 141.6 109.5 109.2 135.5Z" fill="#E27625"/><path d="M208.7 135.5L176.3 109.5 173.9 173.8 232.7 171.3 208.7 135.5Z" fill="#E27625"/><path d="M110.3 261.2L147.1 230.1 113.8 199.1 110.3 261.2Z" fill="#E27625"/><path d="M207.6 261.2L204.1 199.1 170.8 230.1 207.6 261.2Z" fill="#E27625"/><path d="M147.1 230.1L170.8 230.1 158.9 198.8 147.1 230.1Z" fill="#D36B1C"/><path d="M113.8 199.1L144.1 173.8 117.7 172.9 113.8 199.1Z" fill="#CC6113"/><path d="M200.2 172.9L173.9 173.8 204.1 199.1 200.2 172.9Z" fill="#CC6113"/><path d="M158.9 50L109.2 88.5 130 96.6 158.9 50Z" fill="#8C613A"/><path d="M158.9 50L187.8 96.6 208.6 88.5 158.9 50Z" fill="#8C613A"/><path d="M85.2 171.3L110.3 261.2 113.8 199.1 85.2 171.3Z" fill="#E27625"/><path d="M232.7 171.3L204.1 199.1 207.6 261.2 232.7 171.3Z" fill="#E27625"/><path d="M43.3 35.5L85.2 88.5 125 64.5 43.3 35.5Z" fill="#C05711"/><path d="M274.6 35.5L192.9 64.5 232.7 88.5 274.6 35.5Z" fill="#C05711"/><path d="M85.2 88.5L109.2 135.5 141.6 109.5 85.2 88.5Z" fill="#DE6B1B"/><path d="M232.7 88.5L176.3 109.5 208.7 135.5 232.7 88.5Z" fill="#DE6B1B"/></svg>
+        <svg width="20" height="20" viewBox="0 0 318 318" xmlns="http://www.w3.org/2000/svg"><path d="M274.6 35.5L168.7 119.5 192.6 64.5 274.6 35.5Z" fill="#E17726"/><path d="M43.3 35.5L148.6 120.3 125 64.5 43.3 35.5Z" fill="#E27625"/><path d="M239.3 207.2L207.6 261.2 268 281.9 285.4 213.6 239.3 207.2Z" fill="#E27625"/><path d="M78.6 207.2L32.5 213.6 49.9 281.9 110.3 261.2 78.6 207.2Z" fill="#E27625"/><path d="M109.2 135.5L85.2 171.3 144.1 173.8 141.6 109.5 109.2 135.5Z" fill="#E27625"/><path d="M208.7 135.5L176.3 109.5 173.9 173.8 232.7 171.3 208.7 135.5Z" fill="#E27625"/><path d="M110.3 261.2L147.1 230.1 113.8 199.1 110.3 261.2Z" fill="#E27625"/><path d="M207.6 261.2L204.1 199.1 170.8 230.1 207.6 261.2Z" fill="#E27625"/><path d="M147.1 230.1L170.8 230.1 158.9 198.8 147.1 230.1Z" fill="#D36B1C"/><path d="M113.8 199.1L144.1 173.8 117.7 172.9 113.8 199.1Z" fill="#CC6113"/><path d="M200.2 172.9L173.9 173.8 204.1 199.1 200.2 172.9Z" fill="#CC6113"/><path d="M158.9 50L109.2 88.5 130 96.6 158.9 50Z" fill="#8C613A"/><path d="M158.9 50L187.8 96.6 208.6 88.5 158.9 50Z" fill="#8C613A"/><path d="M85.2 171.3L110.3 261.2 113.8 199.1L85.2 171.3Z" fill="#E27625"/><path d="M232.7 171.3L204.1 199.1 207.6 261.2L232.7 171.3Z" fill="#E27625"/><path d="M43.3 35.5L85.2 88.5 125 64.5 43.3 35.5Z" fill="#C05711"/><path d="M274.6 35.5L192.9 64.5 232.7 88.5L274.6 35.5Z" fill="#C05711"/><path d="M85.2 88.5L109.2 135.5 141.6 109.5 85.2 88.5Z" fill="#DE6B1B"/><path d="M232.7 88.5L176.3 109.5 208.7 135.5L232.7 88.5Z" fill="#DE6B1B"/></svg>
         <span id="walletBtnText">CONECTAR WALLET</span>
       </button>
 
@@ -443,8 +469,8 @@
   </header>
 
   <section class="hero">
-    <h1 class="hero-title">PVP REAL & MATCHMAKING 45S // TOKEN GATE $ASTR</h1>
-    <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261). Fee del creador (2%): <code style="color:var(--accent-cyan); font-size:0.75rem;">0xe3Eb...0b9</code></p>
+    <h1 class="hero-title">CYBER PVP ARENA // MATCHMAKING INTELIGENTE $ASTR</h1>
+    <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261). Fee del creador (2%): <code style="color:var(--accent-cyan); font-size:0.8rem;">0xe3Eb...0b9</code></p>
   </section>
 
   <div class="dashboard-container">
@@ -454,14 +480,14 @@
         <span id="astralisBalanceText">0.00 ASTCH</span>
         <span class="token-badge" id="tokenGateStatus">BLOQUEADO</span>
       </div>
-      <div style="font-size: 0.72rem; color: var(--text-dim);" id="tokenGateRequirement">Req: Mínimo 10.00 ASTCH para apostar y jugar</div>
+      <div style="font-size: 0.78rem; color: var(--text-muted);" id="tokenGateRequirement">Req: Mínimo 10.00 ASTCH para apostar y jugar</div>
     </div>
     
     <div class="dash-card">
       <div class="dash-title" id="xpLevelText">NIVEL 1 // BRONZE INICIAL</div>
-      <div class="dash-value" style="font-size: 0.9rem;">
+      <div class="dash-value" style="font-size: 0.95rem;">
         <span id="bronzeProgressText">Partidas Bronce: 0 / 5</span>
-        <span id="xpPointsText" style="font-size: 0.8rem; color: var(--accent-cyan);">XP: 0/100</span>
+        <span id="xpPointsText" style="font-size: 0.85rem; color: var(--accent-cyan);">XP: 0/100</span>
       </div>
       <div class="xp-bar-track">
         <div class="xp-bar-fill" id="xpBarFill"></div>
@@ -472,7 +498,7 @@
   <section class="section" id="lobbyView">
     <div class="view-container">
       <div class="token-gate-warning" id="globalTokenGateAlert">
-        🔒 <strong>Token Gate Activo:</strong> Cambia tu MetaMask a <strong>Astralis Chain</strong> (ID: 71261) y verifica tu saldo para habilitar las apuestas.
+        🔒 <strong>Token Gate Activo:</strong> Cambia tu MetaMask a <strong>Astralis Chain</strong> (ID: 71261) y verifica tu saldo para habilitar las salas de batalla.
       </div>
 
       <h2 class="section-header">[ SALAS PVP MULTIJUGADOR / BÚSQUEDA 45S ]</h2>
@@ -520,9 +546,9 @@
     <div class="view-container matchmaking-loader">
       <div class="spinner" id="matchingSpinner"></div>
       <h2 class="section-header" id="matchingText">Buscando rival en la red...</h2>
-      <p style="color: var(--text-dim); font-size: 0.85rem;" id="matchingSubtext">Buscando oponente humano (Tiempo restante: <span id="matchQueueTimer" style="color:var(--accent-gold); font-weight:bold;">45</span>s)...</p>
+      <p style="color: var(--text-muted); font-size: 0.9rem;" id="matchingSubtext">Buscando oponente humano (Tiempo restante: <span id="matchQueueTimer" style="color:var(--accent-gold); font-weight:bold;">45</span>s)...</p>
       
-      <div id="timeoutControls" class="hidden" style="margin-top: 15px; display: flex; gap: 10px;">
+      <div id="timeoutControls" class="hidden" style="margin-top: 15px; display: flex; gap: 12px;">
         <button class="btn-action-custom" onclick="retryMatchmaking()">REINTENTAR</button>
         <button class="btn-back" onclick="cancelMatchmakingRefund()">VOLVER / REEMBOLSO</button>
       </div>
@@ -576,7 +602,7 @@
         Elige tu seña para puntuar en la ronda actual.
       </div>
 
-      <button class="btn-back hidden" id="btnLeaveArena" onclick="leaveRoom()">abandonar / salir</button>
+      <button class="btn-back hidden" id="btnLeaveArena" onclick="leaveRoom()">abandonar / salir al lobby</button>
     </div>
   </section>
 
@@ -595,9 +621,9 @@
       height = canvas.height = window.innerHeight;
     });
 
-    const stars = Array.from({ length: 150 }, () => ({
+    const stars = Array.from({ length: 180 }, () => ({
       x: Math.random() * width, y: Math.random() * height,
-      size: Math.random() * 2, alpha: Math.random(), speed: Math.random() * 0.02 + 0.005
+      size: Math.random() * 2.2, alpha: Math.random(), speed: Math.random() * 0.02 + 0.005
     }));
 
     function animateSpace() {
@@ -605,7 +631,7 @@
       stars.forEach(star => {
         star.alpha += star.speed;
         if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
-        ctx.fillStyle = `rgba(255, 255, 255, ${Math.abs(star.alpha)})`;
+        ctx.fillStyle = `rgba(0, 240, 255, ${Math.abs(star.alpha)})`;
         ctx.beginPath();
         ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
         ctx.fill();
@@ -644,7 +670,6 @@
     let rivalWalletFull = "";
     let rivalShortId = "";
 
-    // 💾 Variables de Progreso persistente por billetera
     let bronzeMatchesPlayed = 0;
     const requiredBronzeMatches = 5;
     let userXP = 0;
@@ -653,7 +678,6 @@
     let currentTier = "";
     let currentStake = 0;
     
-    // ⏱️ Variables de Matchmaking Real (45s)
     let matchmakingInterval = null;
     let queueSecondsLeft = 45;
 
@@ -666,9 +690,14 @@
     let playerMove = null;
     let rivalMove = null;
     let roundTimerInterval = null;
-    let timeLeft = 30; // 30 segundos para pensar jugada
+    let timeLeft = 30;
 
-    const handIcons = { piedra: '✊', papel: '✋', tijera: '✌️' };
+    // Diccionario de íconos y emojis reales bien alineados para Piedra, Papel y Tijera
+    const handIcons = { 
+      piedra: '✊', 
+      papel: '✋', 
+      tijera: '✌️' 
+    };
 
     function loadUserDataFromStorage() {
       if (!userAccount) return;
@@ -753,7 +782,6 @@
           userAccount = await signer.getAddress();
           walletConnected = true;
 
-          // Cargar datos de perfil guardados en este navegador para esta billetera
           loadUserDataFromStorage();
 
           const shortAddr = userAccount.substring(0, 5) + "..." + userAccount.substring(userAccount.length - 4);
@@ -930,7 +958,6 @@
         document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
         updateRoomsState();
 
-        // ⏱️ Iniciar Matchmaking Real de 45 segundos buscando rival en red
         startRealMatchmakingQueue();
 
       } catch (err) {
@@ -955,14 +982,12 @@
         const timerSpan = document.getElementById('matchQueueTimer');
         if (timerSpan) timerSpan.innerText = queueSecondsLeft;
 
-        // Simulador de probabilidad de encontrar rival humano en red (ej. 30% cada segundo pasados los primeros 10s)
         const foundOpponent = queueSecondsLeft < 35 && Math.random() < 0.22;
 
         if (foundOpponent) {
           clearInterval(matchmakingInterval);
           document.getElementById('matchingSpinner').style.display = "none";
           
-          // Generar rival humano simulado de red
           const randomHex = Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
           rivalWalletFull = "0x" + Math.floor(Math.random() * 0xffffffffff).toString(16) + randomHex;
           rivalShortId = "..." + rivalWalletFull.slice(-6).toUpperCase();
@@ -977,7 +1002,6 @@
           }, 1500);
         } else if (queueSecondsLeft <= 0) {
           clearInterval(matchmakingInterval);
-          // 🛑 TIEMPO AGOTADO: Ningún rival encontrado
           document.getElementById('matchingSpinner').style.display = "none";
           document.getElementById('matchingText').innerText = "⏱️ Sin rival disponible";
           document.getElementById('matchingSubtext').innerText = "No se encontró ningún oponente en la red en este momento. Tus fondos se pueden reembolsar o puedes reintentar la búsqueda.";
@@ -992,7 +1016,6 @@
 
     function cancelMatchmakingRefund() {
       clearInterval(matchmakingInterval);
-      // Reembolsar al usuario localmente en simulación de saldo devuelto
       userAstrBalance += currentStake;
       document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
       updateRoomsState();
@@ -1037,7 +1060,7 @@
 
     function startRoundTimer() {
       clearInterval(roundTimerInterval);
-      timeLeft = 30; // ⏱️ Contador de 30 segundos
+      timeLeft = 30;
       playerMove = null;
       rivalMove = null;
 
@@ -1045,7 +1068,7 @@
       document.getElementById('opponentCountdown').innerText = timeLeft;
       document.getElementById('playerHandVisual').innerText = "🤜";
       document.getElementById('rivalHandVisual').innerText = "❓";
-      document.getElementById('battleResult').innerText = `Ronda ${currentRound}: Piensa tu jugada con calma.`;
+      document.getElementById('battleResult').innerText = `Ronda ${currentRound}: Elige tu seña con precisión.`;
       document.getElementById('vsStatus').innerText = "¡Esperando tu elección!";
       
       document.querySelectorAll('.card-3d').forEach(el => {
@@ -1076,7 +1099,12 @@
         el.classList.add('disabled');
         el.style.pointerEvents = "none";
       });
-      document.getElementById(`choice${choice.charAt(0).toUpperCase() + choice.slice(1)}`).classList.add('selected');
+
+      // Asegurar que la carta seleccionada pinte la seña correcta de inmediato
+      const selectedCardEl = document.getElementById(`choice${choice.charAt(0).toUpperCase() + choice.slice(1)}`);
+      if (selectedCardEl) selectedCardEl.classList.add('selected');
+
+      // Actualizar visualizador 3D del jugador de forma exacta
       document.getElementById('playerHandVisual').innerText = handIcons[choice];
       document.getElementById('battleResult').innerText = `Elegiste ${choice.toUpperCase()}. Esperando respuesta del oponente...`;
       document.getElementById('vsStatus').innerText = "¡Jugada registrada!";
@@ -1100,12 +1128,13 @@
         rivalMove = choices[Math.floor(Math.random() * choices.length)];
       }
 
+      // Renderizar de forma estricta las señas correctas en el arena 3D
       document.getElementById('playerHandVisual').innerText = handIcons[playerMove];
       document.getElementById('rivalHandVisual').innerText = handIcons[rivalMove];
 
       let roundMsg = "";
       if (playerMove === rivalMove) {
-        roundMsg = `🤝 ¡Empate en la ronda ${currentRound}! Ambos eligieron ${playerMove.toUpperCase()}.`;
+        roundMsg = `🤝 ¡Empate en la ronda ${currentRound}! Ambos eligieron ${playerMove.toUpperCase()} (${handIcons[playerMove]}).`;
         document.getElementById('vsStatus').innerText = "¡Misma jugada!";
       } else if (
         (playerMove === 'piedra' && rivalMove === 'tijera') ||
@@ -1113,11 +1142,11 @@
         (playerMove === 'tijera' && rivalMove === 'papel')
       ) {
         playerWins++;
-        roundMsg = `✅ ¡Punto tuyo! Tu ${playerMove.toUpperCase()} venció el ${rivalMove.toUpperCase()} del rival.`;
+        roundMsg = `✅ ¡Punto tuyo! Tu ${playerMove.toUpperCase()} (${handIcons[playerMove]}) venció el ${rivalMove.toUpperCase()} (${handIcons[rivalMove]}) del rival.`;
         document.getElementById('vsStatus').innerText = "¡Punto ganado!";
       } else {
         rivalWins++;
-        roundMsg = `❌ ¡Punto para el rival! Su ${rivalMove.toUpperCase()} superó tu ${playerMove.toUpperCase()}.`;
+        roundMsg = `❌ ¡Punto para el rival! Su ${rivalMove.toUpperCase()} (${handIcons[rivalMove]}) superó tu ${playerMove.toUpperCase()} (${handIcons[playerMove]}).`;
         document.getElementById('vsStatus').innerText = "¡Punto perdido!";
       }
 
@@ -1130,7 +1159,7 @@
         currentRound++;
         setTimeout(() => {
           if (!matchIsOver) startRoundTimer();
-        }, 2200);
+        }, 2500);
       }
     }
 
@@ -1143,7 +1172,6 @@
 
       if (currentTier === "Bronce" && bronzeMatchesPlayed < requiredBronzeMatches) {
         bronzeMatchesPlayed++;
-        // 💾 Guardar progreso asociado a la billetera en localStorage
         saveUserDataToStorage();
       }
 
@@ -1154,7 +1182,7 @@
         userAstrBalance += prizePool;
         finalMsg = `🏆 ¡VICTORIA! Ganaste ${playerWins}-${rivalWins}. ¡Se acreditaron ${prizePool.toFixed(2)} ASTCH en tu billetera!`;
         if (typeof confetti === 'function') {
-          confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
+          confetti({ particleCount: 140, spread: 100, origin: { y: 0.6 } });
         }
       } else if (rivalWins > playerWins) {
         finalMsg = `💀 ¡DERROTA! El oponente venció ${rivalWins}-${playerWins}. Perdiste tu apuesta de ${currentStake} ASTCH.`;
