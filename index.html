@@ -964,22 +964,14 @@
     }
 
     /* ========================================================
-       3. CONTADOR PERSISTENTE CON FECHA FIJA EN CÓDIGO
+       3. CONTADOR CON FECHA FIJA DIRECTA EN CÓDIGO
        ======================================================== */
-    // AQUÍ PUEDES CAMBIAR LA FECHA Y HORA EXACTA DE TU LANZAMIENTO (Año, Mes [0-11], Día, Hora, Minuto)
-    // Ejemplo: 15 de Octubre de 2026 a las 18:00 horas
-    const targetDateSetting = new Date(2026, 09, 01, 01, 0, 0).getTime();
+    // AQUÍ CONFIGURAS TU FECHA Y HORA (Año, Mes [0-11], Día, Hora, Minuto, Segundo)
+    const targetDateSetting = new Date(2026, 9, 1, 1, 0, 0).getTime();
 
-    // Revisa si ya hay una fecha guardada, si no, usa la que pusiste arriba y la guarda en localStorage
-    let savedTarget = localStorage.getItem("pugGalaxyLaunchTarget");
-    let launchTarget;
-
-    if (savedTarget) {
-      launchTarget = parseInt(savedTarget, 10);
-    } else {
-      launchTarget = targetDateSetting;
-      localStorage.setItem("pugGalaxyLaunchTarget", launchTarget);
-    }
+    // Fuerza a usar siempre la fecha que configures arriba en el código actual
+    let launchTarget = targetDateSetting;
+    localStorage.setItem("pugGalaxyLaunchTarget", launchTarget);
 
     function updateCountdown() {
       const now = new Date().getTime();
