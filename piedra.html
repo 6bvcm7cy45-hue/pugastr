@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PUG ASTR // Token Gate & XP System</title>
+  <title>PUG ASTR // Token Gate & XP System (Astralis Chain)</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
   
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <!-- CDN de Ethers.js para llamadas Web3 reales al contrato de $ASTR -->
+  <!-- CDN de Ethers.js para llamadas Web3 reales al contrato de $ASTR en Astralis Chain -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 
   <style>
@@ -92,25 +92,33 @@
       box-shadow: 0 0 20px rgba(246, 133, 27, 0.7);
     }
 
-    /* Menú desplegable para desconectar la billetera */
     .wallet-dropdown {
       position: absolute; right: 0; top: 100%; margin-top: 8px;
       background: rgba(15, 18, 32, 0.98);
       border: 1px solid rgba(246, 133, 27, 0.4);
-      border-radius: 12px; padding: 10px; width: 180px;
+      border-radius: 12px; padding: 10px; width: 190px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.8);
       z-index: 200; display: flex; flex-direction: column; gap: 8px;
     }
 
     .dropdown-item {
-      background: rgba(255, 0, 127, 0.15);
-      color: var(--accent-pink); border: 1px solid var(--accent-pink);
-      padding: 8px 12px; border-radius: 8px; font-size: 0.75rem;
+      background: rgba(0, 240, 255, 0.15);
+      color: var(--accent-cyan); border: 1px solid var(--accent-cyan);
+      padding: 8px 12px; border-radius: 8px; font-size: 0.68rem;
       font-family: 'Press Start 2P', cursive; cursor: pointer; text-align: center;
       transition: all 0.2s;
     }
 
     .dropdown-item:hover {
+      background: var(--accent-cyan); color: #000;
+      box-shadow: 0 0 10px var(--accent-cyan);
+    }
+
+    .dropdown-item.danger {
+      background: rgba(255, 0, 127, 0.15);
+      color: var(--accent-pink); border: 1px solid var(--accent-pink);
+    }
+    .dropdown-item.danger:hover {
       background: var(--accent-pink); color: #fff;
       box-shadow: 0 0 10px var(--accent-pink);
     }
@@ -129,7 +137,6 @@
       font-size: 0.9rem; color: var(--text-dim); margin-bottom: 15px;
     }
 
-    /* Panel de Estado del Token $ASTR y XP */
     .dashboard-container {
       max-width: 950px; margin: 0 auto 15px auto; padding: 0 20px;
       display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
@@ -191,7 +198,6 @@
 
     .hidden { display: none !important; }
 
-    /* Alerta de Token Gate global */
     .token-gate-warning {
       background: rgba(255, 0, 127, 0.1);
       border: 1px solid var(--accent-pink);
@@ -199,7 +205,6 @@
       margin-bottom: 20px; font-size: 0.85rem; color: #ff99cc;
     }
 
-    /* Salas de Matchmaking */
     .rooms-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -255,7 +260,6 @@
       font-family: 'Press Start 2P', cursive; font-size: 0.42rem; color: var(--accent-pink); margin-top: 4px;
     }
 
-    /* Buscador de Matchmaking */
     .matchmaking-loader {
       display: flex; flex-direction: column; align-items: center;
       justify-content: center; padding: 40px; text-align: center; gap: 20px;
@@ -269,7 +273,6 @@
 
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    /* Arena 3D y Manos Fotorrealistas */
     .battle-arena {
       display: flex; flex-direction: column; align-items: center;
       gap: 15px; text-align: center; perspective: 1400px;
@@ -421,27 +424,28 @@
         <span id="walletBtnText">CONECTAR WALLET</span>
       </button>
 
-      <!-- Menú Desplegable con Opción de Desconectar -->
+      <!-- Menú Desplegable con Cambio de Red y Desconectar -->
       <div class="wallet-dropdown hidden" id="walletDropdownMenu">
-        <div class="dropdown-item" onclick="disconnectMetaMask()">DESCONECTAR</div>
+        <div class="dropdown-item" onclick="switchToAstralisChain()">🔗 CAMBIAR A ASTRALIS</div>
+        <div class="dropdown-item danger" onclick="disconnectMetaMask()">DESCONECTAR</div>
       </div>
     </div>
   </header>
 
   <section class="hero">
-    <h1 class="hero-title">TOKEN GATE & APUESTA $ASTR 3D</h1>
-    <p class="hero-subtitle">Conecta MetaMask mediante Ethers.js, lee tu saldo real del token <strong>$ASTR</strong> y apuesta en las salas de combate.</p>
+    <h1 class="hero-title">TOKEN GATE & APUESTA $ASTR (ASTRALIS CHAIN)</h1>
+    <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261). Lectura de saldo de token y apuestas reales en salas de combate 3D.</p>
   </section>
 
   <!-- PANEL DE BALANCE DE TOKEN $ASTR Y BARRA DE XP -->
   <div class="dashboard-container">
     <div class="dash-card">
-      <div class="dash-title">BALANCE REAL DE TOKEN $ASTR</div>
+      <div class="dash-title">BALANCE REAL ASTRALIS CHAIN ($ASTCH / $ASTR)</div>
       <div class="dash-value">
-        <span id="astralisBalanceText">0.00 ASTR</span>
+        <span id="astralisBalanceText">0.00 ASTCH</span>
         <span class="token-badge" id="tokenGateStatus">BLOQUEADO</span>
       </div>
-      <div style="font-size: 0.72rem; color: var(--text-dim);" id="tokenGateRequirement">Req: Mínimo 10.00 ASTR para apostar y jugar</div>
+      <div style="font-size: 0.72rem; color: var(--text-dim);" id="tokenGateRequirement">Req: Mínimo 10.00 ASTCH para apostar y jugar</div>
     </div>
     
     <div class="dash-card">
@@ -460,7 +464,7 @@
   <section class="section" id="lobbyView">
     <div class="view-container">
       <div class="token-gate-warning" id="globalTokenGateAlert">
-        🔒 <strong>Token Gate Activo:</strong> Conecta tu billetera MetaMask real y verifica tu saldo de $ASTR para habilitar las salas con apuesta.
+        🔒 <strong>Token Gate Activo:</strong> Cambia tu MetaMask a <strong>Astralis Chain</strong> (ID: 71261) y verifica tu saldo para habilitar las apuestas.
       </div>
 
       <h2 class="section-header">[ SALAS DE MATCHMAKING CON APUESTA $ASTR ]</h2>
@@ -468,35 +472,35 @@
       <div class="rooms-grid">
         <div class="tier-card locked" id="roomBronce" onclick="tryOpenRoom('Bronce', 10, 10)">
           <div class="tier-rank">Rango Bronce</div>
-          <div class="tier-price">Apuesta: 10 ASTR</div>
+          <div class="tier-price">Apuesta: 10 ASTCH</div>
           <button class="btn-tier">APOSTAR & JUGAR</button>
-          <div class="lock-label" id="labelBronce">Falta $ASTR</div>
+          <div class="lock-label" id="labelBronce">Falta Saldo</div>
         </div>
 
         <div class="tier-card locked" id="roomPlata" onclick="tryOpenRoom('Plata', 50, 50)">
           <div class="tier-rank">Rango Plata</div>
-          <div class="tier-price">Apuesta: 50 ASTR</div>
+          <div class="tier-price">Apuesta: 50 ASTCH</div>
           <button class="btn-tier">BLOQUEADO</button>
           <div class="lock-label" id="labelPlata">Req: 5 P. Bronce</div>
         </div>
 
         <div class="tier-card locked" id="roomOro" onclick="tryOpenRoom('Oro', 100, 100)">
           <div class="tier-rank">Rango Oro</div>
-          <div class="tier-price">Apuesta: 100 ASTR</div>
+          <div class="tier-price">Apuesta: 100 ASTCH</div>
           <button class="btn-tier">BLOQUEADO</button>
           <div class="lock-label" id="labelOro">Req: 5 P. Bronce</div>
         </div>
 
         <div class="tier-card locked" id="roomPlatino" onclick="tryOpenRoom('Platino', 250, 250)">
           <div class="tier-rank">Rango Platino</div>
-          <div class="tier-price">Apuesta: 250 ASTR</div>
+          <div class="tier-price">Apuesta: 250 ASTCH</div>
           <button class="btn-tier">BLOQUEADO</button>
           <div class="lock-label" id="labelPlatino">Req: 5 P. Bronce</div>
         </div>
 
         <div class="tier-card locked" id="roomDiamante" onclick="tryOpenRoom('Diamante', 500, 500)">
           <div class="tier-rank">Rango Diamante</div>
-          <div class="tier-price">Apuesta: 500 ASTR</div>
+          <div class="tier-price">Apuesta: 500 ASTCH</div>
           <button class="btn-tier">BLOQUEADO</button>
           <div class="lock-label" id="labelDiamante">Req: 5 P. Bronce</div>
         </div>
@@ -508,7 +512,7 @@
   <section class="section hidden" id="matchingView">
     <div class="view-container matchmaking-loader">
       <div class="spinner" id="matchingSpinner"></div>
-      <h2 class="section-header" id="matchingText">Procesando apuesta de tokens $ASTR...</h2>
+      <h2 class="section-header" id="matchingText">Procesando apuesta en Astralis Chain...</h2>
       <p style="color: var(--text-dim); font-size: 0.85rem;" id="matchingSubtext">Firma la transacción de apuesta en MetaMask para entrar al duelo.</p>
       
       <div id="timeoutControls" class="hidden" style="margin-top: 15px; display: flex; gap: 10px;">
@@ -521,7 +525,7 @@
   <!-- ARENA DE COMBATE 3D -->
   <section class="section hidden" id="arenaView">
     <div class="view-container battle-arena">
-      <h2 class="section-header" id="arenaTitle">[ DUELO 3D CON APUESTA REAL ]</h2>
+      <h2 class="section-header" id="arenaTitle">[ DUELO 3D CON APUESTA EN ASTRALIS ]</h2>
       
       <div class="match-scoreboard">
         <div id="playerScoreBoard">TÚ: 0</div>
@@ -567,7 +571,7 @@
   </section>
 
   <footer>
-    <p>© 2026 Pug Astralis Arena — Ethers.js MetaMask Web3 & Token Staking Integration.</p>
+    <p>© 2026 Pug Astralis Arena — Network: Astralis Chain (ID: 71261) | <a href="https://test-faucet.astralischain.com/" target="_blank" style="color: var(--accent-cyan); text-decoration: none;">Faucet Testnet</a></p>
   </footer>
 
   <script>
@@ -601,8 +605,22 @@
     }
     animateSpace();
 
-    // Configuración de Web3 y Contrato $ASTR (Sustituye esta dirección por la real de tu contrato ERC-20 en mainnet/testnet)
-    const ASTR_TOKEN_ADDRESS = "0x1234567890abcdef1234567890abcdef12345678"; 
+    // Configuración exacta para Astralis Chain
+    const ASTRALIS_CHAIN_ID = "0x1165d"; // 71261 en Hexadecimal
+    const ASTRALIS_PARAMS = {
+      chainId: ASTRALIS_CHAIN_ID,
+      chainName: "Astralis Chain",
+      nativeCurrency: {
+        name: "Astralis",
+        symbol: "ASTCH",
+        decimals: 18
+      },
+      rpcUrls: ["https://test-rpc.astralischain.com/"],
+      blockExplorerUrls: ["https://test-explorer.astralischain.com/"]
+    };
+
+    // Dirección opcional de contrato ERC-20 de $ASTR en Astralis Chain (si aplica) o lectura nativa de ASTCH
+    const ASTR_TOKEN_ADDRESS = ""; 
     const ASTR_ABI = [
       "function balanceOf(address account) view returns (uint256)",
       "function transfer(address recipient, uint256 amount) returns (bool)",
@@ -636,7 +654,6 @@
 
     const handIcons = { piedra: '✊', papel: '✋', tijera: '✌️' };
 
-    // Manejo del botón de billetera
     function handleWalletClick() {
       if (!walletConnected) {
         connectMetaMask();
@@ -646,7 +663,6 @@
       }
     }
 
-    // Cerrar menú desplegable al hacer clic fuera
     window.addEventListener('click', (e) => {
       const section = document.querySelector('.wallet-section');
       if (!section.contains(e.target)) {
@@ -654,12 +670,51 @@
       }
     });
 
-    // Conexión real con Ethers.js y lectura de balance de $ASTR desde MetaMask
+    // Cambiar o agregar la red Astralis Chain en MetaMask
+    async function switchToAstralisChain() {
+      if (typeof window.ethereum === 'undefined') {
+        alert("⚠️ MetaMask no detectado.");
+        return;
+      }
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: ASTRALIS_CHAIN_ID }],
+        });
+        fetchUserBalance();
+      } catch (switchError) {
+        // Si la red no está agregada en MetaMask (código 4902), la agregamos automáticamente
+        if (switchError.code === 4902) {
+          try {
+            await window.ethereum.request({
+              method: 'wallet_addEthereumChain',
+              params: [ASTRALIS_PARAMS],
+            });
+            fetchUserBalance();
+          } catch (addError) {
+            console.error("Error al agregar Astralis Chain:", addError);
+            alert("⚠️ No se pudo agregar Astralis Chain a MetaMask.");
+          }
+        } else {
+          console.error("Error al cambiar de red:", switchError);
+        }
+      }
+      document.getElementById('walletDropdownMenu').classList.add('hidden');
+    }
+
     async function connectMetaMask() {
       if (typeof window.ethereum !== 'undefined') {
         try {
           provider = new ethers.providers.Web3Provider(window.ethereum);
           await provider.send("eth_requestAccounts", []);
+          
+          // Verificar y forzar el cambio a Astralis Chain al conectar
+          const network = await provider.getNetwork();
+          if (network.chainId !== 71261) {
+            await switchToAstralisChain();
+            return;
+          }
+
           signer = provider.getSigner();
           userAccount = await signer.getAddress();
           walletConnected = true;
@@ -667,35 +722,56 @@
           const shortAddr = userAccount.substring(0, 5) + "..." + userAccount.substring(userAccount.length - 4);
           document.getElementById('walletBtnText').innerText = shortAddr;
           
-          // Instanciar contrato ERC-20 de $ASTR y obtener saldo real
-          try {
-            tokenContract = new ethers.Contract(ASTR_TOKEN_ADDRESS, ASTR_ABI, signer);
-            const rawBalance = await tokenContract.balanceOf(userAccount);
-            const decimals = await tokenContract.decimals();
-            userAstrBalance = parseFloat(ethers.utils.formatUnits(rawBalance, decimals));
-          } catch (contractErr) {
-            console.warn("No se pudo leer contrato real, usando fallback de balance nativo/Ether o simulación:", contractErr);
-            // Fallback de respaldo si el contrato no está desplegado todavía en la red actual
-            const rawEthBalance = await provider.getBalance(userAccount);
-            userAstrBalance = parseFloat(ethers.utils.formatEther(rawEthBalance)) * 100; 
-          }
+          await fetchUserBalance();
 
-          document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTR`;
-          document.getElementById('tokenGateStatus').innerText = "VERIFICADO";
-          document.getElementById('tokenGateStatus').style.color = "var(--accent-green)";
-          document.getElementById('globalTokenGateAlert').style.display = "none";
-
-          updateRoomsState();
         } catch (error) {
           console.error("Error al conectar MetaMask:", error);
-          alert("⚠️ Solicitud de conexión rechazada o error en MetaMask.");
+          alert("⚠️ Conexión rechazada o error en MetaMask.");
         }
       } else {
-        alert("⚠️ No se detectó MetaMask. Por favor, instala la extensión de MetaMask en tu navegador.");
+        alert("⚠️ Por favor, instala la extensión de MetaMask.");
       }
     }
 
-    // Desconectar Billetera
+    // Obtener balance real de ASTCH (Moneda nativa o Token ERC-20 en Astralis Chain)
+    async function fetchUserBalance() {
+      try {
+        if (!provider || !userAccount) return;
+        signer = provider.getSigner();
+
+        // Verificamos de nuevo la red activa
+        const network = await provider.getNetwork();
+        if (network.chainId !== 71261) {
+          document.getElementById('tokenGateStatus').innerText = "RED INCORRECTA";
+          document.getElementById('tokenGateStatus').style.color = "var(--accent-pink)";
+          document.getElementById('globalTokenGateAlert').innerHTML = `⚠️ Estás en otra red. <a href="#" onclick="switchToAstralisChain()" style="color:var(--accent-cyan); font-weight:bold;">Haz clic aquí para cambiar a Astralis Chain (71261)</a> o usa el Faucet: <a href="https://test-faucet.astralischain.com/" target="_blank" style="color:var(--accent-green);">Obtener Testnet ASTCH</a>`;
+          document.getElementById('globalTokenGateAlert').style.display = "block";
+          return;
+        }
+
+        // Si hay contrato ERC-20 específico configurado, lo leemos; de lo contrario leemos el balance nativo ASTCH de la red
+        if (ASTR_TOKEN_ADDRESS && ASTR_TOKEN_ADDRESS.length > 5) {
+          tokenContract = new ethers.Contract(ASTR_TOKEN_ADDRESS, ASTR_ABI, signer);
+          const rawBalance = await tokenContract.balanceOf(userAccount);
+          const decimals = await tokenContract.decimals();
+          userAstrBalance = parseFloat(ethers.utils.formatUnits(rawBalance, decimals));
+        } else {
+          // Lectura directa del balance nativo ASTCH en Astralis Chain
+          const rawNativeBalance = await provider.getBalance(userAccount);
+          userAstrBalance = parseFloat(ethers.utils.formatEther(rawNativeBalance));
+        }
+
+        document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+        document.getElementById('tokenGateStatus').innerText = "CONECTADO";
+        document.getElementById('tokenGateStatus').style.color = "var(--accent-green)";
+        document.getElementById('globalTokenGateAlert').style.display = "none";
+
+        updateRoomsState();
+      } catch (err) {
+        console.error("Error al obtener balance en Astralis Chain:", err);
+      }
+    }
+
     function disconnectMetaMask() {
       walletConnected = false;
       userAccount = null;
@@ -704,7 +780,7 @@
       tokenContract = null;
 
       document.getElementById('walletBtnText').innerText = "CONECTAR WALLET";
-      document.getElementById('astralisBalanceText').innerText = "0.00 ASTR";
+      document.getElementById('astralisBalanceText').innerText = "0.00 ASTCH";
       document.getElementById('tokenGateStatus').innerText = "BLOQUEADO";
       document.getElementById('tokenGateStatus').style.color = "var(--accent-cyan)";
       document.getElementById('globalTokenGateAlert').style.display = "block";
@@ -713,7 +789,6 @@
       updateRoomsState();
     }
 
-    // Actualizar estados visuales de salas y XP
     function updateRoomsState() {
       const hasEnoughTokens = walletConnected && (userAstrBalance >= minTokenRequiredToPlay);
 
@@ -722,13 +797,12 @@
       document.getElementById('xpBarFill').style.width = `${(userXP / maxXP) * 100}%`;
       document.getElementById('bronzeProgressText').innerText = `Partidas Bronce: ${bronzeMatchesPlayed} / ${requiredBronzeMatches}`;
 
-      // Sala Bronce
       const roomBronce = document.getElementById('roomBronce');
       const labelBronce = document.getElementById('labelBronce');
       if (!walletConnected || userAstrBalance < 10) {
         roomBronce.classList.add('locked');
         roomBronce.querySelector('.btn-tier').innerText = "APOSTA REQ.";
-        labelBronce.innerText = "Falta $ASTR";
+        labelBronce.innerText = "Falta Saldo";
       } else {
         roomBronce.classList.remove('locked');
         roomBronce.querySelector('.btn-tier').innerText = "APOSTAR & JUGAR";
@@ -736,7 +810,6 @@
         labelBronce.style.color = "var(--accent-green)";
       }
 
-      // Salas Superiores
       if (bronzeMatchesPlayed >= requiredBronzeMatches) {
         document.getElementById('xpLevelText').innerText = "NIVEL 2 // SALAS SUPERIORES ACTIVAS";
       }
@@ -756,7 +829,7 @@
         if (!walletConnected || userAstrBalance < room.cost) {
           roomEl.classList.add('locked');
           btn.innerText = `APOSTA REQ.`;
-          lockLabel.innerText = `Falta $ASTR (Req: ${room.cost})`;
+          lockLabel.innerText = `Falta Saldo (Req: ${room.cost})`;
         } else if (bronzeMatchesPlayed < requiredBronzeMatches) {
           roomEl.classList.add('locked');
           btn.innerText = "BLOQUEADO";
@@ -776,18 +849,18 @@
         return;
       }
       if (userAstrBalance < stake) {
-        alert(`⚠️ Saldo insuficiente: Necesitas ${stake} tokens $ASTR para apostar en la sala ${tierName} (Tu saldo: ${userAstrBalance.toFixed(2)} ASTR).`);
+        alert(`⚠️ Saldo insuficiente: Necesitas ${stake} ASTCH en Astralis Chain (Tu saldo: ${userAstrBalance.toFixed(2)} ASTCH). Visita el Faucet si necesitas fondos.`);
         return;
       }
       if (tierName !== "Bronce" && bronzeMatchesPlayed < requiredBronzeMatches) {
-        alert(`⚠️ Sala bloqueada: Debes completar primero ${requiredBronzeMatches} partidas en Rango Bronce (Llevas ${bronzeMatchesPlayed}/${requiredBronzeMatches}).`);
+        alert(`⚠️ Sala bloqueada: Debes completar ${requiredBronzeMatches} partidas en Rango Bronce (Llevas ${bronzeMatchesPlayed}/${requiredBronzeMatches}).`);
         return;
       }
 
       processTokenStake(tierName, stake);
     }
 
-    // Procesar apuesta real de tokens mediante transacción en MetaMask
+    // Procesar apuesta en Astralis Chain (Envío de transacción nativa o llamada al contrato)
     async function processTokenStake(tierName, stake) {
       currentTier = tierName;
       currentStake = stake;
@@ -796,33 +869,35 @@
       document.getElementById('matchingView').classList.remove('hidden');
       
       document.getElementById('matchingSpinner').style.display = "block";
-      document.getElementById('matchingText').innerText = `Apostando ${stake} $ASTR en Rango ${tierName.toUpperCase()}...`;
-      document.getElementById('matchingSubtext').innerText = "Por favor, confirma la transacción de apuesta en tu MetaMask.";
+      document.getElementById('matchingText').innerText = `Apostando ${stake} ASTCH en Rango ${tierName.toUpperCase()}...`;
+      document.getElementById('matchingSubtext').innerText = "Firma la transacción de apuesta en tu MetaMask en Astralis Chain.";
       document.getElementById('timeoutControls').classList.add('hidden');
 
       try {
-        // Si el contrato real está disponible, ejecutamos la transferencia de apuesta hacia la tesorería del juego
-        if (tokenContract) {
+        if (tokenContract && ASTR_TOKEN_ADDRESS) {
           const decimals = await tokenContract.decimals();
           const stakeParsed = ethers.utils.parseUnits(stake.toString(), decimals);
-          // Dirección de la tesorería o contrato inteligente del juego (ejemplo)
           const treasuryAddress = "0x000000000000000000000000000000000000dEaD"; 
-          
           const tx = await tokenContract.transfer(treasuryAddress, stakeParsed);
-          document.getElementById('matchingSubtext').innerText = "Transacción enviada. Esperando confirmación de la red...";
+          document.getElementById('matchingSubtext').innerText = "Transacción enviada en Astralis Chain. Esperando confirmación...";
           await tx.wait();
         } else {
-          // Simulación de retraso de red si no hay contrato desplegado
-          await new Promise(resolve => setTimeout(resolve, 2500));
+          // Transacción nativa de ASTCH hacia la dirección de tesorería del juego
+          const treasuryAddress = "0x000000000000000000000000000000000000dEaD";
+          const tx = await signer.sendTransaction({
+            to: treasuryAddress,
+            value: ethers.utils.parseEther(stake.toString())
+          });
+          document.getElementById('matchingSubtext').innerText = "Transacción nativa confirmada en Astralis Chain. Buscando oponente...";
+          await tx.wait();
         }
 
-        // Actualizar saldo localmente descontando la apuesta
         userAstrBalance -= stake;
-        document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTR`;
+        document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
         updateRoomsState();
 
-        document.getElementById('matchingText').innerText = "¡Apuesta confirmada! Buscando oponente...";
-        document.getElementById('matchingSubtext').innerText = "Emparejando en la red descentralizada...";
+        document.getElementById('matchingText').innerText = "¡Apuesta confirmada en Astralis Chain!";
+        document.getElementById('matchingSubtext').innerText = "Emparejando en la red...";
 
         matchmakingTimer = setTimeout(() => {
           document.getElementById('matchingView').classList.add('hidden');
@@ -834,7 +909,7 @@
         console.error("Transacción de apuesta rechazada o fallida:", err);
         document.getElementById('matchingSpinner').style.display = "none";
         document.getElementById('matchingText').innerText = "Apuesta cancelada";
-        document.getElementById('matchingSubtext').innerText = "La transacción fue rechazada en MetaMask o ocurrió un error.";
+        document.getElementById('matchingSubtext').innerText = "La transacción fue rechazada en MetaMask o falló en la red.";
         document.getElementById('timeoutControls').classList.remove('hidden');
       }
     }
@@ -855,10 +930,10 @@
       currentRound = 1;
       matchIsOver = false;
 
-      document.getElementById('arenaTitle').innerText = `[ RANGO ${currentTier.toUpperCase()} // APUESTA: ${currentStake} ASTR ]`;
+      document.getElementById('arenaTitle').innerText = `[ RANGO ${currentTier.toUpperCase()} // APUESTA: ${currentStake} ASTCH ]`;
       updateScoreboard();
       document.getElementById('battleResult').innerText = "¡Duelo iniciado! Selecciona tu mano 3D.";
-      document.getElementById('vsStatus').innerText = "Rival conectado. ¡Elige tu seña!";
+      document.getElementById('vsStatus').innerText = "Oponente listo. ¡Elige tu seña!";
       document.getElementById('playerHandVisual').innerText = "🤜";
       document.getElementById('rivalHandVisual').innerText = "🤛";
       document.getElementById('choicesGrid').classList.remove('hidden');
@@ -916,31 +991,39 @@
 
       let finalMsg = "";
       if (playerWins > rivalWins) {
-        // Recompensa: se devuelve la apuesta inicial más el pozo del rival (doble del stake)
         const prizeReward = currentStake * 2;
         userAstrBalance += prizeReward;
-        finalMsg = `🏆 ¡VICTORIA TOTAL! Ganaste el duelo ${playerWins}-${rivalWins}. ¡Has ganado y se te han acreditado ${prizeReward} ASTR en tu billetera!`;
+        finalMsg = `🏆 ¡VICTORIA TOTAL! Ganaste el duelo ${playerWins}-${rivalWins}. ¡Se han acreditado ${prizeReward} ASTCH en tu billetera de Astralis Chain!`;
         if (typeof confetti === 'function') {
           confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
         }
       } else if (rivalWins > playerWins) {
-        finalMsg = `💀 ¡DERROTA EN EL DUELO! El rival ganó ${rivalWins}-${playerWins}. Perdiste tu apuesta de ${currentStake} ASTR.`;
+        finalMsg = `💀 ¡DERROTA! El rival ganó ${rivalWins}-${playerWins}. Perdiste tu apuesta de ${currentStake} ASTCH.`;
       } else {
-        // Empate: devolución de la apuesta
         userAstrBalance += currentStake;
-        finalMsg = `🤝 ¡DUELO EMPATADO! Se te reembolsa tu apuesta de ${currentStake} ASTR.`;
+        finalMsg = `🤝 ¡EMPATE! Se te reembolsa tu apuesta de ${currentStake} ASTCH.`;
       }
 
-      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTR`;
+      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
       updateRoomsState();
 
       document.getElementById('battleResult').innerText = finalMsg;
-      document.getElementById('vsStatus').innerText = "¡Duelo de Rondas de 5 Finalizado!";
+      document.getElementById('vsStatus').innerText = "¡Duelo Finalizado!";
     }
 
     function leaveRoom() {
       document.getElementById('arenaView').classList.add('hidden');
       document.getElementById('lobbyView').classList.remove('hidden');
+    }
+
+    // Escuchar cambios de red en MetaMask en tiempo real
+    if (window.ethereum) {
+      window.ethereum.on('chainChanged', (chainId) => {
+        window.location.reload();
+      });
+      window.ethereum.on('accountsChanged', (accounts) => {
+        window.location.reload();
+      });
     }
 
     updateRoomsState();
