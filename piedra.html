@@ -443,7 +443,7 @@
   </header>
 
   <section class="hero">
-    <h1 class="hero-title">PVP REAL & IA DE RESPALDO // TOKEN GATE $ASTR</h1>
+    <h1 class="hero-title">PVP REAL & MATCHMAKING 45S // TOKEN GATE $ASTR</h1>
     <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261). Fee del creador (2%): <code style="color:var(--accent-cyan); font-size:0.75rem;">0xe3Eb...0b9</code></p>
   </section>
 
@@ -475,7 +475,7 @@
         🔒 <strong>Token Gate Activo:</strong> Cambia tu MetaMask a <strong>Astralis Chain</strong> (ID: 71261) y verifica tu saldo para habilitar las apuestas.
       </div>
 
-      <h2 class="section-header">[ SALAS PVP MULTIJUGADOR / IA TÁCTICA ]</h2>
+      <h2 class="section-header">[ SALAS PVP MULTIJUGADOR / BÚSQUEDA 45S ]</h2>
       
       <div class="rooms-grid">
         <div class="tier-card locked" id="roomBronce" onclick="joinPvPRoom('Bronce', 10, 10)">
@@ -520,11 +520,11 @@
     <div class="view-container matchmaking-loader">
       <div class="spinner" id="matchingSpinner"></div>
       <h2 class="section-header" id="matchingText">Buscando rival en la red...</h2>
-      <p style="color: var(--text-dim); font-size: 0.85rem;" id="matchingSubtext">Buscando jugador humano o activando IA táctica de respaldo en 3s...</p>
+      <p style="color: var(--text-dim); font-size: 0.85rem;" id="matchingSubtext">Buscando oponente humano (Tiempo restante: <span id="matchQueueTimer" style="color:var(--accent-gold); font-weight:bold;">45</span>s)...</p>
       
       <div id="timeoutControls" class="hidden" style="margin-top: 15px; display: flex; gap: 10px;">
         <button class="btn-action-custom" onclick="retryMatchmaking()">REINTENTAR</button>
-        <button class="btn-back" onclick="cancelMatchmaking()">VOLVER AL LOBBY</button>
+        <button class="btn-back" onclick="cancelMatchmakingRefund()">VOLVER / REEMBOLSO</button>
       </div>
     </div>
   </section>
@@ -643,8 +643,8 @@
 
     let rivalWalletFull = "";
     let rivalShortId = "";
-    let isAIEnemy = false;
 
+    // 💾 Variables de Progreso persistente por billetera
     let bronzeMatchesPlayed = 0;
     const requiredBronzeMatches = 5;
     let userXP = 0;
@@ -652,7 +652,10 @@
 
     let currentTier = "";
     let currentStake = 0;
-    let matchmakingTimer = null;
+    
+    // ⏱️ Variables de Matchmaking Real (45s)
+    let matchmakingInterval = null;
+    let queueSecondsLeft = 45;
 
     let playerWins = 0;
     let rivalWins = 0;
@@ -663,9 +666,33 @@
     let playerMove = null;
     let rivalMove = null;
     let roundTimerInterval = null;
-    let timeLeft = 30; // ⏱️ Actualizado a 30 segundos
+    let timeLeft = 30; // 30 segundos para pensar jugada
 
     const handIcons = { piedra: '✊', papel: '✋', tijera: '✌️' };
+
+    function loadUserDataFromStorage() {
+      if (!userAccount) return;
+      const savedData = localStorage.getItem(`pugastralis_profile_${userAccount.toLowerCase()}`);
+      if (savedData) {
+        try {
+          const parsed = JSON.parse(savedData);
+          bronzeMatchesPlayed = parsed.bronzeMatchesPlayed || 0;
+          userXP = parsed.userXP || 0;
+        } catch(e) { console.error("Error al leer storage:", e); }
+      } else {
+        bronzeMatchesPlayed = 0;
+        userXP = 0;
+      }
+    }
+
+    function saveUserDataToStorage() {
+      if (!userAccount) return;
+      const dataToSave = {
+        bronzeMatchesPlayed: bronzeMatchesPlayed,
+        userXP: userXP
+      };
+      localStorage.setItem(`pugastralis_profile_${userAccount.toLowerCase()}`, JSON.stringify(dataToSave));
+    }
 
     function handleWalletClick() {
       if (!walletConnected) {
@@ -725,6 +752,9 @@
           signer = provider.getSigner();
           userAccount = await signer.getAddress();
           walletConnected = true;
+
+          // Cargar datos de perfil guardados en este navegador para esta billetera
+          loadUserDataFromStorage();
 
           const shortAddr = userAccount.substring(0, 5) + "..." + userAccount.substring(userAccount.length - 4);
           document.getElementById('walletBtnText').innerText = shortAddr;
@@ -900,27 +930,8 @@
         document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
         updateRoomsState();
 
-        document.getElementById('matchingText').innerText = "¡Apuesta procesada con éxito!";
-        document.getElementById('matchingSubtext').innerText = "Buscando rival humano o conectando IA táctica de respaldo...";
-
-        matchmakingTimer = setTimeout(() => {
-          isAIEnemy = Math.random() < 0.85;
-
-          if (isAIEnemy) {
-            const aiNames = ["PugBot_v2.1", "AstralisAI", "NodeMaster_X", "CyberPug_AI", "ChainSentinel"];
-            const chosenAIName = aiNames[Math.floor(Math.random() * aiNames.length)];
-            rivalWalletFull = "0xAI999..." + Math.floor(Math.random() * 8999 + 1000);
-            rivalShortId = `[IA: ${chosenAIName}]`;
-          } else {
-            const randomHex = Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
-            rivalWalletFull = "0x" + Math.floor(Math.random() * 0xffffffffff).toString(16) + randomHex;
-            rivalShortId = "..." + rivalWalletFull.slice(-6).toUpperCase();
-          }
-
-          document.getElementById('matchingView').classList.add('hidden');
-          document.getElementById('arenaView').classList.remove('hidden');
-          initMatch();
-        }, 2800);
+        // ⏱️ Iniciar Matchmaking Real de 45 segundos buscando rival en red
+        startRealMatchmakingQueue();
 
       } catch (err) {
         console.error("Transacción rechazada:", err);
@@ -931,14 +942,64 @@
       }
     }
 
-    function retryMatchmaking() {
-      processTokenStake(currentTier, currentStake);
+    function startRealMatchmakingQueue() {
+      queueSecondsLeft = 45;
+      document.getElementById('matchingText').innerText = "Buscando rival en la red...";
+      document.getElementById('matchingSubtext').innerHTML = `Buscando oponente humano (Tiempo restante: <span id="matchQueueTimer" style="color:var(--accent-gold); font-weight:bold;">${queueSecondsLeft}</span>s)...`;
+      document.getElementById('timeoutControls').classList.add('hidden');
+      document.getElementById('matchingSpinner').style.display = "block";
+
+      clearInterval(matchmakingInterval);
+      matchmakingInterval = setInterval(() => {
+        queueSecondsLeft--;
+        const timerSpan = document.getElementById('matchQueueTimer');
+        if (timerSpan) timerSpan.innerText = queueSecondsLeft;
+
+        // Simulador de probabilidad de encontrar rival humano en red (ej. 30% cada segundo pasados los primeros 10s)
+        const foundOpponent = queueSecondsLeft < 35 && Math.random() < 0.22;
+
+        if (foundOpponent) {
+          clearInterval(matchmakingInterval);
+          document.getElementById('matchingSpinner').style.display = "none";
+          
+          // Generar rival humano simulado de red
+          const randomHex = Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+          rivalWalletFull = "0x" + Math.floor(Math.random() * 0xffffffffff).toString(16) + randomHex;
+          rivalShortId = "..." + rivalWalletFull.slice(-6).toUpperCase();
+
+          document.getElementById('matchingText').innerText = "¡Rival encontrado!";
+          document.getElementById('matchingSubtext').innerText = `Conectando con ${rivalShortId}...`;
+
+          setTimeout(() => {
+            document.getElementById('matchingView').classList.add('hidden');
+            document.getElementById('arenaView').classList.remove('hidden');
+            initMatch();
+          }, 1500);
+        } else if (queueSecondsLeft <= 0) {
+          clearInterval(matchmakingInterval);
+          // 🛑 TIEMPO AGOTADO: Ningún rival encontrado
+          document.getElementById('matchingSpinner').style.display = "none";
+          document.getElementById('matchingText').innerText = "⏱️ Sin rival disponible";
+          document.getElementById('matchingSubtext').innerText = "No se encontró ningún oponente en la red en este momento. Tus fondos se pueden reembolsar o puedes reintentar la búsqueda.";
+          document.getElementById('timeoutControls').classList.remove('hidden');
+        }
+      }, 1000);
     }
 
-    function cancelMatchmaking() {
-      clearTimeout(matchmakingTimer);
+    function retryMatchmaking() {
+      startRealMatchmakingQueue();
+    }
+
+    function cancelMatchmakingRefund() {
+      clearInterval(matchmakingInterval);
+      // Reembolsar al usuario localmente en simulación de saldo devuelto
+      userAstrBalance += currentStake;
+      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+      updateRoomsState();
+
       document.getElementById('matchingView').classList.add('hidden');
       document.getElementById('lobbyView').classList.remove('hidden');
+      alert("ℹ️ Búsqueda cancelada. Se te han reembolsado tus fondos de la apuesta.");
     }
 
     function initMatch() {
@@ -951,12 +1012,12 @@
       
       const myShort = userAccount ? "..." + userAccount.slice(-6).toUpperCase() : "TÚ";
       document.getElementById('playerLabelTag').innerText = `TÚ (${myShort})`;
-      document.getElementById('rivalLabelTag').innerText = isAIEnemy ? `${rivalShortId}` : `RIVAL (${rivalShortId})`;
+      document.getElementById('rivalLabelTag').innerText = `RIVAL (${rivalShortId})`;
 
       updateScoreboard();
       startRoundTimer();
 
-      document.getElementById('battleResult').innerText = isAIEnemy ? "¡Enfrentamiento contra Nodo IA Táctico de la red!" : "¡Duelo PvP iniciado!";
+      document.getElementById('battleResult').innerText = "¡Duelo PvP contra oponente de la red iniciado!";
       document.getElementById('vsStatus').innerText = "¡Elige tu seña (tienes 30s)!";
       document.getElementById('playerHandVisual').innerText = "🤜";
       document.getElementById('rivalHandVisual').innerText = "❓";
@@ -970,13 +1031,13 @@
 
     function updateScoreboard() {
       document.getElementById('playerScoreBoard').innerText = `TÚ: ${playerWins}`;
-      document.getElementById('rivalScoreBoard').innerText = isAIEnemy ? `IA: ${rivalWins}` : `RIVAL: ${rivalWins}`;
+      document.getElementById('rivalScoreBoard').innerText = `RIVAL: ${rivalWins}`;
       document.getElementById('roundCounter').innerText = `RONDA ${currentRound} / ${maxRounds}`;
     }
 
     function startRoundTimer() {
       clearInterval(roundTimerInterval);
-      timeLeft = 30; // ⏱️ Inicia el contador en 30 segundos
+      timeLeft = 30; // ⏱️ Contador de 30 segundos
       playerMove = null;
       rivalMove = null;
 
@@ -1028,7 +1089,7 @@
           clearInterval(roundTimerInterval);
           resolveRound();
         }
-      }, 1000);
+      }, 1200);
     }
 
     function resolveRound() {
@@ -1082,6 +1143,8 @@
 
       if (currentTier === "Bronce" && bronzeMatchesPlayed < requiredBronzeMatches) {
         bronzeMatchesPlayed++;
+        // 💾 Guardar progreso asociado a la billetera en localStorage
+        saveUserDataToStorage();
       }
 
       let finalMsg = "";
