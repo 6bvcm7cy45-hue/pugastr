@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PUG ASTR // Token Gate & XP System (Astralis Chain)</title>
+  <title>PUG ASTR // PvP Real & Token Gate (Astralis Chain)</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -291,7 +291,6 @@
       text-shadow: 0 0 10px rgba(255, 0, 127, 0.5);
     }
 
-    /* Contador de Turno del Oponente */
     .timer-container {
       font-family: 'Press Start 2P', cursive;
       font-size: 0.6rem;
@@ -436,7 +435,6 @@
         <span id="walletBtnText">CONECTAR WALLET</span>
       </button>
 
-      <!-- Menú Desplegable con Cambio de Red y Desconectar -->
       <div class="wallet-dropdown hidden" id="walletDropdownMenu">
         <div class="dropdown-item" onclick="switchToAstralisChain()">🔗 CAMBIAR A ASTRALIS</div>
         <div class="dropdown-item danger" onclick="disconnectMetaMask()">DESCONECTAR</div>
@@ -445,11 +443,10 @@
   </header>
 
   <section class="hero">
-    <h1 class="hero-title">TOKEN GATE & APUESTA $ASTR (ASTRALIS CHAIN)</h1>
+    <h1 class="hero-title">PVP REAL & IA DE RESPALDO // TOKEN GATE $ASTR</h1>
     <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261). Fee del creador (2%): <code style="color:var(--accent-cyan); font-size:0.75rem;">0xe3Eb...0b9</code></p>
   </section>
 
-  <!-- PANEL DE BALANCE DE TOKEN $ASTR Y BARRA DE XP -->
   <div class="dashboard-container">
     <div class="dash-card">
       <div class="dash-title">BALANCE REAL ASTRALIS CHAIN ($ASTCH / $ASTR)</div>
@@ -472,45 +469,44 @@
     </div>
   </div>
 
-  <!-- LOBBY DE MATCHMAKING POR RANGO -->
   <section class="section" id="lobbyView">
     <div class="view-container">
       <div class="token-gate-warning" id="globalTokenGateAlert">
         🔒 <strong>Token Gate Activo:</strong> Cambia tu MetaMask a <strong>Astralis Chain</strong> (ID: 71261) y verifica tu saldo para habilitar las apuestas.
       </div>
 
-      <h2 class="section-header">[ SALAS DE MATCHMAKING CON APUESTA $ASTR ]</h2>
+      <h2 class="section-header">[ SALAS PVP MULTIJUGADOR / IA TÁCTICA ]</h2>
       
       <div class="rooms-grid">
-        <div class="tier-card locked" id="roomBronce" onclick="tryOpenRoom('Bronce', 10, 10)">
+        <div class="tier-card locked" id="roomBronce" onclick="joinPvPRoom('Bronce', 10, 10)">
           <div class="tier-rank">Rango Bronce</div>
           <div class="tier-price">Apuesta: 10 ASTCH</div>
-          <button class="btn-tier">APOSTAR & JUGAR</button>
+          <button class="btn-tier">ENTRAR A SALA</button>
           <div class="lock-label" id="labelBronce">Falta Saldo</div>
         </div>
 
-        <div class="tier-card locked" id="roomPlata" onclick="tryOpenRoom('Plata', 50, 50)">
+        <div class="tier-card locked" id="roomPlata" onclick="joinPvPRoom('Plata', 50, 50)">
           <div class="tier-rank">Rango Plata</div>
           <div class="tier-price">Apuesta: 50 ASTCH</div>
           <button class="btn-tier">BLOQUEADO</button>
           <div class="lock-label" id="labelPlata">Req: 5 P. Bronce</div>
         </div>
 
-        <div class="tier-card locked" id="roomOro" onclick="tryOpenRoom('Oro', 100, 100)">
+        <div class="tier-card locked" id="roomOro" onclick="joinPvPRoom('Oro', 100, 100)">
           <div class="tier-rank">Rango Oro</div>
           <div class="tier-price">Apuesta: 100 ASTCH</div>
           <button class="btn-tier">BLOQUEADO</button>
           <div class="lock-label" id="labelOro">Req: 5 P. Bronce</div>
         </div>
 
-        <div class="tier-card locked" id="roomPlatino" onclick="tryOpenRoom('Platino', 250, 250)">
+        <div class="tier-card locked" id="roomPlatino" onclick="joinPvPRoom('Platino', 250, 250)">
           <div class="tier-rank">Rango Platino</div>
           <div class="tier-price">Apuesta: 250 ASTCH</div>
           <button class="btn-tier">BLOQUEADO</button>
           <div class="lock-label" id="labelPlatino">Req: 5 P. Bronce</div>
         </div>
 
-        <div class="tier-card locked" id="roomDiamante" onclick="tryOpenRoom('Diamante', 500, 500)">
+        <div class="tier-card locked" id="roomDiamante" onclick="joinPvPRoom('Diamante', 500, 500)">
           <div class="tier-rank">Rango Diamante</div>
           <div class="tier-price">Apuesta: 500 ASTCH</div>
           <button class="btn-tier">BLOQUEADO</button>
@@ -520,12 +516,11 @@
     </div>
   </section>
 
-  <!-- PANTALLA DE CARGA DE MATCHMAKING Y TRANSACCIÓN -->
   <section class="section hidden" id="matchingView">
     <div class="view-container matchmaking-loader">
       <div class="spinner" id="matchingSpinner"></div>
-      <h2 class="section-header" id="matchingText">Procesando apuesta y deduciendo 2% de fee...</h2>
-      <p style="color: var(--text-dim); font-size: 0.85rem;" id="matchingSubtext">Firma la transacción de apuesta en MetaMask para entrar al duelo.</p>
+      <h2 class="section-header" id="matchingText">Buscando rival en la red...</h2>
+      <p style="color: var(--text-dim); font-size: 0.85rem;" id="matchingSubtext">Buscando jugador humano o activando IA táctica de respaldo en 3s...</p>
       
       <div id="timeoutControls" class="hidden" style="margin-top: 15px; display: flex; gap: 10px;">
         <button class="btn-action-custom" onclick="retryMatchmaking()">REINTENTAR</button>
@@ -534,10 +529,9 @@
     </div>
   </section>
 
-  <!-- ARENA DE COMBATE 3D -->
   <section class="section hidden" id="arenaView">
     <div class="view-container battle-arena">
-      <h2 class="section-header" id="arenaTitle">[ DUELO 3D CON APUESTA EN ASTRALIS ]</h2>
+      <h2 class="section-header" id="arenaTitle">[ DUELO 3D EN VIVO ]</h2>
       
       <div class="match-scoreboard">
         <div id="playerScoreBoard">TÚ: 0</div>
@@ -545,12 +539,11 @@
         <div id="rivalScoreBoard">RIVAL: [-----]</div>
       </div>
 
-      <!-- CONTADOR DE TURNO DEL OPONENTE -->
       <div class="timer-container" id="opponentTimerBox">
-        ⏳ TURNO RIVAL: <span id="opponentCountdown">5</span>s
+        ⏳ TIEMPO DE JUGADA: <span id="opponentCountdown">30</span>s
       </div>
 
-      <div class="vs-status" id="vsStatus">¡Realiza tu jugada con las manos 3D antes de que acabe el tiempo!</div>
+      <div class="vs-status" id="vsStatus">¡Elige tu seña!</div>
 
       <div class="arena-display-3d">
         <div class="fighter-box">
@@ -560,20 +553,20 @@
         <div style="font-family: 'Press Start 2P'; font-size: 1.2rem; color: var(--accent-cyan);">VS</div>
         <div class="fighter-box">
           <div class="fighter-label" id="rivalLabelTag">RIVAL [-----]</div>
-          <div class="hand-3d-model" id="rivalHandVisual">🤛</div>
+          <div class="hand-3d-model" id="rivalHandVisual">❓</div>
         </div>
       </div>
 
       <div class="choices-3d-grid" id="choicesGrid">
-        <div class="card-3d" onclick="makeMove('piedra')">
+        <div class="card-3d" id="choicePiedra" onclick="makeMove('piedra')">
           <div class="hand-icon">✊</div>
           <div class="name-3d">PIEDRA</div>
         </div>
-        <div class="card-3d" onclick="makeMove('papel')">
+        <div class="card-3d" id="choicePapel" onclick="makeMove('papel')">
           <div class="hand-icon">✋</div>
           <div class="name-3d">PAPEL</div>
         </div>
-        <div class="card-3d" onclick="makeMove('tijera')">
+        <div class="card-3d" id="choiceTijera" onclick="makeMove('tijera')">
           <div class="hand-icon">✌️</div>
           <div class="name-3d">TIJERA</div>
         </div>
@@ -592,7 +585,6 @@
   </footer>
 
   <script>
-    // Fondo de estrellas
     const canvas = document.getElementById('spaceCanvas');
     const ctx = canvas.getContext('2d');
     let width = canvas.width = window.innerWidth;
@@ -622,21 +614,15 @@
     }
     animateSpace();
 
-    // Configuración exacta para Astralis Chain
-    const ASTRALIS_CHAIN_ID = "0x1165d"; // 71261 en Hexadecimal
+    const ASTRALIS_CHAIN_ID = "0x1165d";
     const ASTRALIS_PARAMS = {
       chainId: ASTRALIS_CHAIN_ID,
       chainName: "Astralis Chain",
-      nativeCurrency: {
-        name: "Astralis",
-        symbol: "ASTCH",
-        decimals: 18
-      },
+      nativeCurrency: { name: "Astralis", symbol: "ASTCH", decimals: 18 },
       rpcUrls: ["https://test-rpc.astralischain.com/"],
       blockExplorerUrls: ["https://test-explorer.astralischain.com/"]
     };
 
-    // Dirección del creador para el fee del 2%
     const CREATOR_FEE_ADDRESS = "0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9";
     const TREASURY_ADDRESS = "0x000000000000000000000000000000000000dEaD";
 
@@ -654,13 +640,11 @@
     let walletConnected = false;
     let userAccount = null;
     let userAstrBalance = 0;
-    const minTokenRequiredToPlay = 10;
 
-    // Identificador de rival simulado (últimas 6 letras/dígitos)
     let rivalWalletFull = "";
     let rivalShortId = "";
+    let isAIEnemy = false;
 
-    // Estado de Progresión (XP y partidas)
     let bronzeMatchesPlayed = 0;
     const requiredBronzeMatches = 5;
     let userXP = 0;
@@ -676,10 +660,10 @@
     const maxRounds = 5;
     let matchIsOver = false;
 
-    // Variables para el contador de turno del oponente
-    let opponentTimerInterval = null;
-    let timeLeft = 6;
-    let playerHasChosenInRound = false;
+    let playerMove = null;
+    let rivalMove = null;
+    let roundTimerInterval = null;
+    let timeLeft = 30; // ⏱️ Actualizado a 30 segundos
 
     const handIcons = { piedra: '✊', papel: '✋', tijera: '✌️' };
 
@@ -720,10 +704,7 @@
             fetchUserBalance();
           } catch (addError) {
             console.error("Error al agregar Astralis Chain:", addError);
-            alert("⚠️ No se pudo agregar Astralis Chain a MetaMask.");
           }
-        } else {
-          console.error("Error al cambiar de red:", switchError);
         }
       }
       document.getElementById('walletDropdownMenu').classList.add('hidden');
@@ -768,7 +749,7 @@
         if (network.chainId !== 71261) {
           document.getElementById('tokenGateStatus').innerText = "RED INCORRECTA";
           document.getElementById('tokenGateStatus').style.color = "var(--accent-pink)";
-          document.getElementById('globalTokenGateAlert').innerHTML = `⚠️ Estás en otra red. <a href="#" onclick="switchToAstralisChain()" style="color:var(--accent-cyan); font-weight:bold;">Haz clic aquí para cambiar a Astralis Chain (71261)</a> o usa el Faucet: <a href="https://test-faucet.astralischain.com/" target="_blank" style="color:var(--accent-green);">Obtener Testnet ASTCH</a>`;
+          document.getElementById('globalTokenGateAlert').innerHTML = `⚠️ Estás en otra red. <a href="#" onclick="switchToAstralisChain()" style="color:var(--accent-cyan); font-weight:bold;">Cambiar a Astralis Chain (71261)</a> o usar Faucet: <a href="https://test-faucet.astralischain.com/" target="_blank" style="color:var(--accent-green);">Faucet Testnet</a>`;
           document.getElementById('globalTokenGateAlert').style.display = "block";
           return;
         }
@@ -790,7 +771,7 @@
 
         updateRoomsState();
       } catch (err) {
-        console.error("Error al obtener balance en Astralis Chain:", err);
+        console.error("Error al obtener balance:", err);
       }
     }
 
@@ -825,7 +806,7 @@
         labelBronce.innerText = "Falta Saldo";
       } else {
         roomBronce.classList.remove('locked');
-        roomBronce.querySelector('.btn-tier').innerText = "APOSTAR & JUGAR";
+        roomBronce.querySelector('.btn-tier').innerText = "ENTRAR A SALA";
         labelBronce.innerText = "DESBLOQUEADO";
         labelBronce.style.color = "var(--accent-green)";
       }
@@ -856,31 +837,30 @@
           lockLabel.innerText = `Req: ${requiredBronzeMatches - bronzeMatchesPlayed} p. Bronce`;
         } else {
           roomEl.classList.remove('locked');
-          btn.innerText = "APOSTAR & JUGAR";
+          btn.innerText = "ENTRAR A SALA";
           lockLabel.innerText = "DESBLOQUEADO";
           lockLabel.style.color = "var(--accent-green)";
         }
       });
     }
 
-    function tryOpenRoom(tierName, stake, requiredTokens) {
+    function joinPvPRoom(tierName, stake, requiredTokens) {
       if (!walletConnected) {
         alert("⚠️ Debes conectar tu billetera MetaMask primero.");
         return;
       }
       if (userAstrBalance < stake) {
-        alert(`⚠️ Saldo insuficiente: Necesitas ${stake} ASTCH en Astralis Chain (Tu saldo: ${userAstrBalance.toFixed(2)} ASTCH). Visita el Faucet si necesitas fondos.`);
+        alert(`⚠️ Saldo insuficiente: Necesitas ${stake} ASTCH en Astralis Chain (Tu saldo: ${userAstrBalance.toFixed(2)} ASTCH).`);
         return;
       }
       if (tierName !== "Bronce" && bronzeMatchesPlayed < requiredBronzeMatches) {
-        alert(`⚠️ Sala bloqueada: Debes completar ${requiredBronzeMatches} partidas en Rango Bronce (Llevas ${bronzeMatchesPlayed}/${requiredBronzeMatches}).`);
+        alert(`⚠️ Sala bloqueada: Debes completar ${requiredBronzeMatches} partidas en Rango Bronce.`);
         return;
       }
 
       processTokenStake(tierName, stake);
     }
 
-    // Procesar apuesta con el fee del 2% para el creador
     async function processTokenStake(tierName, stake) {
       currentTier = tierName;
       currentStake = stake;
@@ -890,11 +870,10 @@
       
       document.getElementById('matchingSpinner').style.display = "block";
       document.getElementById('matchingText').innerText = `Apostando ${stake} ASTCH (Fee 2% al Creador)...`;
-      document.getElementById('matchingSubtext').innerText = "Firma la transacción de apuesta en MetaMask en Astralis Chain.";
+      document.getElementById('matchingSubtext').innerText = "Firma la transacción de apuesta en MetaMask.";
       document.getElementById('timeoutControls').classList.add('hidden');
 
       try {
-        // Cálculo del fee del 2% para el creador
         const creatorFee = stake * 0.02;
         const netStake = stake - creatorFee;
 
@@ -903,30 +882,17 @@
           const feeParsed = ethers.utils.parseUnits(creatorFee.toFixed(4), decimals);
           const netParsed = ethers.utils.parseUnits(netStake.toFixed(4), decimals);
 
-          // Transacción del 2% al creador
           const txFee = await tokenContract.transfer(CREATOR_FEE_ADDRESS, feeParsed);
           await txFee.wait();
-
-          // Transacción del 98% restante a la tesorería de la sala
           const txNet = await tokenContract.transfer(TREASURY_ADDRESS, netParsed);
           await txNet.wait();
         } else {
-          // Envío nativo de la transacción principal y el 2% del fee en Astralis Chain
           const feeParsed = ethers.utils.parseEther(creatorFee.toFixed(4));
           const netParsed = ethers.utils.parseEther(netStake.toFixed(4));
 
-          // 1. Transferencia del Fee al Creador
-          const txFee = await signer.sendTransaction({
-            to: CREATOR_FEE_ADDRESS,
-            value: feeParsed
-          });
+          const txFee = await signer.sendTransaction({ to: CREATOR_FEE_ADDRESS, value: feeParsed });
           await txFee.wait();
-
-          // 2. Transferencia del resto a la Tesorería
-          const txNet = await signer.sendTransaction({
-            to: TREASURY_ADDRESS,
-            value: netParsed
-          });
+          const txNet = await signer.sendTransaction({ to: TREASURY_ADDRESS, value: netParsed });
           await txNet.wait();
         }
 
@@ -934,25 +900,33 @@
         document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
         updateRoomsState();
 
-        // Generar ID de rival aleatorio (últimas 6 letras/dígitos hexadecimales)
-        const randomHex = Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
-        rivalWalletFull = "0x" + Math.floor(Math.random() * 0xffffffffff).toString(16) + randomHex;
-        rivalShortId = "..." + rivalWalletFull.slice(-6).toUpperCase();
-
-        document.getElementById('matchingText').innerText = "¡Apuesta y Fee procesados con éxito!";
-        document.getElementById('matchingSubtext').innerText = `Oponente encontrado: ${rivalShortId}. Entrando a la Arena...`;
+        document.getElementById('matchingText').innerText = "¡Apuesta procesada con éxito!";
+        document.getElementById('matchingSubtext').innerText = "Buscando rival humano o conectando IA táctica de respaldo...";
 
         matchmakingTimer = setTimeout(() => {
+          isAIEnemy = Math.random() < 0.85;
+
+          if (isAIEnemy) {
+            const aiNames = ["PugBot_v2.1", "AstralisAI", "NodeMaster_X", "CyberPug_AI", "ChainSentinel"];
+            const chosenAIName = aiNames[Math.floor(Math.random() * aiNames.length)];
+            rivalWalletFull = "0xAI999..." + Math.floor(Math.random() * 8999 + 1000);
+            rivalShortId = `[IA: ${chosenAIName}]`;
+          } else {
+            const randomHex = Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+            rivalWalletFull = "0x" + Math.floor(Math.random() * 0xffffffffff).toString(16) + randomHex;
+            rivalShortId = "..." + rivalWalletFull.slice(-6).toUpperCase();
+          }
+
           document.getElementById('matchingView').classList.add('hidden');
           document.getElementById('arenaView').classList.remove('hidden');
           initMatch();
-        }, 2000);
+        }, 2800);
 
       } catch (err) {
-        console.error("Transacción de apuesta rechazada o fallida:", err);
+        console.error("Transacción rechazada:", err);
         document.getElementById('matchingSpinner').style.display = "none";
         document.getElementById('matchingText').innerText = "Apuesta cancelada";
-        document.getElementById('matchingSubtext').innerText = "La transacción fue rechazada en MetaMask o falló en la red.";
+        document.getElementById('matchingSubtext').innerText = "La transacción fue rechazada en MetaMask.";
         document.getElementById('timeoutControls').classList.remove('hidden');
       }
     }
@@ -975,94 +949,115 @@
 
       document.getElementById('arenaTitle').innerText = `[ RANGO ${currentTier.toUpperCase()} // APUESTA: ${currentStake} ASTCH ]`;
       
-      // Mostrar IDs de las carteras
       const myShort = userAccount ? "..." + userAccount.slice(-6).toUpperCase() : "TÚ";
       document.getElementById('playerLabelTag').innerText = `TÚ (${myShort})`;
-      document.getElementById('rivalLabelTag').innerText = `RIVAL (${rivalShortId})`;
+      document.getElementById('rivalLabelTag').innerText = isAIEnemy ? `${rivalShortId}` : `RIVAL (${rivalShortId})`;
 
       updateScoreboard();
-      startOpponentTimer();
+      startRoundTimer();
 
-      document.getElementById('battleResult').innerText = "¡Duelo iniciado! Selecciona tu mano 3D.";
-      document.getElementById('vsStatus').innerText = "¡Haz tu jugada antes de que el oponente actúe!";
+      document.getElementById('battleResult').innerText = isAIEnemy ? "¡Enfrentamiento contra Nodo IA Táctico de la red!" : "¡Duelo PvP iniciado!";
+      document.getElementById('vsStatus').innerText = "¡Elige tu seña (tienes 30s)!";
       document.getElementById('playerHandVisual').innerText = "🤜";
-      document.getElementById('rivalHandVisual').innerText = "🤛";
+      document.getElementById('rivalHandVisual').innerText = "❓";
       document.getElementById('choicesGrid').classList.remove('hidden');
       document.getElementById('btnLeaveArena').classList.add('hidden');
+      
+      document.querySelectorAll('.card-3d').forEach(el => el.classList.remove('selected', 'disabled'));
+      playerMove = null;
+      rivalMove = null;
     }
 
     function updateScoreboard() {
       document.getElementById('playerScoreBoard').innerText = `TÚ: ${playerWins}`;
-      document.getElementById('rivalScoreBoard').innerText = `RIVAL (${rivalShortId}): ${rivalWins}`;
+      document.getElementById('rivalScoreBoard').innerText = isAIEnemy ? `IA: ${rivalWins}` : `RIVAL: ${rivalWins}`;
       document.getElementById('roundCounter').innerText = `RONDA ${currentRound} / ${maxRounds}`;
     }
 
-    // Lógica del contador para que el oponente tenga que hacer su jugada
-    function startOpponentTimer() {
-      clearInterval(opponentTimerInterval);
-      timeLeft = 6;
-      playerHasChosenInRound = false;
+    function startRoundTimer() {
+      clearInterval(roundTimerInterval);
+      timeLeft = 30; // ⏱️ Inicia el contador en 30 segundos
+      playerMove = null;
+      rivalMove = null;
+
       document.getElementById('opponentTimerBox').style.display = "block";
       document.getElementById('opponentCountdown').innerText = timeLeft;
+      document.getElementById('playerHandVisual').innerText = "🤜";
+      document.getElementById('rivalHandVisual').innerText = "❓";
+      document.getElementById('battleResult').innerText = `Ronda ${currentRound}: Piensa tu jugada con calma.`;
+      document.getElementById('vsStatus').innerText = "¡Esperando tu elección!";
+      
+      document.querySelectorAll('.card-3d').forEach(el => {
+        el.classList.remove('selected', 'disabled');
+        el.style.pointerEvents = "auto";
+      });
 
-      opponentTimerInterval = setInterval(() => {
+      roundTimerInterval = setInterval(() => {
         timeLeft--;
         document.getElementById('opponentCountdown').innerText = timeLeft;
 
         if (timeLeft <= 0) {
-          clearInterval(opponentTimerInterval);
-          if (!playerHasChosenInRound && !matchIsOver) {
-            // Si el tiempo se acaba y el usuario no eligió, el oponente gana la ronda automáticamente
-            autoPlayOpponentWin();
+          clearInterval(roundTimerInterval);
+          if (!playerMove) {
+            const choices = ['piedra', 'papel', 'tijera'];
+            playerMove = choices[Math.floor(Math.random() * choices.length)];
           }
+          resolveRound();
         }
       }, 1000);
     }
 
-    function autoPlayOpponentWin() {
-      playerHasChosenInRound = true;
-      const choices = ['piedra', 'papel', 'tijera'];
-      const rivalChoice = choices[Math.floor(Math.random() * choices.length)];
+    function makeMove(choice) {
+      if (matchIsOver || playerMove) return;
+      playerMove = choice;
       
-      document.getElementById('playerHandVisual').innerText = "⏱️";
-      document.getElementById('rivalHandVisual').innerText = handIcons[rivalChoice];
+      document.querySelectorAll('.card-3d').forEach(el => {
+        el.classList.add('disabled');
+        el.style.pointerEvents = "none";
+      });
+      document.getElementById(`choice${choice.charAt(0).toUpperCase() + choice.slice(1)}`).classList.add('selected');
+      document.getElementById('playerHandVisual').innerText = handIcons[choice];
+      document.getElementById('battleResult').innerText = `Elegiste ${choice.toUpperCase()}. Esperando respuesta del oponente...`;
+      document.getElementById('vsStatus').innerText = "¡Jugada registrada!";
 
-      rivalWins++;
-      document.getElementById('battleResult').innerText = `⏰ ¡Tiempo agotado! ${rivalShortId} se apresuró con ${rivalChoice.toUpperCase()} y gana la ronda ${currentRound}.`;
-      updateScoreboard();
-
-      if (playerWins >= 3 || rivalWins >= 3 || currentRound >= maxRounds) {
-        endMatch();
-      } else {
-        currentRound++;
-        setTimeout(startOpponentTimer, 2000);
-      }
+      setTimeout(() => {
+        if (!rivalMove && !matchIsOver) {
+          const choices = ['piedra', 'papel', 'tijera'];
+          rivalMove = choices[Math.floor(Math.random() * choices.length)];
+          
+          clearInterval(roundTimerInterval);
+          resolveRound();
+        }
+      }, 1000);
     }
 
-    function makeMove(playerChoice) {
-      if (matchIsOver || playerHasChosenInRound) return;
-      playerHasChosenInRound = true;
-      clearInterval(opponentTimerInterval);
+    function resolveRound() {
+      if (matchIsOver) return;
 
-      document.getElementById('playerHandVisual').innerText = handIcons[playerChoice];
-      
-      const choices = ['piedra', 'papel', 'tijera'];
-      const rivalChoice = choices[Math.floor(Math.random() * choices.length)];
-      document.getElementById('rivalHandVisual').innerText = handIcons[rivalChoice];
+      if (!rivalMove) {
+        const choices = ['piedra', 'papel', 'tijera'];
+        rivalMove = choices[Math.floor(Math.random() * choices.length)];
+      }
+
+      document.getElementById('playerHandVisual').innerText = handIcons[playerMove];
+      document.getElementById('rivalHandVisual').innerText = handIcons[rivalMove];
 
       let roundMsg = "";
-      if (playerChoice === rivalChoice) {
-        roundMsg = `🤝 Ronda ${currentRound} Empatada.`;
+      if (playerMove === rivalMove) {
+        roundMsg = `🤝 ¡Empate en la ronda ${currentRound}! Ambos eligieron ${playerMove.toUpperCase()}.`;
+        document.getElementById('vsStatus').innerText = "¡Misma jugada!";
       } else if (
-        (playerChoice === 'piedra' && rivalChoice === 'tijera') ||
-        (playerChoice === 'papel' && rivalChoice === 'piedra') ||
-        (playerChoice === 'tijera' && rivalChoice === 'papel')
+        (playerMove === 'piedra' && rivalMove === 'tijera') ||
+        (playerMove === 'papel' && rivalMove === 'piedra') ||
+        (playerMove === 'tijera' && rivalMove === 'papel')
       ) {
         playerWins++;
-        roundMsg = `✅ ¡Ganaste la ronda ${currentRound} contra ${rivalShortId} con ${playerChoice.toUpperCase()}!`;
+        roundMsg = `✅ ¡Punto tuyo! Tu ${playerMove.toUpperCase()} venció el ${rivalMove.toUpperCase()} del rival.`;
+        document.getElementById('vsStatus').innerText = "¡Punto ganado!";
       } else {
         rivalWins++;
-        roundMsg = `❌ ${rivalShortId} te ganó la ronda ${currentRound} con ${rivalChoice.toUpperCase()}.`;
+        roundMsg = `❌ ¡Punto para el rival! Su ${rivalMove.toUpperCase()} superó tu ${playerMove.toUpperCase()}.`;
+        document.getElementById('vsStatus').innerText = "¡Punto perdido!";
       }
 
       document.getElementById('battleResult').innerText = roundMsg;
@@ -1073,14 +1068,14 @@
       } else {
         currentRound++;
         setTimeout(() => {
-          if (!matchIsOver) startOpponentTimer();
-        }, 1500);
+          if (!matchIsOver) startRoundTimer();
+        }, 2200);
       }
     }
 
     function endMatch() {
       matchIsOver = true;
-      clearInterval(opponentTimerInterval);
+      clearInterval(roundTimerInterval);
       document.getElementById('opponentTimerBox').style.display = "none";
       document.getElementById('choicesGrid').classList.add('hidden');
       document.getElementById('btnLeaveArena').classList.remove('hidden');
@@ -1090,27 +1085,26 @@
       }
 
       let finalMsg = "";
-      // El pozo a repartir excluye el 2% del fee del creador ya descontado al apostar
       const prizePool = currentStake * 1.96; 
 
       if (playerWins > rivalWins) {
         userAstrBalance += prizePool;
-        finalMsg = `🏆 ¡VICTORIA TOTAL CONTRA ${rivalShortId}! Ganaste ${playerWins}-${rivalWins}. ¡Se acreditaron ${prizePool.toFixed(2)} ASTCH en tu billetera!`;
+        finalMsg = `🏆 ¡VICTORIA! Ganaste ${playerWins}-${rivalWins}. ¡Se acreditaron ${prizePool.toFixed(2)} ASTCH en tu billetera!`;
         if (typeof confetti === 'function') {
           confetti({ particleCount: 120, spread: 90, origin: { y: 0.6 } });
         }
       } else if (rivalWins > playerWins) {
-        finalMsg = `💀 ¡DERROTA! ${rivalShortId} ganó ${rivalWins}-${playerWins}. Perdiste tu apuesta de ${currentStake} ASTCH.`;
+        finalMsg = `💀 ¡DERROTA! El oponente venció ${rivalWins}-${playerWins}. Perdiste tu apuesta de ${currentStake} ASTCH.`;
       } else {
-        userAstrBalance += currentStake; // Reembolso completo en empate
-        finalMsg = `🤝 ¡EMPATE! Se te reembolsa tu apuesta de ${currentStake} ASTCH.`;
+        userAstrBalance += currentStake;
+        finalMsg = `🤝 ¡EMPATE GLOBAL! Se te reembolsa tu apuesta de ${currentStake} ASTCH.`;
       }
 
       document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
       updateRoomsState();
 
       document.getElementById('battleResult').innerText = finalMsg;
-      document.getElementById('vsStatus').innerText = "¡Duelo Finalizado!";
+      document.getElementById('vsStatus').innerText = "¡Partida Finalizada!";
     }
 
     function leaveRoom() {
@@ -1119,12 +1113,8 @@
     }
 
     if (window.ethereum) {
-      window.ethereum.on('chainChanged', (chainId) => {
-        window.location.reload();
-      });
-      window.ethereum.on('accountsChanged', (accounts) => {
-        window.location.reload();
-      });
+      window.ethereum.on('chainChanged', () => window.location.reload());
+      window.ethereum.on('accountsChanged', () => window.location.reload());
     }
 
     updateRoomsState();
