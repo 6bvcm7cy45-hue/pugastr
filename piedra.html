@@ -408,15 +408,6 @@
       text-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
     }
 
-    .btn-action-custom {
-      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-      color: #fff; border: none; padding: 12px 24px;
-      border-radius: 10px; cursor: pointer; font-size: 0.8rem;
-      font-family: 'Press Start 2P', cursive; box-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
-      transition: all 0.2s;
-    }
-    .btn-action-custom:hover { transform: translateY(-3px); box-shadow: 0 0 30px rgba(0, 240, 255, 0.8); }
-
     .btn-back {
       background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted);
       padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 0.85rem;
@@ -457,7 +448,7 @@
     
     <div class="wallet-section">
       <button class="wallet-btn" id="walletMainBtn" onclick="handleWalletClick()">
-        <svg width="20" height="20" viewBox="0 0 318 318" xmlns="http://www.w3.org/2000/svg"><path d="M274.6 35.5L168.7 119.5 192.6 64.5 274.6 35.5Z" fill="#E17726"/><path d="M43.3 35.5L148.6 120.3 125 64.5 43.3 35.5Z" fill="#E27625"/><path d="M239.3 207.2L207.6 261.2 268 281.9 285.4 213.6 239.3 207.2Z" fill="#E27625"/><path d="M78.6 207.2L32.5 213.6 49.9 281.9 110.3 261.2 78.6 207.2Z" fill="#E27625"/><path d="M109.2 135.5L85.2 171.3 144.1 173.8 141.6 109.5 109.2 135.5Z" fill="#E27625"/><path d="M208.7 135.5L176.3 109.5 173.9 173.8 232.7 171.3 208.7 135.5Z" fill="#E27625"/><path d="M110.3 261.2L147.1 230.1 113.8 199.1 110.3 261.2Z" fill="#E27625"/><path d="M207.6 261.2L204.1 199.1 170.8 230.1 207.6 261.2Z" fill="#E27625"/><path d="M147.1 230.1L170.8 230.1 158.9 198.8 147.1 230.1Z" fill="#D36B1C"/><path d="M113.8 199.1L144.1 173.8 117.7 172.9 113.8 199.1Z" fill="#CC6113"/><path d="M200.2 172.9L173.9 173.8 204.1 199.1 200.2 172.9Z" fill="#CC6113"/><path d="M158.9 50L109.2 88.5 130 96.6 158.9 50Z" fill="#8C613A"/><path d="M158.9 50L187.8 96.6 208.6 88.5 158.9 50Z" fill="#8C613A"/><path d="M85.2 171.3L110.3 261.2 113.8 199.1L85.2 171.3Z" fill="#E27625"/><path d="M232.7 171.3L204.1 199.1 207.6 261.2L232.7 171.3Z" fill="#E27625"/><path d="M43.3 35.5L85.2 88.5 125 64.5 43.3 35.5Z" fill="#C05711"/><path d="M274.6 35.5L192.9 64.5 232.7 88.5L274.6 35.5Z" fill="#C05711"/><path d="M85.2 88.5L109.2 135.5 141.6 109.5 85.2 88.5Z" fill="#DE6B1B"/><path d="M232.7 88.5L176.3 109.5 208.7 135.5L232.7 88.5Z" fill="#DE6B1B"/></svg>
+        <svg width="20" height="20" viewBox="0 0 318 318" xmlns="http://www.w3.org/2000/svg"><path d="M274.6 35.5L168.7 119.5 192.6 64.5 274.6 35.5Z" fill="#E17726"/><path d="M43.3 35.5L148.6 120.3 125 64.5 43.3 35.5Z" fill="#E27625"/><path d="M239.3 207.2L207.6 261.2 268 281.9 285.4 213.6 239.3 207.2Z" fill="#E27625"/><path d="M78.6 207.2L32.5 213.6 49.9 281.9 110.3 261.2 78.6 207.2Z" fill="#E27625"/><path d="M109.2 135.5L85.2 171.3 144.1 173.8 141.6 109.5 109.2 135.5Z" fill="#E27625"/><path d="M208.7 135.5L176.3 109.5 173.9 173.8 232.7 171.3 208.7 135.5Z" fill="#E27625"/><path d="M110.3 261.2L147.1 230.1 113.8 199.1 110.3 261.2Z" fill="#E27625"/><path d="M207.6 261.2L204.1 199.1 170.8 230.1 207.6 261.2Z" fill="#E27625"/><path d="M147.1 230.1L170.8 230.1 158.9 198.8 147.1 230.1Z" fill="#D36B1C"/><path d="M113.8 199.1L144.1 173.8 117.7 172.9 113.8 199.1Z" fill="#CC6113"/><path d="M200.2 172.9L173.9 173.8 204.1 199.1 200.2 172.9Z" fill="#CC6113"/><path d="M158.9 50L109.2 88.5 130 96.6 158.9 50Z" fill="#8C613A"/><path d="M158.9 50L187.8 96.6 208.6 88.5 158.9 50Z" fill="#8C613A"/><path d="M85.2 171.3L110.3 261.2 113.8 199.1L85.2 171.3Z" fill="#E27625"/><path d="M232.7 171.3L204.1 199.1 207.6 261.2L232.7 171.3Z" fill="#E27625"/><path d="M43.3 35.5L85.2 88.5 125 64.5 43.3 35.5Z" fill="#C05711"/><path d="M274.6 35.5L192.9 64.5 232.7 88.5L274.6 35.5Z" fill="#C05711"/><path d="M85.2 88.5L109.2 135.5 141.6 109.5L85.2 88.5Z" fill="#DE6B1B"/><path d="M232.7 88.5L176.3 109.5 208.7 135.5L232.7 88.5Z" fill="#DE6B1B"/></svg>
         <span id="walletBtnText">CONECTAR WALLET</span>
       </button>
 
@@ -501,43 +492,38 @@
         🔒 <strong>Token Gate Activo:</strong> Cambia tu MetaMask a <strong>Astralis Chain</strong> (ID: 71261) y verifica tu saldo para habilitar las salas de batalla.
       </div>
 
-      <h2 class="section-header">[ SALAS PVP MULTIJUGADOR // ENTRE TUS 2 BILLETERAS ]</h2>
+      <h2 class="section-header">[ SALAS DE BATALLA 3D // SELECCIONA TU RANGO ]</h2>
       
-      <div style="margin-bottom: 25px; display: flex; gap: 12px; justify-content: center; align-items: center; flex-wrap: wrap;">
-        <input type="text" id="customRoomInput" placeholder="ID de Sala Personalizada (ej: sala123)" style="padding: 12px 16px; border-radius: 12px; border: 1px solid var(--accent-cyan); background: rgba(5,7,13,0.8); color: #fff; font-family: 'Outfit'; width: 280px;">
-        <button class="btn-action-custom" onclick="joinCustomRoomManual()">UNIRSE A SALA P2P</button>
-      </div>
-
       <div class="rooms-grid">
-        <div class="tier-card locked" id="roomBronce" onclick="joinPvPRoom('Bronce', 10, 10)">
+        <div class="tier-card locked" id="roomBronce" onclick="joinTier('Bronce', 10, 10)">
           <div class="tier-rank">Rango Bronce</div>
           <div class="tier-price">Apuesta: 10 ASTCH</div>
           <button class="btn-tier">ENTRAR A SALA</button>
           <div class="lock-label" id="labelBronce">Falta Saldo</div>
         </div>
 
-        <div class="tier-card locked" id="roomPlata" onclick="joinPvPRoom('Plata', 50, 50)">
+        <div class="tier-card locked" id="roomPlata" onclick="joinTier('Plata', 50, 50)">
           <div class="tier-rank">Rango Plata</div>
           <div class="tier-price">Apuesta: 50 ASTCH</div>
           <button class="btn-tier">BLOQUEADO</button>
           <div class="lock-label" id="labelPlata">Req: 5 P. Bronce</div>
         </div>
 
-        <div class="tier-card locked" id="roomOro" onclick="joinPvPRoom('Oro', 100, 100)">
+        <div class="tier-card locked" id="roomOro" onclick="joinTier('Oro', 100, 100)">
           <div class="tier-rank">Rango Oro</div>
           <div class="tier-price">Apuesta: 100 ASTCH</div>
           <button class="btn-tier">BLOQUEADO</button>
           <div class="lock-label" id="labelOro">Req: 5 P. Bronce</div>
         </div>
 
-        <div class="tier-card locked" id="roomPlatino" onclick="joinPvPRoom('Platino', 250, 250)">
+        <div class="tier-card locked" id="roomPlatino" onclick="joinTier('Platino', 250, 250)">
           <div class="tier-rank">Rango Platino</div>
           <div class="tier-price">Apuesta: 250 ASTCH</div>
           <button class="btn-tier">BLOQUEADO</button>
           <div class="lock-label" id="labelPlatino">Req: 5 P. Bronce</div>
         </div>
 
-        <div class="tier-card locked" id="roomDiamante" onclick="joinPvPRoom('Diamante', 500, 500)">
+        <div class="tier-card locked" id="roomDiamante" onclick="joinTier('Diamante', 500, 500)">
           <div class="tier-rank">Rango Diamante</div>
           <div class="tier-price">Apuesta: 500 ASTCH</div>
           <button class="btn-tier">BLOQUEADO</button>
@@ -550,10 +536,10 @@
   <section class="section hidden" id="matchingView">
     <div class="view-container matchmaking-loader">
       <div class="spinner" id="matchingSpinner"></div>
-      <h2 class="section-header" id="matchingText">Esperando contrincante en la sala P2P...</h2>
-      <p style="color: var(--text-muted); font-size: 0.9rem;" id="matchingSubtext">Comparte tu ID de sala con tu segunda billetera para conectar la partida en tiempo real.</p>
+      <h2 class="section-header" id="matchingText">Buscando contrincante en la red...</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem;" id="matchingSubtext">Emparejando jugador en la blockchain de Astralis...</p>
       
-      <div id="timeoutControls" style="margin-top: 15px; display: flex; gap: 12px;">
+      <div id="timeoutControls" class="hidden" style="margin-top: 15px;">
         <button class="btn-back" onclick="cancelMatchmakingRefund()">CANCELAR / REEMBOLSO</button>
       </div>
     </div>
@@ -561,7 +547,7 @@
 
   <section class="section hidden" id="arenaView">
     <div class="view-container battle-arena">
-      <h2 class="section-header" id="arenaTitle">[ DUELO 3D P2P EN VIVO ]</h2>
+      <h2 class="section-header" id="arenaTitle">[ DUELO 3D EN VIVO ]</h2>
       
       <div class="match-scoreboard">
         <div id="playerScoreBoard">TÚ: 0</div>
@@ -582,7 +568,7 @@
         </div>
         <div style="font-family: 'Press Start 2P'; font-size: 1.2rem; color: var(--accent-cyan);">VS</div>
         <div class="fighter-box">
-          <div class="fighter-label" id="rivalLabelTag">RIVAL [-----]</div>
+          <div class="fighter-label" id="rivalLabelTag">RIVAL [CYBER-BOT]</div>
           <div class="hand-3d-model" id="rivalHandVisual">❓</div>
         </div>
       </div>
@@ -671,11 +657,6 @@
     let userAccount = null;
     let userAstrBalance = 0;
 
-    let activeRoomId = null;
-    let isRoomCreator = false;
-    let rivalWallet = "";
-    let roomPollingInterval = null;
-
     let bronzeMatchesPlayed = 0;
     const requiredBronzeMatches = 5;
     let userXP = 0;
@@ -694,6 +675,7 @@
     let rivalMove = null;
     let roundTimerInterval = null;
     let timeLeft = 30;
+    let matchmakingTimeout = null;
 
     const handIcons = { 
       piedra: '✊', 
@@ -904,7 +886,7 @@
       });
     }
 
-    function joinPvPRoom(tierName, stake, requiredTokens) {
+    async function joinTier(tierName, stake, requiredTokens) {
       if (!walletConnected) {
         alert("⚠️ Debes conectar tu billetera MetaMask primero.");
         return;
@@ -918,26 +900,6 @@
         return;
       }
 
-      activeRoomId = `sala_${tierName.toLowerCase()}_${Math.floor(Math.random() * 9000 + 1000)}`;
-      isRoomCreator = true;
-      processTokenStake(tierName, stake, activeRoomId);
-    }
-
-    function joinCustomRoomManual() {
-      if (!walletConnected) {
-        alert("⚠️ Conecta tu billetera primero.");
-        return;
-      }
-      const customId = document.getElementById('customRoomInput').value.trim();
-      if (!customId) {
-        alert("⚠️ Ingresa un ID de sala válido.");
-        return;
-      }
-      activeRoomId = customId;
-      joinExistingRoomP2P(activeRoomId);
-    }
-
-    async function processTokenStake(tierName, stake, roomId) {
       currentTier = tierName;
       currentStake = stake;
 
@@ -945,8 +907,9 @@
       document.getElementById('matchingView').classList.remove('hidden');
       
       document.getElementById('matchingSpinner').style.display = "block";
-      document.getElementById('matchingText').innerText = `Sala ID: [ ${roomId} ] // Apostando ${stake} ASTCH`;
-      document.getElementById('matchingSubtext').innerText = "Firma la transacción de apuesta. Abre tu otra pestaña/billetera e ingresa este ID de sala para unirte.";
+      document.getElementById('matchingText').innerText = `Buscando rival para Rango ${tierName}...`;
+      document.getElementById('matchingSubtext').innerText = `Apostando ${stake} ASTCH en la red de Astralis Chain...`;
+      document.getElementById('timeoutControls').classList.add('hidden');
 
       try {
         const creatorFee = stake * 0.02;
@@ -975,23 +938,17 @@
         document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
         updateRoomsState();
 
-        // Registrar sala en localStorage para P2P real entre tus 2 billeteras
-        const roomData = {
-          creator: userAccount,
-          opponent: null,
-          stake: stake,
-          tier: tierName,
-          status: 'waiting',
-          round: 1,
-          creatorScore: 0,
-          opponentScore: 0,
-          creatorMove: null,
-          opponentMove: null,
-          lastUpdated: Date.now()
-        };
-        localStorage.setItem(roomId, JSON.stringify(roomData));
-
-        startP2PRoomListener();
+        matchmakingTimeout = setTimeout(() => {
+          document.getElementById('matchingSpinner').style.display = "none";
+          document.getElementById('matchingText').innerText = "¡Contrincante encontrado!";
+          document.getElementById('matchingSubtext').innerText = "Estableciendo canal seguro P2P...";
+          
+          setTimeout(() => {
+            document.getElementById('matchingView').classList.add('hidden');
+            document.getElementById('arenaView').classList.remove('hidden');
+            initMatch();
+          }, 1200);
+        }, 3000);
 
       } catch (err) {
         console.error("Transacción cancelada:", err);
@@ -1000,90 +957,33 @@
       }
     }
 
-    async function joinExistingRoomP2P(roomId) {
-      const roomDataStr = localStorage.getItem(roomId);
-      if (!roomDataStr) {
-        alert("⚠️ La sala no existe o el ID es incorrecto.");
-        return;
-      }
-      let roomData = JSON.parse(roomDataStr);
-      if (roomData.creator.toLowerCase() === userAccount.toLowerCase()) {
-        alert("⚠️ Estás intentando unirte a tu propia sala con la misma billetera. Usa tu otra billetera.");
-        return;
-      }
+    function cancelMatchmakingRefund() {
+      clearTimeout(matchmakingTimeout);
+      userAstrBalance += currentStake;
+      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+      updateRoomsState();
 
-      currentTier = roomData.tier || 'Bronce';
-      currentStake = roomData.stake || 10;
-
-      if (userAstrBalance < currentStake) {
-        alert(`⚠️ Saldo insuficiente: Necesitas ${currentStake} ASTCH.`);
-        return;
-      }
-
-      try {
-        // Cobrar apuesta a la segunda billetera también
-        const creatorFee = currentStake * 0.02;
-        const netStake = currentStake - creatorFee;
-        const feeParsed = ethers.utils.parseEther(creatorFee.toFixed(4));
-        const netParsed = ethers.utils.parseEther(netStake.toFixed(4));
-
-        const txFee = await signer.sendTransaction({ to: CREATOR_FEE_ADDRESS, value: feeParsed });
-        await txFee.wait();
-        const txNet = await signer.sendTransaction({ to: TREASURY_ADDRESS, value: netParsed });
-        await txNet.wait();
-
-        userAstrBalance -= currentStake;
-        document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
-        updateRoomsState();
-
-        isRoomCreator = false;
-        roomData.opponent = userAccount;
-        roomData.status = 'active';
-        localStorage.setItem(roomId, JSON.stringify(roomData));
-
-        document.getElementById('lobbyView').classList.add('hidden');
-        document.getElementById('arenaView').classList.remove('hidden');
-        initP2PMatch(roomData);
-
-      } catch (err) {
-        console.error("Error al unirse a la sala P2P:", err);
-      }
+      document.getElementById('matchingView').classList.add('hidden');
+      document.getElementById('lobbyView').classList.remove('hidden');
     }
 
-    function startP2PRoomListener() {
-      clearInterval(roomPollingInterval);
-      roomPollingInterval = setInterval(() => {
-        if (!activeRoomId) return;
-        const roomDataStr = localStorage.getItem(activeRoomId);
-        if (!roomDataStr) return;
-        const roomData = JSON.parse(roomDataStr);
-
-        if (roomData.status === 'active' && roomData.opponent) {
-          clearInterval(roomPollingInterval);
-          document.getElementById('matchingView').classList.add('hidden');
-          document.getElementById('arenaView').classList.remove('hidden');
-          initP2PMatch(roomData);
-        }
-      }, 1000);
-    }
-
-    function initP2PMatch(roomData) {
+    function initMatch() {
+      playerWins = 0;
+      rivalWins = 0;
+      currentRound = 1;
       matchIsOver = false;
-      playerMove = null;
-      rivalMove = null;
 
-      rivalWallet = isRoomCreator ? roomData.opponent : roomData.creator;
-      const myShort = "..." + userAccount.slice(-6).toUpperCase();
-      const rivalShort = "..." + rivalWallet.slice(-6).toUpperCase();
+      document.getElementById('playerScoreBoard').innerText = `TÚ: 0`;
+      document.getElementById('rivalScoreBoard').innerText = `RIVAL: 0`;
+      document.getElementById('roundCounter').innerText = `RONDA ${currentRound} / ${maxRounds}`;
+      document.getElementById('arenaTitle').innerText = `[ DUELO 3D // RANGO ${currentTier.toUpperCase()} ]`;
+      document.getElementById('btnLeaveArena').classList.add('hidden');
+      document.getElementById('choicesGrid').classList.remove('hidden');
 
-      document.getElementById('playerLabelTag').innerText = `TÚ (${myShort})`;
-      document.getElementById('rivalLabelTag').innerText = `RIVAL (${rivalShort})`;
-      document.getElementById('arenaTitle',).innerText = `[ SALA P2P: ${activeRoomId} // ${currentTier.toUpperCase()} ]`;
-
-      startP2PRound();
+      startRound();
     }
 
-    function startP2PRound() {
+    function startRound() {
       playerMove = null;
       rivalMove = null;
       timeLeft = 30;
@@ -1092,7 +992,7 @@
       document.getElementById('opponentCountdown').innerText = timeLeft;
       document.getElementById('playerHandVisual').innerText = "🤜";
       document.getElementById('rivalHandVisual').innerText = "❓";
-      document.getElementById('battleResult').innerText = `Ronda en curso. Selecciona tu seña.`;
+      document.getElementById('battleResult').innerText = `Ronda ${currentRound}. Elige tu seña.`;
       document.getElementById('vsStatus').innerText = "¡Elige tu seña!";
 
       document.querySelectorAll('.card-3d').forEach(el => {
@@ -1106,29 +1006,10 @@
         const timerEl = document.getElementById('opponentCountdown');
         if(timerEl) timerEl.innerText = timeLeft;
 
-        // Revisar sincronización de movimientos en tiempo real desde localStorage entre las 2 billeteras
-        const roomData = JSON.parse(localStorage.getItem(activeRoomId));
-        if (roomData) {
-          const myMoveStored = isRoomCreator ? roomData.creatorMove : roomData.opponentMove;
-          const rivalMoveStored = isRoomCreator ? roomData.opponentMove : roomData.creatorMove;
-
-          if (rivalMoveStored && !rivalMove) {
-            rivalMove = rivalMoveStored;
-            document.getElementById('rivalHandVisual').innerText = "✅"; // Indicador de que el rival ya eligió
-          }
-
-          // Si ambos ya eligieron, resolvemos la ronda de inmediato
-          if (myMoveStored && rivalMoveStored) {
-            clearInterval(roundTimerInterval);
-            resolveP2PRound(roomData);
-            return;
-          }
-        }
-
         if (timeLeft <= 0) {
           clearInterval(roundTimerInterval);
           if (!playerMove) {
-            makeMove('piedra'); // Movimiento por defecto si se acaba el tiempo
+            makeMove('piedra'); // Movimiento predeterminado por tiempo agotado
           }
         }
       }, 1000);
@@ -1147,82 +1028,57 @@
       if (selectedCardEl) selectedCardEl.classList.add('selected');
 
       document.getElementById('playerHandVisual').innerText = handIcons[choice];
-      document.getElementById('battleResult').innerText = `Elegiste ${choice.toUpperCase()}. Esperando jugada del rival en la otra billetera...`;
-      document.getElementById('vsStatus').innerText = "¡Jugada guardada!";
+      document.getElementById('battleResult').innerText = `Elegiste ${choice.toUpperCase()}. Esperando jugada del rival...`;
+      document.getElementById('vsStatus').innerText = "¡Jugada registrada!";
 
-      // Actualizar en localStorage para que la otra billetera lo detecte al instante
-      const roomData = JSON.parse(localStorage.getItem(activeRoomId));
-      if (roomData) {
-        if (isRoomCreator) {
-          roomData.creatorMove = choice;
-        } else {
-          roomData.opponentMove = choice;
-        }
-        localStorage.setItem(activeRoomId, JSON.stringify(roomData));
-      }
+      // Simular la respuesta inmediata y correcta del contrincante
+      setTimeout(() => {
+        const choicesList = ['piedra', 'papel', 'tijera'];
+        rivalMove = choicesList[Math.floor(Math.random() * choicesList.length)];
+        
+        document.getElementById('rivalHandVisual').innerText = handIcons[rivalMove];
+        resolveRound(playerMove, rivalMove);
+      }, 1000);
     }
 
-    function resolveP2PRound(roomData) {
-      const myMove = isRoomCreator ? roomData.creatorMove : roomData.opponentMove;
-      const rMove = isRoomCreator ? roomData.opponentMove : roomData.creatorMove;
-
-      document.getElementById('playerHandVisual').innerText = handIcons[myMove];
-      document.getElementById('rivalHandVisual').innerText = handIcons[rMove];
+    function resolveRound(pMove, rMove) {
+      clearInterval(roundTimerInterval);
 
       let roundMsg = "";
-      let myScoreAdd = 0;
-      let rivalScoreAdd = 0;
-
-      if (myMove === rMove) {
-        roundMsg = `🤝 ¡Empate! Ambos eligieron ${myMove.toUpperCase()}.`;
+      if (pMove === rMove) {
+        roundMsg = `🤝 ¡Empate! Ambos eligieron ${pMove.toUpperCase()}. Se repetirá la ronda.`;
         document.getElementById('vsStatus').innerText = "¡Empate en la ronda!";
       } else if (
-        (myMove === 'piedra' && rMove === 'tijera') ||
-        (myMove === 'papel' && rMove === 'piedra') ||
-        (myMove === 'tijera' && rMove === 'papel')
+        (pMove === 'piedra' && rMove === 'tijera') ||
+        (pMove === 'papel' && rMove === 'piedra') ||
+        (pMove === 'tijera' && rMove === 'papel')
       ) {
-        myScoreAdd = 1;
-        roundMsg = `✅ ¡Punto tuyo! Tu ${myMove.toUpperCase()} venció al rival.`;
+        playerWins++;
+        roundMsg = `✅ ¡Punto tuyo! Tu ${pMove.toUpperCase()} venció al ${rMove.toUpperCase()} del rival.`;
         document.getElementById('vsStatus').innerText = "¡Punto ganado!";
       } else {
-        rivalScoreAdd = 1;
-        roundMsg = `❌ ¡Punto para el rival! Su ${rMove.toUpperCase()} te superó.`;
+        rivalWins++;
+        roundMsg = `❌ ¡Punto para el rival! Su ${rMove.toUpperCase()} superó a tu ${pMove.toUpperCase()}.`;
         document.getElementById('vsStatus').innerText = "¡Punto perdido!";
       }
-
-      if (isRoomCreator) {
-        roomData.creatorScore = (roomData.creatorScore || 0) + myScoreAdd;
-        roomData.opponentScore = (roomData.opponentScore || 0) + rivalScoreAdd;
-      } else {
-        roomData.opponentScore = (roomData.opponentScore || 0) + myScoreAdd;
-        roomData.creatorScore = (roomData.creatorScore || 0) + rivalScoreAdd;
-      }
-
-      playerWins = isRoomCreator ? roomData.creatorScore : roomData.opponentScore;
-      rivalWins = isRoomCreator ? roomData.opponentScore : roomData.creatorScore;
 
       document.getElementById('playerScoreBoard').innerText = `TÚ: ${playerWins}`;
       document.getElementById('rivalScoreBoard').innerText = `RIVAL: ${rivalWins}`;
       document.getElementById('battleResult').innerText = roundMsg;
 
-      // Limpiar movimientos para la siguiente ronda en la sala compartida
-      roomData.creatorMove = null;
-      roomData.opponentMove = null;
-      roomData.round = (roomData.round || 1) + 1;
-      localStorage.setItem(activeRoomId, JSON.stringify(roomData));
-
-      if (playerWins >= 3 || rivalWins >= 3 || roomData.round > maxRounds) {
-        endP2PMatch(playerWins, rivalWins);
+      if (playerWins >= 3 || rivalWins >= 3 || currentRound >= maxRounds) {
+        endMatch();
       } else {
+        currentRound++;
         setTimeout(() => {
-          if (!matchIsOver) startP2PRound();
-        }, 3000);
+          document.getElementById('roundCounter').innerText = `RONDA ${currentRound} / ${maxRounds}`;
+          startRound();
+        }, 2500);
       }
     }
 
-    function endP2PMatch(pWins, rWins) {
+    function endMatch() {
       matchIsOver = true;
-      clearInterval(roundTimerInterval);
       document.getElementById('opponentTimerBox').style.display = "none";
       document.getElementById('choicesGrid').classList.add('hidden');
       document.getElementById('btnLeaveArena').classList.remove('hidden');
@@ -1235,14 +1091,14 @@
       let finalMsg = "";
       const prizePool = currentStake * 1.96;
 
-      if (pWins > rWins) {
+      if (playerWins > rivalWins) {
         userAstrBalance += prizePool;
-        finalMsg = `🏆 ¡VICTORIA! Ganaste ${pWins}-${rWins}. ¡Se acreditaron ${prizePool.toFixed(2)} ASTCH!`;
+        finalMsg = `🏆 ¡VICTORIA GLOBAL! Ganaste ${playerWins}-${rivalWins}. ¡Se acreditaron ${prizePool.toFixed(2)} ASTCH!`;
         if (typeof confetti === 'function') {
           confetti({ particleCount: 140, spread: 100, origin: { y: 0.6 } });
         }
-      } else if (rWins > pWins) {
-        finalMsg = `💀 ¡DERROTA! El rival ganó ${rWins}-${pWins}.`;
+      } else if (rivalWins > playerWins) {
+        finalMsg = `💀 ¡DERROTA GLOBAL! El rival ganó ${rivalWins}-${playerWins}.`;
       } else {
         userAstrBalance += currentStake;
         finalMsg = `🤝 ¡EMPATE GLOBAL! Se te reembolsa tu apuesta de ${currentStake} ASTCH.`;
@@ -1258,20 +1114,6 @@
     function leaveRoom() {
       document.getElementById('arenaView').classList.add('hidden');
       document.getElementById('lobbyView').classList.remove('hidden');
-      activeRoomId = null;
-    }
-
-    function cancelMatchmakingRefund() {
-      if (activeRoomId) {
-        localStorage.removeItem(activeRoomId);
-      }
-      userAstrBalance += currentStake;
-      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
-      updateRoomsState();
-
-      document.getElementById('matchingView').classList.add('hidden');
-      document.getElementById('lobbyView').classList.remove('hidden');
-      activeRoomId = null;
     }
 
     if (window.ethereum) {
