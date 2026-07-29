@@ -430,9 +430,10 @@
       </p>
     </div>
 
+    <!-- CONTADOR -->
     <div class="countdown-container">
       <div class="time-box">
-        <span class="time-num" id="cd-days">30</span>
+        <span class="time-num" id="cd-days">00</span>
         <span class="time-label" id="t-lbl-days">Días</span>
       </div>
       <div class="time-box">
@@ -538,7 +539,7 @@
     }, 800);
 
     /* ========================================================
-       1. CANVAS DE ESPACIO ORDENADO (MANTENIENDO DISTANCIA Y LÍMITE)
+       1. CANVAS DE ESPACIO ORDENADO
        ======================================================== */
     const canvas = document.getElementById('spaceCanvas');
     const ctx = canvas.getContext('2d');
@@ -927,7 +928,7 @@
         btnMinigame: "🎮 PLAY MINIGAME",
         initialQuote: "✨ Press the controller to start transmission!",
         disclaimerTitle: "⚠️ DISCLAIMER",
-        disclaimerText: "This project is for entertainment and community purposes only. We do not offer financial advice, and all investment decisions are the responsibility of the user. Pachu's journey is full of adventure, but also risks; be sure to do your research before joining any expedition."
+        disclaimerText: "This project is for entertainment and community purposes only. No offer of financial advice, and all investment decisions are the responsibility of the user. Pachu's journey is full of adventure, but also risks; be sure to do your research before joining any expedition."
       }
     };
 
@@ -963,15 +964,34 @@
     }
 
     /* ========================================================
-       3. CONTADOR Y ACCIÓN DEL MINIJUEGO
+       3. CONTADOR PERSISTENTE CON FECHA FIJA EN CÓDIGO
        ======================================================== */
-    const launchTarget = new Date().getTime() + (30 * 24 * 60 * 60 * 1000);
+    // AQUÍ PUEDES CAMBIAR LA FECHA Y HORA EXACTA DE TU LANZAMIENTO (Año, Mes [0-11], Día, Hora, Minuto)
+    // Ejemplo: 15 de Octubre de 2026 a las 18:00 horas
+    const targetDateSetting = new Date(2026, 8, 15, 18, 0, 0).getTime();
+
+    // Revisa si ya hay una fecha guardada, si no, usa la que pusiste arriba y la guarda en localStorage
+    let savedTarget = localStorage.getItem("pugGalaxyLaunchTarget");
+    let launchTarget;
+
+    if (savedTarget) {
+      launchTarget = parseInt(savedTarget, 10);
+    } else {
+      launchTarget = targetDateSetting;
+      localStorage.setItem("pugGalaxyLaunchTarget", launchTarget);
+    }
 
     function updateCountdown() {
       const now = new Date().getTime();
       const diff = launchTarget - now;
 
-      if (diff <= 0) return;
+      if (diff <= 0) {
+        document.getElementById("cd-days").innerText = "00";
+        document.getElementById("cd-hours").innerText = "00";
+        document.getElementById("cd-mins").innerText = "00";
+        document.getElementById("cd-secs").innerText = "00";
+        return;
+      }
 
       const days = Math.floor(diff / (1000 * 60 * 60 * 24));
       const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
@@ -1026,7 +1046,8 @@
     function handleMinigameClick(event) {
       if (!minigameUnlocked) {
         event.preventDefault();
-        alert("¡Primero debes presionar el botón de disparar láser para activar el minijuego!");
+        const currentLang = document.getElementById("langSelect").value;
+        alert(currentLang === 'es' ? "¡Primero debes presionar el botón de disparar láser para activar el minijuego!" : "You must press the laser fire button first to unlock the minigame!");
       }
     }
 
