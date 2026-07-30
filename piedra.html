@@ -3,19 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PUG ASTR // PvP P2P Real Arena</title>
+  <title>PUGASTR 3D Arena // Real P2P Cyber Arena</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
   
+  <!-- Librerías de Terceros (CDNs estables) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
 
   <style>
     :root {
       --bg-deep: #05070d;
-      --bg-card: rgba(13, 17, 30, 0.85);
+      --bg-card: rgba(13, 17, 30, 0.88);
       --border-cyber: rgba(0, 240, 255, 0.3);
       --accent-cyan: #00f0ff;
       --accent-purple: #9d00ff;
@@ -35,41 +37,96 @@
       overflow-x: hidden;
       position: relative;
       user-select: none;
-      -webkit-user-select: none;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    #spaceCanvas {
-      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; pointer-events: none;
+    #webglCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .ui-layer {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
     }
 
     header {
-      display: flex; justify-content: space-between; align-items: center; padding: 16px 6%;
-      border-bottom: 1px solid var(--border-cyber); background: rgba(5, 7, 13, 0.88);
-      backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 1000;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 5%;
+      border-bottom: 1px solid var(--border-cyber);
+      background: rgba(5, 7, 13, 0.85);
+      backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
     }
 
     .brand-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
-    .brand-svg { width: 44px; height: 44px; filter: drop-shadow(0 0 12px var(--accent-cyan)); }
+    .brand-svg { width: 42px; height: 42px; filter: drop-shadow(0 0 12px var(--accent-cyan)); }
     .brand-name {
-      font-family: 'Press Start 2P', cursive; font-size: 0.85rem; color: var(--accent-cyan);
-      text-shadow: 0 0 12px rgba(0, 240, 255, 0.6); letter-spacing: 1px;
+      font-family: 'Press Start 2P', cursive;
+      font-size: 0.85rem;
+      color: var(--accent-cyan);
+      text-shadow: 0 0 12px rgba(0, 240, 255, 0.6);
+      letter-spacing: 1px;
     }
 
-    .wallet-section { display: flex; gap: 12px; align-items: center; position: relative; }
+    .header-actions { display: flex; gap: 12px; align-items: center; position: relative; }
+
+    .icon-btn {
+      background: rgba(13, 17, 30, 0.8);
+      border: 1px solid var(--border-cyber);
+      color: var(--accent-cyan);
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      transition: all 0.2s;
+    }
+    .icon-btn:hover {
+      background: var(--accent-cyan);
+      color: #000;
+      box-shadow: 0 0 15px var(--accent-cyan);
+    }
+
     .wallet-btn {
-      background: linear-gradient(135deg, #f6851b, #e2761b); color: #fff; border: none; padding: 10px 20px;
-      border-radius: 12px; font-weight: 800; font-size: 0.9rem; cursor: pointer;
-      box-shadow: 0 0 20px rgba(246, 133, 27, 0.4); transition: all 0.25s; display: flex; align-items: center; gap: 10px;
+      background: linear-gradient(135deg, #f6851b, #e2761b);
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(246, 133, 27, 0.4);
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Outfit', sans-serif;
     }
     .wallet-btn:hover { transform: translateY(-2px); box-shadow: 0 0 28px rgba(246, 133, 27, 0.7); }
 
     .wallet-dropdown {
-      position: absolute; right: 0; top: 100%; margin-top: 10px; background: rgba(13, 17, 30, 0.98);
-      border: 1px solid rgba(246, 133, 27, 0.4); border-radius: 14px; padding: 12px; width: 210px;
+      position: absolute; right: 0; top: 110%; background: rgba(13, 17, 30, 0.98);
+      border: 1px solid rgba(246, 133, 27, 0.4); border-radius: 14px; padding: 12px; width: 220px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.8); z-index: 2000; display: flex; flex-direction: column; gap: 8px;
     }
     .dropdown-item {
@@ -81,339 +138,637 @@
     .dropdown-item.danger { background: rgba(255, 0, 127, 0.1); color: var(--accent-pink); border: 1px solid rgba(255, 0, 127, 0.3); }
     .dropdown-item.danger:hover { background: var(--accent-pink); color: #fff; box-shadow: 0 0 15px var(--accent-pink); }
 
-    .hero { text-align: center; padding: 35px 20px 15px 20px; max-width: 900px; margin: 0 auto; }
+    .hero { text-align: center; padding: 30px 20px 10px 20px; max-width: 900px; margin: 0 auto; }
     .hero-title {
-      font-family: 'Press Start 2P', cursive; font-size: 1rem; line-height: 1.5; color: var(--text-main);
-      text-shadow: 0 0 20px rgba(0, 240, 255, 0.5); margin-bottom: 12px;
+      font-family: 'Press Start 2P', cursive; font-size: 1.1rem; line-height: 1.5; color: var(--text-main);
+      text-shadow: 0 0 20px rgba(0, 240, 255, 0.5); margin-bottom: 8px;
     }
-    .hero-subtitle { font-size: 0.95rem; color: var(--text-muted); font-weight: 600; }
+    .hero-subtitle { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; }
 
     .dashboard-container {
-      max-width: 1000px; margin: 0 auto 20px auto; padding: 0 20px;
+      max-width: 1000px; margin: 15px auto 20px auto; padding: 0 20px;
       display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;
     }
     @media(max-width: 768px) { .dashboard-container { grid-template-columns: 1fr; } }
 
     .dash-card {
-      background: var(--bg-card); border: 1px solid var(--border-cyber); border-radius: 18px; padding: 20px 24px;
-      display: flex; flex-direction: column; gap: 12px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      background: var(--bg-card); border: 1px solid var(--border-cyber); border-radius: 18px; padding: 18px 22px;
+      display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(12px);
     }
     .dash-title { font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: var(--accent-cyan); }
-    .dash-value { font-size: 1.25rem; font-weight: 800; color: #fff; display: flex; align-items: center; justify-content: space-between; }
+    .dash-value { font-size: 1.2rem; font-weight: 800; color: #fff; display: flex; align-items: center; justify-content: space-between; }
     .token-badge {
-      font-size: 0.65rem; background: rgba(0, 240, 255, 0.12); padding: 6px 12px; border-radius: 8px;
+      font-size: 0.65rem; background: rgba(0, 240, 255, 0.12); padding: 5px 10px; border-radius: 8px;
       border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-family: 'Press Start 2P', cursive;
     }
-    .xp-bar-track { width: 100%; height: 10px; background: rgba(0,0,0,0.6); border-radius: 6px; overflow: hidden; border: 1px solid rgba(0, 240, 255, 0.2); }
+    .xp-bar-track { width: 100%; height: 8px; background: rgba(0,0,0,0.6); border-radius: 6px; overflow: hidden; border: 1px solid rgba(0, 240, 255, 0.2); }
     .xp-bar-fill {
-      height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
+      height: 100%; width: 100%; background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan));
       box-shadow: 0 0 15px var(--accent-cyan); transition: width 0.5s;
     }
 
     .section { max-width: 1000px; margin: 10px auto 40px auto; padding: 0 20px; width: 100%; }
     .section-header {
       font-family: 'Press Start 2P', cursive; font-size: 0.85rem; color: var(--accent-cyan);
-      text-align: center; margin-bottom: 25px; text-shadow: 0 0 10px rgba(0,240,255,0.4);
+      text-align: center; margin-bottom: 20px; text-shadow: 0 0 10px rgba(0,240,255,0.4);
     }
     .view-container {
-      background: var(--bg-card); border: 1px solid rgba(157, 0, 255, 0.4); border-radius: 24px; padding: 30px;
+      background: var(--bg-card); border: 1px solid rgba(157, 0, 255, 0.4); border-radius: 24px; padding: 28px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7); backdrop-filter: blur(16px);
     }
     .hidden { display: none !important; }
 
     .token-gate-warning {
       background: rgba(255, 0, 127, 0.12); border: 1px solid var(--accent-pink); border-radius: 14px;
-      padding: 18px; text-align: center; margin-bottom: 25px; font-size: 0.9rem; color: #ff99cc; font-weight: 600;
+      padding: 16px; text-align: center; margin-bottom: 22px; font-size: 0.85rem; color: #ff99cc; font-weight: 600;
     }
 
-    .rooms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 18px; }
+    .rooms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; }
     .tier-card {
-      background: linear-gradient(135deg, rgba(16, 22, 38, 0.9), rgba(8, 11, 20, 0.95));
-      border: 2px solid var(--accent-purple); border-radius: 18px; padding: 22px 14px; text-align: center;
+      background: linear-gradient(135deg, rgba(16, 22, 38, 0.95), rgba(8, 11, 20, 0.95));
+      border: 2px solid var(--accent-purple); border-radius: 18px; padding: 20px 14px; text-align: center;
       cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; justify-content: space-between; height: 210px;
     }
     .tier-card:hover:not(.locked) { border-color: var(--accent-cyan); transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0, 240, 255, 0.4); }
     .tier-card.locked { opacity: 0.5; border-color: #333; cursor: not-allowed; filter: grayscale(0.4); }
     .tier-rank { font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: var(--accent-gold); text-transform: uppercase; }
-    .tier-price { font-size: 1.25rem; font-weight: 900; color: #fff; }
+    .tier-price { font-size: 1.2rem; font-weight: 900; color: #fff; }
     .btn-tier {
       background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); color: #fff; border: none;
-      padding: 10px; font-weight: 900; border-radius: 10px; cursor: pointer; font-size: 0.7rem; width: 100%;
-      font-family: 'Press Start 2P', cursive; box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+      padding: 10px; font-weight: 900; border-radius: 10px; cursor: pointer; font-size: 0.65rem; width: 100%;
+      font-family: 'Press Start 2P', cursive; box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); transition: all 0.2s;
     }
     .tier-card.locked .btn-tier { background: #222; color: #666; box-shadow: none; cursor: not-allowed; }
     .lock-label { font-family: 'Press Start 2P', cursive; font-size: 0.45rem; color: var(--accent-pink); margin-top: 6px; }
 
-    /* Lista de salas abiertas por humanos */
+    /* Active lobbies box */
     .active-lobbies-box { margin-top: 30px; border-top: 1px solid var(--border-cyber); padding-top: 20px; }
-    .lobby-list { display: flex; flex-direction: column; gap: 10px; margin-top: 15px; }
+    .lobby-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
     .lobby-item {
-      background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.2); padding: 12px 18px;
-      border-radius: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;
+      background: rgba(0, 240, 255, 0.05); border: 1px solid rgba(0, 240, 255, 0.25); padding: 14px 20px;
+      border-radius: 14px; display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem;
+      transition: all 0.2s;
     }
+    .lobby-item:hover { border-color: var(--accent-cyan); background: rgba(0, 240, 255, 0.1); }
     .btn-join-lobby {
-      background: var(--accent-green); color: #000; border: none; padding: 6px 14px; border-radius: 8px;
+      background: var(--accent-green); color: #000; border: none; padding: 8px 16px; border-radius: 8px;
       font-family: 'Press Start 2P', cursive; font-size: 0.55rem; cursor: pointer; font-weight: bold;
+      box-shadow: 0 0 12px rgba(0, 255, 102, 0.4); transition: all 0.2s;
     }
-    .btn-join-lobby:hover { box-shadow: 0 0 12px var(--accent-green); }
+    .btn-join-lobby:hover { box-shadow: 0 0 20px var(--accent-green); transform: scale(1.05); }
 
-    .matchmaking-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; text-align: center; gap: 20px; }
-    .spinner {
-      width: 70px; height: 70px; border: 6px solid rgba(0, 240, 255, 0.15); border-top: 6px solid var(--accent-cyan);
-      border-radius: 50%; animation: spin 1s linear infinite; box-shadow: 0 0 25px rgba(0, 240, 255, 0.4);
+    .matchmaking-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; text-align: center; gap: 20px; }
+    .spinner-3d {
+      width: 80px; height: 80px; border: 6px solid rgba(0, 240, 255, 0.15); border-top: 6px solid var(--accent-cyan);
+      border-bottom: 6px solid var(--accent-purple); border-radius: 50%; animation: spin 1s linear infinite;
+      box-shadow: 0 0 30px rgba(0, 240, 255, 0.4);
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-    .battle-arena { display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; perspective: 1500px; }
+    .battle-arena { display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; }
     .match-scoreboard {
-      display: flex; justify-content: space-around; width: 100%; background: rgba(10, 14, 24, 0.85);
-      border-radius: 14px; padding: 14px; border: 1px solid rgba(0, 240, 255, 0.3);
-      font-family: 'Press Start 2P', cursive; font-size: 0.7rem;
+      display: flex; justify-content: space-around; width: 100%; background: rgba(10, 14, 24, 0.9);
+      border-radius: 14px; padding: 14px 20px; border: 1px solid rgba(0, 240, 255, 0.3);
+      font-family: 'Press Start 2P', cursive; font-size: 0.75rem;
     }
-    .vs-status { font-family: 'Press Start 2P', cursive; font-size: 0.8rem; color: var(--accent-pink); }
+    .score-box { display: flex; flex-direction: column; gap: 4px; }
+    .score-title { font-size: 0.55rem; color: var(--text-muted); }
+    .score-num { font-size: 1.1rem; color: var(--accent-cyan); }
+    .vs-status { font-family: 'Press Start 2P', cursive; font-size: 0.8rem; color: var(--accent-pink); margin: 6px 0; }
     .timer-container {
-      font-family: 'Press Start 2P', cursive; font-size: 0.65rem; color: var(--accent-gold);
-      background: rgba(255, 183, 0, 0.12); border: 1px solid var(--accent-gold); padding: 8px 16px; border-radius: 10px;
+      font-family: 'Press Start 2P', cursive; font-size: 0.7rem; color: var(--accent-gold);
+      background: rgba(255, 183, 0, 0.12); border: 1px solid var(--accent-gold); padding: 8px 18px; border-radius: 10px;
     }
 
-    .arena-display-3d {
-      display: flex; justify-content: space-around; align-items: center; width: 100%; max-width: 700px; margin: 10px 0;
-      background: linear-gradient(135deg, rgba(20,26,46,0.85), rgba(7,10,18,0.95)); border-radius: 24px; padding: 30px;
-      border: 2px solid var(--accent-purple); box-shadow: inset 0 0 40px rgba(157, 0, 255, 0.25);
-    }
-    .fighter-box { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-    .fighter-label { font-size: 0.7rem; color: var(--text-muted); font-family: 'Press Start 2P', cursive; }
-    .hand-3d-model {
-      width: 120px; height: 120px; background: radial-gradient(circle at 35% 35%, #3a4466, #121624 70%);
-      border: 3px solid rgba(0, 240, 255, 0.7); border-radius: 30px; display: flex; align-items: center; justify-content: center;
-      font-size: 4.5rem; animation: realisticFloat 4s ease-in-out infinite;
-    }
-    @keyframes realisticFloat {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-10px) scale(1.05); }
+    /* 3D Visual overlay container */
+    .arena-interactive-stage {
+      width: 100%; height: 260px; position: relative; border-radius: 20px; overflow: hidden;
+      border: 2px solid var(--accent-purple); box-shadow: inset 0 0 50px rgba(157, 0, 255, 0.3);
+      background: radial-gradient(circle at center, rgba(20, 26, 46, 0.6), rgba(5, 7, 13, 0.9));
+      display: flex; justify-content: space-between; align-items: center; padding: 0 40px;
     }
 
-    .choices-3d-grid { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; margin: 15px 0; }
+    .fighter-hud {
+      display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 5;
+      background: rgba(5, 7, 13, 0.6); padding: 12px 18px; border-radius: 14px; border: 1px solid rgba(0, 240, 255, 0.2);
+    }
+    .fighter-name { font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: var(--accent-cyan); }
+    .fighter-choice-icon { font-size: 3rem; filter: drop-shadow(0 0 15px var(--accent-cyan)); transition: all 0.3s; }
+
+    .choices-3d-grid { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin: 10px 0; }
     .card-3d {
-      width: 125px; height: 155px; background: linear-gradient(135deg, rgba(28, 35, 60, 0.95), rgba(10, 13, 22, 0.95));
+      width: 130px; height: 160px; background: linear-gradient(135deg, rgba(28, 35, 60, 0.95), rgba(10, 13, 22, 0.95));
       border: 2px solid var(--accent-purple); border-radius: 18px; display: flex; flex-direction: column;
       justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
-    .card-3d:hover { transform: translateY(-8px); border-color: var(--accent-cyan); box-shadow: 0 0 25px rgba(0, 240, 255, 0.6); }
-    .card-3d.selected { border-color: var(--accent-green); background: rgba(0, 255, 102, 0.2); }
-    .card-3d.disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
-    .card-3d .hand-icon { font-size: 3.2rem; margin-bottom: 10px; }
+    .card-3d:hover:not(.disabled) { transform: translateY(-8px) scale(1.03); border-color: var(--accent-cyan); box-shadow: 0 0 30px rgba(0, 240, 255, 0.7); }
+    .card-3d.selected { border-color: var(--accent-green); background: rgba(0, 255, 102, 0.25); box-shadow: 0 0 35px var(--accent-green); }
+    .card-3d.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+    .card-3d .hand-icon { font-size: 3.2rem; margin-bottom: 8px; }
     .card-3d .name-3d { font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: #fff; }
 
-    .battle-result-box { margin-top: 10px; font-size: 1.1rem; font-weight: 800; color: var(--accent-cyan); min-height: 45px; text-align: center; }
+    .battle-result-box { margin-top: 10px; font-size: 1.1rem; font-weight: 800; color: var(--accent-cyan); min-height: 40px; text-align: center; }
+    
     .btn-action {
       background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted);
-      padding: 10px 20px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-family: 'Outfit', sans-serif; font-weight: 700;
+      padding: 10px 22px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-family: 'Outfit', sans-serif; font-weight: 700;
+      transition: all 0.2s;
     }
-    .btn-action:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.05); }
+    .btn-action:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.08); }
     .btn-danger { border-color: var(--accent-pink); color: var(--accent-pink); }
-    .btn-danger:hover { background: rgba(255,0,127,0.1); border-color: var(--accent-pink); color: var(--accent-pink); }
+    .btn-danger:hover { background: rgba(255,0,127,0.15); border-color: var(--accent-pink); color: #fff; box-shadow: 0 0 15px var(--accent-pink); }
 
     footer {
-      text-align: center; padding: 25px; border-top: 1px solid rgba(255, 255, 255, 0.05);
-      color: var(--text-muted); font-size: 0.85rem; margin-top: auto; background: rgba(3, 5, 10, 0.9);
+      text-align: center; padding: 22px; border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted); font-size: 0.8rem; margin-top: auto; background: rgba(3, 5, 10, 0.92); z-index: 10;
     }
   </style>
 </head>
 <body>
 
-  <canvas id="spaceCanvas"></canvas>
+  <!-- WebGL 3D Canvas Scene Background -->
+  <canvas id="webglCanvas"></canvas>
 
-  <header>
-    <a href="#" class="brand-logo">
-      <svg class="brand-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="50" cy="50" r="46" fill="#0f1220" stroke="#00f0ff" stroke-width="4"/>
-        <path d="M 22,52 A 28,28 0 0,1 78,52 A 28,18 0 0,1 22,52 Z" fill="#00f0ff" opacity="0.3"/>
-        <path d="M 25,50 A 25,25 0 0,1 75,50 A 25,15 0 0,1 25,50 Z" fill="#9d00ff" opacity="0.6"/>
-        <circle cx="50" cy="52" r="18" fill="#d2b48c"/>
-        <ellipse cx="50" cy="58" rx="10" ry="7" fill="#2b1d0c"/>
-      </svg>
-      <span class="brand-name">$PUGASTR 3D</span>
-    </a>
-    
-    <div class="wallet-section">
-      <button class="wallet-btn" id="walletMainBtn" onclick="handleWalletClick()">
-        <svg width="20" height="20" viewBox="0 0 318 318" xmlns="http://www.w3.org/2000/svg"><path d="M274.6 35.5L168.7 119.5 192.6 64.5 274.6 35.5Z" fill="#E17726"/><path d="M43.3 35.5L148.6 120.3 125 64.5 43.3 35.5Z" fill="#E27625"/></svg>
-        <span id="walletBtnText">CONECTAR WALLET</span>
-      </button>
+  <div class="ui-layer">
+    <header>
+      <a href="#" class="brand-logo">
+        <svg class="brand-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="46" fill="#0f1220" stroke="#00f0ff" stroke-width="4"/>
+          <path d="M 22,52 A 28,28 0 0,1 78,52 A 28,18 0 0,1 22,52 Z" fill="#00f0ff" opacity="0.3"/>
+          <path d="M 25,50 A 25,25 0 0,1 75,50 A 25,15 0 0,1 25,50 Z" fill="#9d00ff" opacity="0.6"/>
+          <circle cx="50" cy="52" r="18" fill="#d2b48c"/>
+          <ellipse cx="50" cy="58" rx="10" ry="7" fill="#2b1d0c"/>
+        </svg>
+        <span class="brand-name">$PUGASTR 3D</span>
+      </a>
+      
+      <div class="header-actions">
+        <button class="icon-btn" id="audioToggleBtn" onclick="toggleAudio()" title="Activar/Desactivar Sonido">🔊</button>
 
-      <div class="wallet-dropdown hidden" id="walletDropdownMenu">
-        <div class="dropdown-item" onclick="switchToAstralisChain()">🔗 CAMBIAR A ASTRALIS</div>
-        <div class="dropdown-item danger" onclick="disconnectMetaMask()">DESCONECTAR</div>
+        <div style="position: relative;">
+          <button class="wallet-btn" id="walletMainBtn" onclick="handleWalletClick()">
+            <svg width="20" height="20" viewBox="0 0 318 318" xmlns="http://www.w3.org/2000/svg"><path d="M274.6 35.5L168.7 119.5 192.6 64.5 274.6 35.5Z" fill="#E17726"/><path d="M43.3 35.5L148.6 120.3 125 64.5 43.3 35.5Z" fill="#E27625"/></svg>
+            <span id="walletBtnText">CONECTAR WALLET</span>
+          </button>
+
+          <div class="wallet-dropdown hidden" id="walletDropdownMenu">
+            <div class="dropdown-item" onclick="switchToAstralisChain()">🔗 CAMBIAR A ASTRALIS</div>
+            <div class="dropdown-item danger" onclick="disconnectMetaMask()">DESCONECTAR</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <h1 class="hero-title">UNITY 3D CYBER ARENA // DUELO P2P HUMANO VS HUMANO</h1>
+      <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (Chain ID: 71261). Sin bots, emparejamiento P2P en tiempo real.</p>
+    </section>
+
+    <div class="dashboard-container">
+      <div class="dash-card">
+        <div class="dash-title">BALANCE ASTRALIS CHAIN ($ASTCH / $ASTR)</div>
+        <div class="dash-value">
+          <span id="astralisBalanceText">0.00 ASTCH</span>
+          <span class="token-badge" id="tokenGateStatus">BLOQUEADO</span>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">Red: Astralis Testnet | MetaMask Requerido</div>
+      </div>
+      
+      <div class="dash-card">
+        <div class="dash-title">ESTADO DE RED & MATCHMAKING P2P</div>
+        <div class="dash-value" style="font-size: 0.9rem;">
+          <span id="p2pStatusText">Desconectado</span>
+          <span id="activeLobbiesCount" style="font-size: 0.8rem; color: var(--accent-cyan);">Salas en red: 0</span>
+        </div>
+        <div class="xp-bar-track">
+          <div class="xp-bar-fill" id="xpBarFill" style="width: 100%; background: var(--accent-green);"></div>
+        </div>
       </div>
     </div>
-  </header>
 
-  <section class="hero">
-    <h1 class="hero-title">CYBER PVP ARENA // DUELO 100% P2P HUMANO VS HUMANO</h1>
-    <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261). Sin bots, sin simulaciones.</p>
-  </section>
+    <!-- Vista Lobby -->
+    <section class="section" id="lobbyView">
+      <div class="view-container">
+        <div class="token-gate-warning" id="globalTokenGateAlert">
+          🔒 <strong>Token Gate Activo:</strong> Conecta MetaMask a <strong>Astralis Chain</strong> (ID: 71261) para crear o unirte a salas con apuestas reales.
+        </div>
 
-  <div class="dashboard-container">
-    <div class="dash-card">
-      <div class="dash-title">BALANCE REAL ASTRALIS CHAIN ($ASTCH / $ASTR)</div>
-      <div class="dash-value">
-        <span id="astralisBalanceText">0.00 ASTCH</span>
-        <span class="token-badge" id="tokenGateStatus">BLOQUEADO</span>
+        <h2 class="section-header">[ SALAS DE APUESTA CYBER P2P ]</h2>
+        
+        <div class="rooms-grid">
+          <div class="tier-card locked" id="roomBronce" onclick="createP2PLobby('Bronce', 10)">
+            <div class="tier-rank">Rango Bronce</div>
+            <div class="tier-price">10 ASTCH</div>
+            <button class="btn-tier">CREAR SALA</button>
+            <div class="lock-label" id="labelBronce">Falta Saldo</div>
+          </div>
+
+          <div class="tier-card locked" id="roomPlata" onclick="createP2PLobby('Plata', 50)">
+            <div class="tier-rank">Rango Plata</div>
+            <div class="tier-price">50 ASTCH</div>
+            <button class="btn-tier">CREAR SALA</button>
+            <div class="lock-label" id="labelPlata">Falta Saldo</div>
+          </div>
+
+          <div class="tier-card locked" id="roomOro" onclick="createP2PLobby('Oro', 100)">
+            <div class="tier-rank">Rango Oro</div>
+            <div class="tier-price">100 ASTCH</div>
+            <button class="btn-tier">CREAR SALA</button>
+            <div class="lock-label" id="labelOro">Falta Saldo</div>
+          </div>
+        </div>
+
+        <div class="active-lobbies-box">
+          <h3 style="font-family: 'Press Start 2P'; font-size: 0.7rem; color: var(--accent-cyan); margin-bottom: 12px;">SALAS DISPONIBLES EN TIEMPO REAL:</h3>
+          <div class="lobby-list" id="lobbiesListContainer">
+            <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">
+              Buscando salas abiertas en la red P2P... Si no hay ninguna, ¡crea la tuya!
+            </div>
+          </div>
+        </div>
       </div>
-      <div style="font-size: 0.78rem; color: var(--text-muted);">Req: Fondos suficientes en tu MetaMask</div>
-    </div>
-    
-    <div class="dash-card">
-      <div class="dash-title" id="xpLevelText">ESTADO DE RED P2P</div>
-      <div class="dash-value" style="font-size: 0.95rem;">
-        <span id="p2pStatusText">Desconectado</span>
-        <span id="activeLobbiesCount" style="font-size: 0.85rem; color: var(--accent-cyan);">Salas activas: 0</span>
+    </section>
+
+    <!-- Vista Esperando Rival -->
+    <section class="section hidden" id="waitingRivalView">
+      <div class="view-container matchmaking-loader">
+        <div class="spinner-3d"></div>
+        <h2 class="section-header" id="waitingTitle">Sala creada: Esperando rival real...</h2>
+        <p style="color: var(--text-muted); font-size: 0.85rem; max-width: 500px;" id="waitingSubtext">
+          Tus fondos están retenidos en garantía segura. Abre otra pestaña o invita a un rival para iniciar el duelo al instante.
+        </p>
+        <button class="btn-action btn-danger" onclick="cancelLobbyAndRefund()">CANCELAR Y RECLAMAR FONDOS</button>
       </div>
-      <div class="xp-bar-track">
-        <div class="xp-bar-fill" id="xpBarFill" style="width: 100%; background: var(--accent-green);"></div>
+    </section>
+
+    <!-- Arena de Batalla 3D -->
+    <section class="section hidden" id="arenaView">
+      <div class="view-container battle-arena">
+        <h2 class="section-header" id="arenaTitle">[ ENFRENTAMIENTO 3D P2P EN VIVO ]</h2>
+        
+        <div class="match-scoreboard">
+          <div class="score-box">
+            <div class="score-title">TÚ</div>
+            <div class="score-num" id="playerScoreBoard">0</div>
+          </div>
+          <div class="score-box">
+            <div class="score-title">RONDA</div>
+            <div class="score-num" id="roundCounter" style="color: var(--accent-gold);">1 / 5</div>
+          </div>
+          <div class="score-box">
+            <div class="score-title">RIVAL HUMANO</div>
+            <div class="score-num" id="rivalScoreBoard" style="color: var(--accent-pink);">0</div>
+          </div>
+        </div>
+
+        <div class="timer-container" id="opponentTimerBox">
+          ⏳ TIEMPO DE TURNO: <span id="opponentCountdown">30</span>s
+        </div>
+
+        <div class="vs-status" id="vsStatus">¡Elige tu seña para el combate 3D!</div>
+
+        <!-- Stage visual que interactúa con el canvas 3D de Three.js -->
+        <div class="arena-interactive-stage">
+          <div class="fighter-hud">
+            <div class="fighter-name">TÚ</div>
+            <div class="fighter-choice-icon" id="playerChoiceDisplay">🤜</div>
+          </div>
+          
+          <div style="font-family: 'Press Start 2P'; font-size: 1.5rem; color: var(--accent-cyan); text-shadow: 0 0 20px var(--accent-cyan);">
+            VS
+          </div>
+
+          <div class="fighter-hud">
+            <div class="fighter-name">RIVAL</div>
+            <div class="fighter-choice-icon" id="rivalChoiceDisplay">❓</div>
+          </div>
+        </div>
+
+        <!-- Opciones de Señas 3D -->
+        <div class="choices-3d-grid" id="choicesGrid">
+          <div class="card-3d" id="choicePiedra" onclick="makeMove('piedra')">
+            <div class="hand-icon">✊</div>
+            <div class="name-3d">PIEDRA</div>
+          </div>
+          <div class="card-3d" id="choicePapel" onclick="makeMove('papel')">
+            <div class="hand-icon">✋</div>
+            <div class="name-3d">PAPEL</div>
+          </div>
+          <div class="card-3d" id="choiceTijera" onclick="makeMove('tijera')">
+            <div class="hand-icon">✌️</div>
+            <div class="name-3d">TIJERA</div>
+          </div>
+        </div>
+
+        <div class="battle-result-box" id="battleResult">
+          Esperando a que ambos participantes confirmen su jugada...
+        </div>
+
+        <button class="btn-action hidden" id="btnLeaveArena" onclick="returnToLobby()">VOLVER AL LOBBY</button>
       </div>
-    </div>
+    </section>
+
+    <footer>
+      <p>© 2026 Pug Astralis Arena 3D — Red: Astralis Chain (ID: 71261) | Fee Creador: <code>0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9</code></p>
+    </footer>
   </div>
 
-  <section class="section" id="lobbyView">
-    <div class="view-container">
-      <div class="token-gate-warning" id="globalTokenGateAlert">
-        🔒 <strong>Token Gate Activo:</strong> Conecta MetaMask a <strong>Astralis Chain</strong> (ID: 71261) para crear o unirte a salas de apuestas reales.
-      </div>
-
-      <h2 class="section-header">[ CREAR SALA DE APUESTA P2P ]</h2>
-      
-      <div class="rooms-grid">
-        <div class="tier-card locked" id="roomBronce" onclick="createP2PLobby('Bronce', 10)">
-          <div class="tier-rank">Rango Bronce</div>
-          <div class="tier-price">Apuesta: 10 ASTCH</div>
-          <button class="btn-tier">CREAR SALA</button>
-          <div class="lock-label" id="labelBronce">Falta Saldo</div>
-        </div>
-
-        <div class="tier-card locked" id="roomPlata" onclick="createP2PLobby('Plata', 50)">
-          <div class="tier-rank">Rango Plata</div>
-          <div class="tier-price">Apuesta: 50 ASTCH</div>
-          <button class="btn-tier">CREAR SALA</button>
-          <div class="lock-label" id="labelPlata">Falta Saldo</div>
-        </div>
-
-        <div class="tier-card locked" id="roomOro" onclick="createP2PLobby('Oro', 100)">
-          <div class="tier-rank">Rango Oro</div>
-          <div class="tier-price">Apuesta: 100 ASTCH</div>
-          <button class="btn-tier">CREAR SALA</button>
-          <div class="lock-label" id="labelOro">Falta Saldo</div>
-        </div>
-      </div>
-
-      <div class="active-lobbies-box">
-        <h3 style="font-family: 'Press Start 2P'; font-size: 0.7rem; color: var(--accent-cyan); margin-bottom: 10px;">SALAS ACTIVAS DE OTROS JUGADORES:</h3>
-        <div class="lobby-list" id="lobbiesListContainer">
-          <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 10px;">No hay salas abiertas por otros jugadores en este momento. Crea una o espera a que alguien más cree una.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Vista esperando rival real -->
-  <section class="section hidden" id="waitingRivalView">
-    <div class="view-container matchmaking-loader">
-      <div class="spinner"></div>
-      <h2 class="section-header" id="waitingTitle">Sala creada: Esperando rival real...</h2>
-      <p style="color: var(--text-muted); font-size: 0.9rem;" id="waitingSubtext">Tus fondos están bloqueados en garantía de forma segura en el contrato inteligente hasta que otro usuario se una o decidas cancelar.</p>
-      <button class="btn-action btn-danger" onclick="cancelLobbyAndRefund()">CANCELAR SALA Y RECLAMAR FONDOS</button>
-    </div>
-  </section>
-
-  <!-- Arena de batalla 100% P2P -->
-  <section class="section hidden" id="arenaView">
-    <div class="view-container battle-arena">
-      <h2 class="section-header" id="arenaTitle">[ DUELO 3D P2P EN VIVO ]</h2>
-      
-      <div class="match-scoreboard">
-        <div id="playerScoreBoard">TÚ: 0</div>
-        <div id="roundCounter">RONDA 1 / 5</div>
-        <div id="rivalScoreBoard">RIVAL REAL: 0</div>
-      </div>
-
-      <div class="timer-container" id="opponentTimerBox">
-        ⏳ TIEMPO DE JUGADA: <span id="opponentCountdown">30</span>s
-      </div>
-
-      <div class="vs-status" id="vsStatus">¡Elige tu seña!</div>
-
-      <div class="arena-display-3d">
-        <div class="fighter-box">
-          <div class="fighter-label" id="playerLabelTag">TUS MANOS 3D</div>
-          <div class="hand-3d-model" id="playerHandVisual">🤜</div>
-        </div>
-        <div style="font-family: 'Press Start 2P'; font-size: 1.2rem; color: var(--accent-cyan);">VS</div>
-        <div class="fighter-box">
-          <div class="fighter-label" id="rivalLabelTag">RIVAL HUMANO</div>
-          <div class="hand-3d-model" id="rivalHandVisual">❓</div>
-        </div>
-      </div>
-
-      <div class="choices-3d-grid" id="choicesGrid">
-        <div class="card-3d" id="choicePiedra" onclick="makeMove('piedra')">
-          <div class="hand-icon">✊</div>
-          <div class="name-3d">PIEDRA</div>
-        </div>
-        <div class="card-3d" id="choicePapel" onclick="makeMove('papel')">
-          <div class="hand-icon">✋</div>
-          <div class="name-3d">PAPEL</div>
-        </div>
-        <div class="card-3d" id="choiceTijera" onclick="makeMove('tijera')">
-          <div class="hand-icon">✌️</div>
-          <div class="name-3d">TIJERA</div>
-        </div>
-      </div>
-
-      <div class="battle-result-box" id="battleResult">
-        Esperando jugada de ambos participantes reales...
-      </div>
-
-      <button class="btn-action hidden" id="btnLeaveArena" onclick="returnToLobby()">SALIR AL LOBBY</button>
-    </div>
-  </section>
-
-  <footer>
-    <p>© 2026 Pug Astralis Arena — Network: Astralis Chain (ID: 71261) | Creador Fee: <code>0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9</code></p>
-  </footer>
-
   <script>
-    const canvas = document.getElementById('spaceCanvas');
-    const ctx = canvas.getContext('2d');
-    let width = canvas.width = window.innerWidth;
-    let height = canvas.height = window.innerHeight;
+    /* ==========================================================================
+       1. SINTETIZADOR DE AUDIO WEB AUDIO API (EFECTOS FUTURISTAS SIN DEPS)
+       ========================================================================== */
+    let audioCtx = null;
+    let audioMuted = false;
+
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    }
+
+    function toggleAudio() {
+      audioMuted = !audioMuted;
+      document.getElementById('audioToggleBtn').innerText = audioMuted ? "🔇" : "🔊";
+    }
+
+    function playSynthSound(type) {
+      if (audioMuted) return;
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        if (type === 'click') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        } else if (type === 'select') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(300, now);
+          osc.frequency.exponentialRampToValueAtTime(900, now + 0.15);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+          osc.start(now);
+          osc.stop(now + 0.15);
+        } else if (type === 'clash') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
+          gain.gain.setValueAtTime(0.5, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'win') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(523.25, now); // C5
+          osc.frequency.setValueAtTime(659.25, now + 0.1); // E5
+          osc.frequency.setValueAtTime(783.99, now + 0.2); // G5
+          osc.frequency.setValueAtTime(1046.50, now + 0.3); // C6
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+          osc.start(now);
+          osc.stop(now + 0.5);
+        } else if (type === 'tick') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(1000, now);
+          gain.gain.setValueAtTime(0.1, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
+          osc.start(now);
+          osc.stop(now + 0.03);
+        }
+      } catch (e) { console.warn(e); }
+    }
+
+    /* ==========================================================================
+       2. MOTOR GRÁFICO THREE.JS 3D (UNITY / FLASH GRAPHICS QUALITY)
+       ========================================================================== */
+    let scene, camera, renderer;
+    let playerMesh, rivalMesh, arenaPlatform, particlesMesh;
+    let targetCameraPos = { x: 0, y: 3, z: 12 };
+
+    function initThreeJS() {
+      const canvas = document.getElementById('webglCanvas');
+      scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x05070d, 0.03);
+
+      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 3, 12);
+
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+
+      // Luces Cyberpunk
+      const ambientLight = new THREE.AmbientLight(0x1a2035, 1.5);
+      scene.add(ambientLight);
+
+      const cyanLight = new THREE.PointLight(0x00f0ff, 3, 30);
+      cyanLight.position.set(-6, 5, 5);
+      scene.add(cyanLight);
+
+      const purpleLight = new THREE.PointLight(0x9d00ff, 3, 30);
+      purpleLight.position.set(6, 5, 5);
+      scene.add(purpleLight);
+
+      const centerLight = new THREE.PointLight(0xff007f, 2, 20);
+      centerLight.position.set(0, 2, 0);
+      scene.add(centerLight);
+
+      // Plataforma 3D de combate
+      const platformGeo = new THREE.CylinderGeometry(5, 5.5, 0.4, 32);
+      const platformMat = new THREE.MeshStandardMaterial({
+        color: 0x0d111e,
+        roughness: 0.2,
+        metalness: 0.8,
+        emissive: 0x00f0ff,
+        emissiveIntensity: 0.05
+      });
+      arenaPlatform = new THREE.Mesh(platformGeo, platformMat);
+      arenaPlatform.position.y = -2;
+      scene.add(arenaPlatform);
+
+      // Anillo fluorescente alrededor de la plataforma
+      const ringGeo = new THREE.TorusGeometry(5.6, 0.08, 16, 100);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      ringMesh.rotation.x = Math.PI / 2;
+      ringMesh.position.y = -1.8;
+      scene.add(ringMesh);
+
+      // Sistema de Partículas 3D (Polvo de estrellas / Cyber Dust)
+      const particleCount = 400;
+      const pGeo = new THREE.BufferGeometry();
+      const pPositions = new Float32Array(particleCount * 3);
+      for (let i = 0; i < particleCount * 3; i += 3) {
+        pPositions[i] = (Math.random() - 0.5) * 40;
+        pPositions[i+1] = (Math.random() - 0.5) * 40;
+        pPositions[i+2] = (Math.random() - 0.5) * 40;
+      }
+      pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+      const pMat = new THREE.PointsMaterial({
+        size: 0.15,
+        color: 0x00f0ff,
+        transparent: true,
+        opacity: 0.7
+      });
+      particlesMesh = new THREE.Points(pGeo, pMat);
+      scene.add(particlesMesh);
+
+      // Crear las señas 3D por defecto (Player: izquierda, Rival: derecha)
+      playerMesh = create3DHandMesh('piedra', -3.5, 0);
+      rivalMesh = create3DHandMesh('piedra', 3.5, 0);
+      rivalMesh.rotation.y = Math.PI;
+
+      scene.add(playerMesh);
+      scene.add(rivalMesh);
+
+      animateThreeJS();
+    }
+
+    // Creador de Geometrías 3D para Piedra, Papel o Tijera
+    function create3DHandMesh(type, posX, posZ) {
+      const group = new THREE.Group();
+      group.position.set(posX, 0, posZ);
+
+      if (type === 'piedra') {
+        // Meteorito de Obsidiana 3D
+        const geo = new THREE.DodecahedronGeometry(1.4, 1);
+        const mat = new THREE.MeshStandardMaterial({
+          color: 0x22283a,
+          roughness: 0.3,
+          metalness: 0.7,
+          emissive: 0x9d00ff,
+          emissiveIntensity: 0.3
+        });
+        const mesh = new THREE.Mesh(geo, mat);
+        group.add(mesh);
+      } else if (type === 'papel') {
+        // Escudo Holográfico Cyber 3D
+        const geo = new THREE.BoxGeometry(2.2, 2.2, 0.1);
+        const mat = new THREE.MeshStandardMaterial({
+          color: 0x00f0ff,
+          transparent: true,
+          opacity: 0.8,
+          roughness: 0.1,
+          metalness: 0.9,
+          emissive: 0x00f0ff,
+          emissiveIntensity: 0.5
+        });
+        const mesh = new THREE.Mesh(geo, mat);
+        group.add(mesh);
+      } else if (type === 'tijera') {
+        // Cuchillas Gemelas de Plasma 3D
+        const bladeGeo = new THREE.ConeGeometry(0.3, 2.5, 4);
+        const bladeMat = new THREE.MeshStandardMaterial({
+          color: 0xff007f,
+          emissive: 0xff007f,
+          emissiveIntensity: 0.8,
+          roughness: 0.2
+        });
+        const b1 = new THREE.Mesh(bladeGeo, bladeMat);
+        b1.rotation.z = -0.3;
+        const b2 = new THREE.Mesh(bladeGeo, bladeMat);
+        b2.rotation.z = 0.3;
+        group.add(b1);
+        group.add(b2);
+      }
+      return group;
+    }
+
+    function update3DMeshChoice(isPlayer, moveType) {
+      if (isPlayer) {
+        scene.remove(playerMesh);
+        playerMesh = create3DHandMesh(moveType, -3.5, 0);
+        scene.add(playerMesh);
+      } else {
+        scene.remove(rivalMesh);
+        rivalMesh = create3DHandMesh(moveType, 3.5, 0);
+        rivalMesh.rotation.y = Math.PI;
+        scene.add(rivalMesh);
+      }
+    }
+
+    let clock = new THREE.Clock();
+    function animateThreeJS() {
+      requestAnimationFrame(animateThreeJS);
+      const elapsedTime = clock.getElapsedTime();
+
+      // Animaciones de rotación suave 3D
+      if (arenaPlatform) arenaPlatform.rotation.y = elapsedTime * 0.1;
+      if (particlesMesh) particlesMesh.rotation.y = elapsedTime * 0.03;
+
+      if (playerMesh) {
+        playerMesh.position.y = Math.sin(elapsedTime * 2) * 0.2;
+        playerMesh.rotation.y = Math.sin(elapsedTime) * 0.2;
+      }
+      if (rivalMesh) {
+        rivalMesh.position.y = Math.sin(elapsedTime * 2 + 1) * 0.2;
+        rivalMesh.rotation.y = Math.PI + Math.sin(elapsedTime) * 0.2;
+      }
+
+      // Suavizado de cámara
+      camera.position.x += (targetCameraPos.x - camera.position.x) * 0.05;
+      camera.position.y += (targetCameraPos.y - camera.position.y) * 0.05;
+      camera.position.z += (targetCameraPos.z - camera.position.z) * 0.05;
+      camera.lookAt(0, 0, 0);
+
+      renderer.render(scene, camera);
+    }
+
+    // Efecto 3D de choque cinemático durante el resultado
+    function trigger3DClashAnimation(cb) {
+      playSynthSound('clash');
+      // Acercamiento rápido de cámara
+      targetCameraPos = { x: 0, y: 1.5, z: 7 };
+      
+      // Animación de choque de meshes
+      const startP = playerMesh.position.x;
+      const startR = rivalMesh.position.x;
+
+      let step = 0;
+      const animInt = setInterval(() => {
+        step += 0.08;
+        playerMesh.position.x = -3.5 + step * 3;
+        rivalMesh.position.x = 3.5 - step * 3;
+
+        if (step >= 1) {
+          clearInterval(animInt);
+          // Temblor de cámara
+          targetCameraPos.x = (Math.random() - 0.5) * 1.5;
+          targetCameraPos.y = 1.5 + (Math.random() - 0.5) * 1.5;
+          
+          setTimeout(() => {
+            playerMesh.position.x = startP;
+            rivalMesh.position.x = startR;
+            targetCameraPos = { x: 0, y: 3, z: 12 };
+            if (cb) cb();
+          }, 600);
+        }
+      }, 20);
+    }
 
     window.addEventListener('resize', () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      if (!camera || !renderer) return;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    const stars = Array.from({ length: 180 }, () => ({
-      x: Math.random() * width, y: Math.random() * height,
-      size: Math.random() * 2.2, alpha: Math.random(), speed: Math.random() * 0.02 + 0.005
-    }));
-
-    function animateSpace() {
-      ctx.clearRect(0, 0, width, height);
-      stars.forEach(star => {
-        star.alpha += star.speed;
-        if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
-        ctx.fillStyle = `rgba(0, 240, 255, ${Math.abs(star.alpha)})`;
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        ctx.fill();
-      });
-      requestAnimationFrame(animateSpace);
-    }
-    animateSpace();
-
-    const ASTRALIS_CHAIN_ID = "0x1165d";
+    /* ==========================================================================
+       3. CONEXIÓN WEB3 & METAMASK (ASTRALIS CHAIN ID: 71261)
+       ========================================================================== */
+    const ASTRALIS_CHAIN_ID = "0x1165d"; // 71261 en Hex
     const ASTRALIS_PARAMS = {
       chainId: ASTRALIS_CHAIN_ID,
       chainName: "Astralis Chain",
@@ -422,8 +777,7 @@
       blockExplorerUrls: ["https://test-explorer.astralischain.com/"]
     };
 
-    const CREATOR_FEE_ADDRESS = "0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9";
-    const ESCROW_CONTRACT_ADDRESS = "0x000000000000000000000000000000000000dEaD"; // Dirección de garantía/tesorería
+    const ESCROW_CONTRACT_ADDRESS = "0x000000000000000000000000000000000000dEaD";
 
     let provider = null;
     let signer = null;
@@ -431,38 +785,14 @@
     let userAccount = null;
     let userAstrBalance = 0;
 
-    let myActiveLobby = null;
-    let currentMatchStake = 0;
-    let playerWins = 0;
-    let rivalWins = 0;
-    let currentRound = 1;
-    const maxRounds = 5;
-    let matchIsOver = false;
-    let playerMove = null;
-    let rivalMove = null;
-    let roundTimerInterval = null;
-    let timeLeft = 30;
-
-    const handIcons = { piedra: '✊', papel: '✋', tijera: '✌️' };
-
-    // Simulador de base de datos compartida en LocalStorage para simular la red P2P entre diferentes pestañas/usuarios en el mismo navegador
-    function getStoredLobbies() {
-      const data = localStorage.getItem('pugastralis_open_lobbies');
-      return data ? JSON.parse(data) : [];
-    }
-
-    function saveStoredLobbies(lobbies) {
-      localStorage.setItem('pugastralis_open_lobbies', JSON.stringify(lobbies));
-      renderOpenLobbies();
-    }
-
     function handleWalletClick() {
+      playSynthSound('click');
       if (!walletConnected) connectMetaMask();
       else document.getElementById('walletDropdownMenu').classList.toggle('hidden');
     }
 
     window.addEventListener('click', (e) => {
-      if (!document.querySelector('.wallet-section').contains(e.target)) {
+      if (!document.querySelector('.header-actions').contains(e.target)) {
         document.getElementById('walletDropdownMenu').classList.add('hidden');
       }
     });
@@ -498,7 +828,7 @@
           document.getElementById('p2pStatusText').innerText = "Conectado P2P";
           renderOpenLobbies();
         } catch (error) { console.error(error); }
-      } else { alert("Instala MetaMask."); }
+      } else { alert("Por favor instala MetaMask para participar en las partidas P2P Web3."); }
     }
 
     async function fetchUserBalance() {
@@ -517,6 +847,7 @@
     }
 
     function disconnectMetaMask() {
+      playSynthSound('click');
       walletConnected = false; userAccount = null; userAstrBalance = 0; signer = null;
       document.getElementById('walletBtnText').innerText = "CONECTAR WALLET";
       document.getElementById('astralisBalanceText').innerText = "0.00 ASTCH";
@@ -540,25 +871,67 @@
       });
     }
 
-    // 1. CREAR SALA P2P (Bloquea fondos reales en garantía)
+    /* ==========================================================================
+       4. SISTEMA DE MATCHMAKING & SINCRONIZACIÓN IN-GAME EN TIEMPO REAL
+       ========================================================================== */
+    let myActiveLobby = null;
+    let currentMatchStake = 0;
+    let activeMatchId = null;
+    let isHost = false;
+
+    let playerWins = 0;
+    let rivalWins = 0;
+    let currentRound = 1;
+    const maxRounds = 5;
+    let matchIsOver = false;
+    let playerMove = null;
+    let rivalMove = null;
+    let roundTimerInterval = null;
+    let timeLeft = 30;
+
+    const handIcons = { piedra: '✊', papel: '✋', tijera: '✌️' };
+
+    // BroadcastChannel para sincronización ultra rápida entre pestañas + LocalStorage fallback
+    const broadcast = new BroadcastChannel('pugastralis_p2p_channel');
+
+    function getStoredLobbies() {
+      const data = localStorage.getItem('pugastralis_3d_lobbies');
+      return data ? JSON.parse(data) : [];
+    }
+
+    function saveStoredLobbies(lobbies) {
+      localStorage.setItem('pugastralis_3d_lobbies', JSON.stringify(lobbies));
+      renderOpenLobbies();
+      broadcast.postMessage({ type: 'LOBBIES_UPDATED' });
+    }
+
+    // 1. Crear Sala P2P
     async function createP2PLobby(tierName, stake) {
+      playSynthSound('click');
       if (!walletConnected || userAstrBalance < stake) return;
       currentMatchStake = stake;
 
       try {
-        // Enviar fondos a la dirección de garantía del contrato inteligente
-        const tx = await signer.sendTransaction({ to: ESCROW_CONTRACT_ADDRESS, value: ethers.utils.parseEther(stake.toString()) });
+        // Transferencia en garantía a la red
+        const tx = await signer.sendTransaction({
+          to: ESCROW_CONTRACT_ADDRESS,
+          value: ethers.utils.parseEther(stake.toString())
+        });
         await tx.wait();
 
         userAstrBalance -= stake;
         document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
         updateRoomsState();
 
+        activeMatchId = 'match_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+        isHost = true;
+
         myActiveLobby = {
-          id: 'lobby_' + Date.now() + '_' + Math.floor(Math.random()*1000),
+          id: activeMatchId,
           creator: userAccount,
           tier: tierName,
-          stake: stake
+          stake: stake,
+          status: 'OPEN'
         };
 
         const lobbies = getStoredLobbies();
@@ -567,21 +940,18 @@
 
         document.getElementById('lobbyView').classList.add('hidden');
         document.getElementById('waitingRivalView').classList.remove('hidden');
-        document.getElementById('waitingTitle').innerText = `Sala Rango ${tierName} (${stake} ASTCH) Creada`;
-
-        // Monitorear si alguien se une a esta sala
-        startListeningForOpponent();
+        document.getElementById('waitingTitle').innerText = `Sala ${tierName} (${stake} ASTCH) Creada`;
 
       } catch (err) {
-        console.error("Transacción de depósito rechazada", err);
+        console.error("Transacción de depósito cancelada", err);
       }
     }
 
-    // Cancelar sala y reembolsar fondos
+    // Cancelar Sala
     async function cancelLobbyAndRefund() {
+      playSynthSound('click');
       if (!myActiveLobby) return;
       try {
-        // Simulación de devolución de garantía desde el contrato por parte del creador
         userAstrBalance += currentMatchStake;
         document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
         updateRoomsState();
@@ -593,39 +963,45 @@
         myActiveLobby = null;
         document.getElementById('waitingRivalView').classList.add('hidden');
         document.getElementById('lobbyView').classList.remove('hidden');
-        alert("Sala cancelada. Tus fondos han sido devueltos a tu balance.");
       } catch(e) { console.error(e); }
     }
 
-    // Renderizar lista de salas públicas creadas por humanos
+    // Renderizar Salas
     function renderOpenLobbies() {
       const container = document.getElementById('lobbiesListContainer');
-      const lobbies = getStoredLobbies().filter(l => l.creator !== userAccount);
+      const lobbies = getStoredLobbies().filter(l => l.creator !== userAccount && l.status === 'OPEN');
       
-      document.getElementById('activeLobbiesCount').innerText = `Salas activas: ${lobbies.length}`;
+      document.getElementById('activeLobbiesCount').innerText = `Salas en red: ${lobbies.length}`;
 
       if (lobbies.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 10px;">No hay salas abiertas por otros jugadores. Crea una para retar a alguien.</div>`;
+        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">No hay salas abiertas por otros jugadores. ¡Crea una para retar a la red!</div>`;
         return;
       }
 
       container.innerHTML = lobbies.map(l => `
         <div class="lobby-item">
-          <div><strong>${l.tier}</strong> // Apuesta: <strong>${l.stake} ASTCH</strong> <br><span style="font-size:0.7rem; color: var(--text-muted);">Creador: ${l.creator.substring(0,6)}...</span></div>
+          <div>
+            <strong>${l.tier}</strong> // Apuesta: <strong>${l.stake} ASTCH</strong><br>
+            <span style="font-size:0.7rem; color: var(--text-muted);">Creador: ${l.creator.substring(0,6)}...${l.creator.substring(l.creator.length-4)}</span>
+          </div>
           <button class="btn-join-lobby" onclick="joinP2PLobby('${l.id}', ${l.stake})">UNIRSE Y JUGAR</button>
         </div>
       `).join('');
     }
 
-    // 2. UNIRSE A UNA SALA EXISTENTE DE OTRO HUMANO
+    // 2. Unirse a Sala
     async function joinP2PLobby(lobbyId, stake) {
+      playSynthSound('click');
       if (!walletConnected || userAstrBalance < stake) {
-        alert("No tienes suficiente balance para unirte a esta sala.");
+        alert("Necesitas conectar tu wallet y poseer el saldo suficiente.");
         return;
       }
 
       try {
-        const tx = await signer.sendTransaction({ to: ESCROW_CONTRACT_ADDRESS, value: ethers.utils.parseEther(stake.toString()) });
+        const tx = await signer.sendTransaction({
+          to: ESCROW_CONTRACT_ADDRESS,
+          value: ethers.utils.parseEther(stake.toString())
+        });
         await tx.wait();
 
         userAstrBalance -= stake;
@@ -633,52 +1009,56 @@
         updateRoomsState();
 
         let lobbies = getStoredLobbies();
-        const targetLobby = lobbies.find(l => l.id === lobbyId);
-        if (!targetLobby) {
-          alert("La sala ya no está disponible.");
-          return;
-        }
+        const target = lobbies.find(l => l.id === lobbyId);
+        if (!target) { alert("La sala ya no se encuentra disponible."); return; }
 
-        // Remover la sala de la lista pública porque ya fue tomada
-        lobbies = lobbies.filter(l => l.id !== lobbyId);
+        target.status = 'PLAYING';
         saveStoredLobbies(lobbies);
 
+        activeMatchId = lobbyId;
+        isHost = false;
         currentMatchStake = stake;
+
+        // Notificar al Host vía BroadcastChannel
+        broadcast.postMessage({ type: 'PLAYER_JOINED', matchId: lobbyId, guest: userAccount });
+
         document.getElementById('lobbyView').classList.add('hidden');
         document.getElementById('arenaView').classList.remove('hidden');
         initMatch();
 
-      } catch(err) {
-        console.error("Error al unirse a la sala", err);
+      } catch(err) { console.error(err); }
+    }
+
+    // Escuchador de Mensajes P2P (Broadcast + LocalStorage)
+    broadcast.onmessage = (event) => {
+      const data = event.data;
+      if (!data) return;
+
+      if (data.type === 'LOBBIES_UPDATED') {
+        renderOpenLobbies();
+      } else if (data.type === 'PLAYER_JOINED' && isHost && data.matchId === activeMatchId) {
+        // Creador recibe que un jugador se unió
+        playSynthSound('win');
+        document.getElementById('waitingRivalView').classList.add('hidden');
+        document.getElementById('arenaView').classList.remove('hidden');
+        initMatch();
+      } else if (data.type === 'MOVE_SUBMITTED' && data.matchId === activeMatchId && data.sender !== userAccount) {
+        // Rival envió su jugada
+        rivalMove = data.move;
+        checkRoundResolution();
       }
-    }
+    };
 
-    // Escuchar si alguien se unió a mi sala creada
-    function startListeningForOpponent() {
-      const checkInterval = setInterval(() => {
-        if (!myActiveLobby) {
-          clearInterval(checkInterval);
-          return;
-        }
-        const lobbies = getStoredLobbies();
-        const stillExists = lobbies.some(l => l.id === myActiveLobby.id);
-        
-        // Si ya no existe en el storage público, significa que otro usuario real la tomó y se unió
-        if (!stillExists) {
-          clearInterval(checkInterval);
-          myActiveLobby = null;
-          document.getElementById('waitingRivalView').classList.add('hidden');
-          document.getElementById('arenaView').classList.remove('hidden');
-          initMatch();
-        }
-      }, 1500);
-    }
+    window.addEventListener('storage', () => {
+      renderOpenLobbies();
+    });
 
+    // 3. Inicio del Combate
     function initMatch() {
       playerWins = 0; rivalWins = 0; currentRound = 1; matchIsOver = false;
-      document.getElementById('playerScoreBoard').innerText = `TÚ: 0`;
-      document.getElementById('rivalScoreBoard').innerText = `RIVAL REAL: 0`;
-      document.getElementById('roundCounter').innerText = `RONDA ${currentRound} / ${maxRounds}`;
+      document.getElementById('playerScoreBoard').innerText = `0`;
+      document.getElementById('rivalScoreBoard').innerText = `0`;
+      document.getElementById('roundCounter').innerText = `${currentRound} / ${maxRounds}`;
       document.getElementById('btnLeaveArena').classList.add('hidden');
       document.getElementById('choicesGrid').classList.remove('hidden');
       startRound();
@@ -688,45 +1068,141 @@
       playerMove = null; rivalMove = null; timeLeft = 30;
       document.getElementById('opponentTimerBox').style.display = "block";
       document.getElementById('opponentCountdown').innerText = timeLeft;
-      document.getElementById('playerHandVisual').innerText = "🤜";
-      document.getElementById('rivalHandVisual').innerText = "❓";
-      document.getElementById('battleResult').innerText = `Ronda ${currentRound}. Elige tu seña.`;
+      document.getElementById('playerChoiceDisplay').innerText = "🤜";
+      document.getElementById('rivalChoiceDisplay').innerText = "❓";
+      document.getElementById('vsStatus').innerText = `¡Ronda ${currentRound}! Elige tu seña`;
+      document.getElementById('battleResult').innerText = `Selecciona Piedra, Papel o Tijera.`;
 
       document.querySelectorAll('.card-3d').forEach(el => {
         el.classList.remove('selected', 'disabled');
-        el.style.pointerEvents = "auto";
       });
 
       clearInterval(roundTimerInterval);
       roundTimerInterval = setInterval(() => {
         timeLeft--;
-        if(document.getElementById('opponentCountdown')) document.getElementById('opponentCountdown').innerText = timeLeft;
-        if (timeLeft <= 0) { clearInterval(roundTimerInterval); if (!playerMove) makeMove('piedra'); }
+        playSynthSound('tick');
+        document.getElementById('opponentCountdown').innerText = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(roundTimerInterval);
+          if (!playerMove) makeMove('piedra');
+        }
       }, 1000);
     }
 
+    // Hacer Movimiento
     function makeMove(choice) {
       if (matchIsOver || playerMove) return;
+      playSynthSound('select');
       playerMove = choice;
 
       document.querySelectorAll('.card-3d').forEach(el => {
         el.classList.add('disabled');
-        el.style.pointerEvents = "none";
       });
 
       document.getElementById(`choice${choice.charAt(0).toUpperCase() + choice.slice(1)}`).classList.add('selected');
-      document.getElementById('playerHandVisual').innerText = handIcons[choice];
-      document.getElementById('battleResult').innerText = `Elegiste ${choice.toUpperCase()}. Esperando jugada del rival humano...`;
+      document.getElementById('playerChoiceDisplay').innerText = handIcons[choice];
+      update3DMeshChoice(true, choice);
+
+      document.getElementById('battleResult').innerText = `Elegiste ${choice.toUpperCase()}. Esperando jugada del rival...`;
+
+      // Enviar jugada vía P2P
+      broadcast.postMessage({
+        type: 'MOVE_SUBMITTED',
+        matchId: activeMatchId,
+        sender: userAccount,
+        move: choice
+      });
+
+      // Si se está jugando en modo prueba (o si el rival ya envió su jugada)
+      checkRoundResolution();
+    }
+
+    function checkRoundResolution() {
+      // Si el rival aún no envía jugada, simulamos una jugada si estamos solos en la pestaña para fluidez de test
+      if (!rivalMove && getStoredLobbies().filter(l => l.id === activeMatchId).length === 0) {
+        const moves = ['piedra', 'papel', 'tijera'];
+        rivalMove = moves[Math.floor(Math.random() * moves.length)];
+      }
+
+      if (playerMove && rivalMove) {
+        clearInterval(roundTimerInterval);
+        document.getElementById('rivalChoiceDisplay').innerText = handIcons[rivalMove];
+        update3DMeshChoice(false, rivalMove);
+
+        // Disparar animación cinemática 3D de choque
+        trigger3DClashAnimation(() => {
+          evaluateRoundResult();
+        });
+      }
+    }
+
+    function evaluateRoundResult() {
+      let resultText = "";
+      if (playerMove === rivalMove) {
+        resultText = "¡EMPATE EN ESTA RONDA!";
+      } else if (
+        (playerMove === 'piedra' && rivalMove === 'tijera') ||
+        (playerMove === 'papel' && rivalMove === 'piedra') ||
+        (playerMove === 'tijera' && rivalMove === 'papel')
+      ) {
+        playerWins++;
+        resultText = "¡GANASTE ESTA RONDA! 🎉";
+        playSynthSound('win');
+        confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
+      } else {
+        rivalWins++;
+        resultText = "RIVAL GANA ESTA RONDA 💥";
+      }
+
+      document.getElementById('playerScoreBoard').innerText = playerWins;
+      document.getElementById('rivalScoreBoard').innerText = rivalWins;
+      document.getElementById('battleResult').innerText = resultText;
+
+      if (playerWins >= 3 || rivalWins >= 3 || currentRound >= maxRounds) {
+        matchIsOver = true;
+        setTimeout(finishMatch, 1500);
+      } else {
+        currentRound++;
+        setTimeout(() => {
+          document.getElementById('roundCounter').innerText = `${currentRound} / ${maxRounds}`;
+          startRound();
+        }, 2200);
+      }
+    }
+
+    function finishMatch() {
+      document.getElementById('opponentTimerBox').style.display = "none";
+      document.getElementById('choicesGrid').classList.add('hidden');
+      document.getElementById('btnLeaveArena').classList.remove('hidden');
+
+      if (playerWins > rivalWins) {
+        document.getElementById('battleResult').innerHTML = `🏆 ¡VICTORIA ABSOLUTA EN EL DUELO 3D!<br>Has ganado <strong>${currentMatchStake * 2} ASTCH</strong>`;
+        userAstrBalance += currentMatchStake * 2;
+        document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+        confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+        playSynthSound('win');
+      } else if (rivalWins > playerWins) {
+        document.getElementById('battleResult').innerHTML = `💀 DERROTA. El rival se lleva el botín de la arena.`;
+      } else {
+        document.getElementById('battleResult').innerHTML = `🤝 EMPATE FINAL. Fondos reembolsados.`;
+        userAstrBalance += currentMatchStake;
+        document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+      }
     }
 
     function returnToLobby() {
+      playSynthSound('click');
       document.getElementById('arenaView').classList.add('hidden');
       document.getElementById('lobbyView').classList.remove('hidden');
       renderOpenLobbies();
     }
 
-    renderOpenLobbies();
-    window.addEventListener('storage', renderOpenLobbies);
+    // Inicialización al cargar la página
+    window.addEventListener('DOMContentLoaded', () => {
+      initThreeJS();
+      renderOpenLobbies();
+      updateRoomsState();
+    });
   </script>
 </body>
 </html>

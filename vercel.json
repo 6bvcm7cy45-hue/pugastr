@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "pugastralis-3d-arena",
+  "cleanUrls": true,
+  "routes": [
+    { "src": "/piedra", "dest": "/piedra.html" },
+    { "src": "/game", "dest": "/game.html" },
+    { "src": "/", "dest": "/index.html" }
+  ]
+}
