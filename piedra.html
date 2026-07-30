@@ -3,24 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PUGASTR 3D Arena // Global P2P Cyber Arena</title>
+  <title>PUGASTR 3D Arena // Real P2P Betting & Animated Hands</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
   
-  <!-- Librerías de Terceros (CDNs estables) -->
+  <!-- CDNs estables -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
-  <!-- MQTT para Matchmaking Global Multijugador Real entre cualquier país/dispositivo -->
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
 
   <style>
     :root {
       --bg-deep: #05070d;
-      --bg-card: rgba(13, 17, 30, 0.88);
-      --border-cyber: rgba(0, 240, 255, 0.3);
+      --bg-card: rgba(13, 17, 30, 0.9);
+      --border-cyber: rgba(0, 240, 255, 0.35);
       --accent-cyan: #00f0ff;
       --accent-purple: #9d00ff;
       --accent-pink: #ff007f;
@@ -33,15 +32,9 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--bg-deep);
-      color: var(--text-main);
-      font-family: 'Outfit', sans-serif;
-      overflow-x: hidden;
-      position: relative;
-      user-select: none;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      background-color: var(--bg-deep); color: var(--text-main);
+      font-family: 'Outfit', sans-serif; overflow-x: hidden; position: relative;
+      user-select: none; min-height: 100vh; display: flex; flex-direction: column;
     }
 
     #webglCanvas {
@@ -54,7 +47,7 @@
 
     header {
       display: flex; justify-content: space-between; align-items: center; padding: 14px 5%;
-      border-bottom: 1px solid var(--border-cyber); background: rgba(5, 7, 13, 0.85);
+      border-bottom: 1px solid var(--border-cyber); background: rgba(5, 7, 13, 0.88);
       backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 1000;
       box-shadow: 0 10px 30px rgba(0,0,0,0.6);
     }
@@ -94,8 +87,6 @@
       cursor: pointer; text-align: center; transition: all 0.2s;
     }
     .dropdown-item:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 15px var(--accent-cyan); }
-    .dropdown-item.danger { background: rgba(255, 0, 127, 0.1); color: var(--accent-pink); border: 1px solid rgba(255, 0, 127, 0.3); }
-    .dropdown-item.danger:hover { background: var(--accent-pink); color: #fff; box-shadow: 0 0 15px var(--accent-pink); }
 
     .hero { text-align: center; padding: 25px 20px 10px 20px; max-width: 900px; margin: 0 auto; }
     .hero-title {
@@ -137,10 +128,18 @@
     }
     .hidden { display: none !important; }
 
-    .token-gate-warning {
-      background: rgba(0, 240, 255, 0.1); border: 1px solid var(--accent-cyan); border-radius: 14px;
-      padding: 16px; text-align: center; margin-bottom: 22px; font-size: 0.85rem; color: var(--text-main); font-weight: 600;
+    .quick-match-box {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(157, 0, 255, 0.15));
+      border: 2px solid var(--accent-cyan); border-radius: 18px; padding: 20px; text-align: center;
+      margin-bottom: 25px; box-shadow: 0 0 25px rgba(0, 240, 255, 0.2);
     }
+
+    .btn-quick-match {
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); color: #000; border: none;
+      padding: 14px 28px; border-radius: 12px; font-weight: 900; font-family: 'Press Start 2P', cursive;
+      font-size: 0.85rem; cursor: pointer; box-shadow: 0 0 25px var(--accent-cyan); transition: all 0.3s; margin-top: 10px;
+    }
+    .btn-quick-match:hover { transform: scale(1.05); box-shadow: 0 0 35px var(--accent-cyan); color: #fff; }
 
     .rooms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 18px; }
     .tier-card {
@@ -157,7 +156,6 @@
       font-family: 'Press Start 2P', cursive; box-shadow: 0 0 15px rgba(0, 240, 255, 0.3); transition: all 0.2s;
     }
 
-    /* Active lobbies box */
     .active-lobbies-box { margin-top: 30px; border-top: 1px solid var(--border-cyber); padding-top: 20px; }
     .lobby-list { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
     .lobby-item {
@@ -174,14 +172,21 @@
     .btn-join-lobby:hover { box-shadow: 0 0 20px var(--accent-green); transform: scale(1.05); }
 
     .matchmaking-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; text-align: center; gap: 20px; }
-    .spinner-3d {
-      width: 80px; height: 80px; border: 6px solid rgba(0, 240, 255, 0.15); border-top: 6px solid var(--accent-cyan);
+    .radar-spinner {
+      width: 90px; height: 90px; border: 6px solid rgba(0, 240, 255, 0.15); border-top: 6px solid var(--accent-cyan);
       border-bottom: 6px solid var(--accent-purple); border-radius: 50%; animation: spin 1s linear infinite;
-      box-shadow: 0 0 30px rgba(0, 240, 255, 0.4);
+      box-shadow: 0 0 35px rgba(0, 240, 255, 0.5);
     }
     @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
     .battle-arena { display: flex; flex-direction: column; align-items: center; gap: 18px; text-align: center; }
+    
+    .pot-banner {
+      background: linear-gradient(90deg, rgba(255, 183, 0, 0.2), rgba(157, 0, 255, 0.3));
+      border: 1px solid var(--accent-gold); border-radius: 12px; padding: 8px 20px; font-family: 'Press Start 2P', cursive;
+      font-size: 0.7rem; color: var(--accent-gold); box-shadow: 0 0 20px rgba(255, 183, 0, 0.3);
+    }
+
     .match-scoreboard {
       display: flex; justify-content: space-around; width: 100%; background: rgba(10, 14, 24, 0.9);
       border-radius: 14px; padding: 14px 20px; border: 1px solid rgba(0, 240, 255, 0.3);
@@ -190,7 +195,7 @@
     .score-box { display: flex; flex-direction: column; gap: 4px; }
     .score-title { font-size: 0.55rem; color: var(--text-muted); }
     .score-num { font-size: 1.1rem; color: var(--accent-cyan); }
-    .vs-status { font-family: 'Press Start 2P', cursive; font-size: 0.8rem; color: var(--accent-pink); margin: 6px 0; }
+    .vs-status { font-family: 'Press Start 2P', cursive; font-size: 0.85rem; color: var(--accent-pink); margin: 6px 0; }
     .timer-container {
       font-family: 'Press Start 2P', cursive; font-size: 0.7rem; color: var(--accent-gold);
       background: rgba(255, 183, 0, 0.12); border: 1px solid var(--accent-gold); padding: 8px 18px; border-radius: 10px;
@@ -211,6 +216,14 @@
     .fighter-name { font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: var(--accent-cyan); }
     .fighter-choice-icon { font-size: 3rem; filter: drop-shadow(0 0 15px var(--accent-cyan)); transition: all 0.3s; }
 
+    /* Overlay animado "1... 2... 3... ¡PIEDRA, PAPEL O TIJERA!" */
+    .shake-banner-overlay {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-family: 'Press Start 2P', cursive; font-size: 1.8rem; color: var(--accent-cyan);
+      text-shadow: 0 0 25px var(--accent-cyan), 0 0 50px var(--accent-purple);
+      z-index: 50; pointer-events: none; opacity: 0; transition: opacity 0.2s; text-align: center;
+    }
+
     .choices-3d-grid { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; margin: 10px 0; }
     .card-3d {
       width: 130px; height: 160px; background: linear-gradient(135deg, rgba(28, 35, 60, 0.95), rgba(10, 13, 22, 0.95));
@@ -224,7 +237,7 @@
     .card-3d .hand-icon { font-size: 3.2rem; margin-bottom: 8px; }
     .card-3d .name-3d { font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: #fff; }
 
-    .battle-result-box { margin-top: 10px; font-size: 1.1rem; font-weight: 800; color: var(--accent-cyan); min-height: 40px; text-align: center; }
+    .battle-result-box { margin-top: 10px; font-size: 1.2rem; font-weight: 800; color: var(--accent-cyan); min-height: 45px; text-align: center; }
     
     .btn-action {
       background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted);
@@ -277,64 +290,74 @@
     </header>
 
     <section class="hero">
-      <h1 class="hero-title">GLOBAL 3D CYBER ARENA // MULTIJUGADOR REAL P2P</h1>
-      <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261) & Red Global WebSocket MQTT.</p>
+      <h1 class="hero-title">PVP ARENA DE APUESTAS // 100% MANOS 3D ANIMADAS</h1>
+      <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261) & Red Global de Emparejamiento Automático.</p>
     </section>
 
     <div class="dashboard-container">
       <div class="dash-card">
-        <div class="dash-title">BALANCE ASTRALIS CHAIN ($ASTCH / $ASTR)</div>
+        <div class="dash-title">MI BALANCE DE APUESTAS ($ASTCH)</div>
         <div class="dash-value">
-          <span id="astralisBalanceText">100.00 ASTCH (Demo)</span>
-          <span class="token-badge" id="tokenGateStatus">DEMO / LIBRE</span>
+          <span id="astralisBalanceText">100.00 ASTCH</span>
+          <span class="token-badge" id="tokenGateStatus">CONECTADO</span>
         </div>
-        <div style="font-size: 0.75rem; color: var(--text-muted);">Conecta MetaMask para apuestas reales o juega libre.</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">Las victorias duplican la apuesta y acreditan los fondos al instante.</div>
       </div>
       
       <div class="dash-card">
-        <div class="dash-title">ESTADO DE RED GLOBAL MULTIJUGADOR</div>
+        <div class="dash-title">MATCHMAKER GLOBAL MULTIJUGADOR</div>
         <div class="dash-value" style="font-size: 0.88rem;">
-          <span id="p2pStatusText" style="color: var(--accent-green);">Conectado a Red Global</span>
+          <span id="p2pStatusText" style="color: var(--accent-green);">Buscador de Rival Listo</span>
           <span class="net-badge" id="activeLobbiesCount">Salas Online: 0</span>
         </div>
-        <div style="font-size: 0.75rem; color: var(--text-muted);" id="myPlayerIdText">Tu ID: Jugador_Anonymous</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);" id="myPlayerIdText">ID: Jugador_Web3</div>
       </div>
     </div>
 
     <!-- Vista Lobby -->
     <section class="section" id="lobbyView">
       <div class="view-container">
-        <div class="token-gate-warning">
-          🌐 <strong>Red Multijugador Global Activa:</strong> Puedes crear una sala desde cualquier lugar del mundo y otro jugador en la web de Vercel podrá unirse instantáneamente.
+        
+        <!-- BUSCADOR AUTOMÁTICO DE RIVAL (QUICK MATCHMAKING) -->
+        <div class="quick-match-box">
+          <h2 style="font-family: 'Press Start 2P'; font-size: 0.8rem; color: var(--accent-cyan); margin-bottom: 8px;">
+            ⚡ EMPAREJAMIENTO RÁPIDO AUTOMÁTICO
+          </h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+            El sistema buscará automáticamente un rival online con tu misma propuesta de apuesta.
+          </p>
+          <button class="btn-quick-match" onclick="startQuickMatchmaking()">
+            🔍 BUSCAR RIVAL DE APUESTA EN VIVO
+          </button>
         </div>
 
-        <h2 class="section-header">[ SALAS DE APUESTA CYBER P2P ]</h2>
+        <h2 class="section-header">[ SALAS DISPONIBLES O CREAR MANUALLY ]</h2>
         
         <div class="rooms-grid">
           <div class="tier-card" id="roomBronce" onclick="createP2PLobby('Bronce', 10)">
             <div class="tier-rank">Rango Bronce</div>
             <div class="tier-price">10 ASTCH</div>
-            <button class="btn-tier">CREAR SALA</button>
+            <button class="btn-tier">APOSTAR 10 ASTCH</button>
           </div>
 
           <div class="tier-card" id="roomPlata" onclick="createP2PLobby('Plata', 50)">
             <div class="tier-rank">Rango Plata</div>
             <div class="tier-price">50 ASTCH</div>
-            <button class="btn-tier">CREAR SALA</button>
+            <button class="btn-tier">APOSTAR 50 ASTCH</button>
           </div>
 
           <div class="tier-card" id="roomOro" onclick="createP2PLobby('Oro', 100)">
             <div class="tier-rank">Rango Oro</div>
             <div class="tier-price">100 ASTCH</div>
-            <button class="btn-tier">CREAR SALA</button>
+            <button class="btn-tier">APOSTAR 100 ASTCH</button>
           </div>
         </div>
 
         <div class="active-lobbies-box">
-          <h3 style="font-family: 'Press Start 2P'; font-size: 0.7rem; color: var(--accent-cyan); margin-bottom: 12px;">SALAS DISPONIBLES EN LA RED GLOBAL:</h3>
+          <h3 style="font-family: 'Press Start 2P'; font-size: 0.7rem; color: var(--accent-cyan); margin-bottom: 12px;">SALAS ACTIVAS EN LA RED:</h3>
           <div class="lobby-list" id="lobbiesListContainer">
             <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">
-              Buscando salas públicas globales... Si no ves ninguna, ¡crea una para que otros se unan!
+              Escaneando red global... Si no ves una sala, usa el buscador rápido o crea una nueva.
             </div>
           </div>
         </div>
@@ -344,14 +367,14 @@
     <!-- Vista Esperando Rival -->
     <section class="section hidden" id="waitingRivalView">
       <div class="view-container matchmaking-loader">
-        <div class="spinner-3d"></div>
-        <h2 class="section-header" id="waitingTitle">Sala creada: Esperando rival real...</h2>
+        <div class="radar-spinner"></div>
+        <h2 class="section-header" id="waitingTitle">Buscando rival de apuesta en la red...</h2>
         <p style="color: var(--text-muted); font-size: 0.88rem; max-width: 550px;" id="waitingSubtext">
-          Tu sala ha sido publicada en la red global MQTT. Cualquier jugador en la web podrá unirse. O haz clic abajo para probar en modo simulación rápida.
+          Conectando con jugadores globales online... Cuando el rival acepte, entrarán inmediatamente al duelo 3D.
         </p>
         <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-          <button class="btn-action" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" onclick="startSimulationBot()">PROBAR CON BOT SIMULADO</button>
-          <button class="btn-action btn-danger" onclick="cancelLobbyAndRefund()">CANCELAR Y VOLVER</button>
+          <button class="btn-action" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" onclick="startSimulationBot()">ENTRENAR CON RIVAL SIMULADO</button>
+          <button class="btn-action btn-danger" onclick="cancelLobbyAndRefund()">CANCELAR BÚSQUEDA</button>
         </div>
       </div>
     </section>
@@ -359,8 +382,12 @@
     <!-- Arena de Batalla 3D -->
     <section class="section hidden" id="arenaView">
       <div class="view-container battle-arena">
-        <h2 class="section-header" id="arenaTitle">[ ENFRENTAMIENTO 3D P2P EN VIVO ]</h2>
+        <h2 class="section-header" id="arenaTitle">[ DUELO 3D EN VIVO ]</h2>
         
+        <div class="pot-banner" id="potBannerText">
+          💰 POZO EN GARANTÍA: 20.00 ASTCH (EL GANADOR SE LLEVA TODO)
+        </div>
+
         <div class="match-scoreboard">
           <div class="score-box">
             <div class="score-title">TÚ</div>
@@ -371,7 +398,7 @@
             <div class="score-num" id="roundCounter" style="color: var(--accent-gold);">1 / 5</div>
           </div>
           <div class="score-box">
-            <div class="score-title">RIVAL HUMANO</div>
+            <div class="score-title">RIVAL REAL</div>
             <div class="score-num" id="rivalScoreBoard" style="color: var(--accent-pink);">0</div>
           </div>
         </div>
@@ -380,13 +407,17 @@
           ⏳ TIEMPO DE TURNO: <span id="opponentCountdown">30</span>s
         </div>
 
-        <div class="vs-status" id="vsStatus">¡Elige tu seña para el combate 3D!</div>
+        <div class="vs-status" id="vsStatus">¡Elige tu seña!</div>
 
         <!-- Stage visual que interactúa con el canvas 3D de Three.js -->
         <div class="arena-interactive-stage">
+          <div class="shake-banner-overlay" id="shakeBannerOverlay">
+            ¡1... 2... 3...!
+          </div>
+
           <div class="fighter-hud">
             <div class="fighter-name">TÚ</div>
-            <div class="fighter-choice-icon" id="playerChoiceDisplay">🤜</div>
+            <div class="fighter-choice-icon" id="playerChoiceDisplay">✊</div>
           </div>
           
           <div style="font-family: 'Press Start 2P'; font-size: 1.5rem; color: var(--accent-cyan); text-shadow: 0 0 20px var(--accent-cyan);">
@@ -395,7 +426,7 @@
 
           <div class="fighter-hud">
             <div class="fighter-name">RIVAL</div>
-            <div class="fighter-choice-icon" id="rivalChoiceDisplay">❓</div>
+            <div class="fighter-choice-icon" id="rivalChoiceDisplay">✊</div>
           </div>
         </div>
 
@@ -416,7 +447,7 @@
         </div>
 
         <div class="battle-result-box" id="battleResult">
-          Esperando a que ambos participantes confirmen su jugada...
+          Elige Piedra, Papel o Tijera para iniciar el movimiento 3D.
         </div>
 
         <button class="btn-action hidden" id="btnLeaveArena" onclick="returnToLobby()">VOLVER AL LOBBY</button>
@@ -424,7 +455,7 @@
     </section>
 
     <footer>
-      <p>© 2026 Pug Astralis Arena 3D — Red: Astralis Chain (ID: 71261) & Global MQTT | Fee Creador: <code>0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9</code></p>
+      <p>© 2026 Pug Astralis Arena 3D — Red: Astralis Chain (ID: 71261) | Fee Creador: <code>0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9</code></p>
     </footer>
   </div>
 
@@ -464,9 +495,14 @@
           osc.frequency.exponentialRampToValueAtTime(900, now + 0.15);
           gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
           osc.start(now); osc.stop(now + 0.15);
+        } else if (type === 'shake') {
+          osc.type = 'sine'; osc.frequency.setValueAtTime(250, now);
+          osc.frequency.exponentialRampToValueAtTime(600, now + 0.1);
+          gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          osc.start(now); osc.stop(now + 0.1);
         } else if (type === 'clash') {
-          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, now);
-          osc.frequency.exponentialRampToValueAtTime(40, now + 0.35);
+          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(160, now);
+          osc.frequency.exponentialRampToValueAtTime(30, now + 0.35);
           gain.gain.setValueAtTime(0.5, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
           osc.start(now); osc.stop(now + 0.35);
         } else if (type === 'win') {
@@ -476,19 +512,24 @@
           osc.frequency.setValueAtTime(1046.50, now + 0.3);
           gain.gain.setValueAtTime(0.25, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
           osc.start(now); osc.stop(now + 0.5);
+        } else if (type === 'lose') {
+          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(400, now);
+          osc.frequency.exponentialRampToValueAtTime(100, now + 0.4);
+          gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          osc.start(now); osc.stop(now + 0.4);
         } else if (type === 'tick') {
           osc.type = 'sine'; osc.frequency.setValueAtTime(1000, now);
-          gain.gain.setValueAtTime(0.1, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
+          gain.gain.setValueAtTime(0.08, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
           osc.start(now); osc.stop(now + 0.03);
         }
       } catch (e) { console.warn(e); }
     }
 
     /* ==========================================================================
-       2. MOTOR GRÁFICO THREE.JS 3D
+       2. MOTOR GRÁFICO THREE.JS CON MANOS 3D ESCULTURADAS Y ANIMAClÓN "1, 2, 3..."
        ========================================================================== */
     let scene, camera, renderer;
-    let playerMesh, rivalMesh, arenaPlatform, particlesMesh;
+    let playerHandGroup, rivalHandGroup, arenaPlatform, particlesMesh;
     let targetCameraPos = { x: 0, y: 3, z: 12 };
 
     function initThreeJS() {
@@ -503,20 +544,20 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      // Luces Cyberpunk
-      const ambientLight = new THREE.AmbientLight(0x1a2035, 1.5);
+      // Luces de la Arena
+      const ambientLight = new THREE.AmbientLight(0x1a2035, 1.8);
       scene.add(ambientLight);
 
-      const cyanLight = new THREE.PointLight(0x00f0ff, 3, 30);
+      const cyanLight = new THREE.PointLight(0x00f0ff, 3.5, 30);
       cyanLight.position.set(-6, 5, 5);
       scene.add(cyanLight);
 
-      const purpleLight = new THREE.PointLight(0x9d00ff, 3, 30);
-      purpleLight.position.set(6, 5, 5);
-      scene.add(purpleLight);
+      const pinkLight = new THREE.PointLight(0xff007f, 3.5, 30);
+      pinkLight.position.set(6, 5, 5);
+      scene.add(pinkLight);
 
-      // Plataforma 3D
-      const platformGeo = new THREE.CylinderGeometry(5, 5.5, 0.4, 32);
+      // Plataforma Cyber 3D
+      const platformGeo = new THREE.CylinderGeometry(5.2, 5.8, 0.4, 32);
       const platformMat = new THREE.MeshStandardMaterial({
         color: 0x0d111e, roughness: 0.2, metalness: 0.8, emissive: 0x00f0ff, emissiveIntensity: 0.05
       });
@@ -524,15 +565,13 @@
       arenaPlatform.position.y = -2;
       scene.add(arenaPlatform);
 
-      const ringGeo = new THREE.TorusGeometry(5.6, 0.08, 16, 100);
-      const ringMat = new THREE.MeshBasicMaterial({ color: 0x00f0ff });
-      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
-      ringMesh.rotation.x = Math.PI / 2;
-      ringMesh.position.y = -1.8;
+      const ringGeo = new THREE.TorusGeometry(5.9, 0.08, 16, 100);
+      const ringMesh = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0x00f0ff }));
+      ringMesh.rotation.x = Math.PI / 2; ringMesh.position.y = -1.8;
       scene.add(ringMesh);
 
-      // Partículas 3D
-      const particleCount = 400;
+      // Partículas Cyber Dust
+      const particleCount = 450;
       const pGeo = new THREE.BufferGeometry();
       const pPositions = new Float32Array(particleCount * 3);
       for (let i = 0; i < particleCount * 3; i += 3) {
@@ -544,42 +583,94 @@
       particlesMesh = new THREE.Points(pGeo, new THREE.PointsMaterial({ size: 0.15, color: 0x00f0ff, transparent: true, opacity: 0.7 }));
       scene.add(particlesMesh);
 
-      playerMesh = create3DHandMesh('piedra', -3.5, 0);
-      rivalMesh = create3DHandMesh('piedra', 3.5, 0);
-      rivalMesh.rotation.y = Math.PI;
+      // Crear Manos 3D Esculturadas Iniciales (Modo Puño / Piedra ✊)
+      playerHandGroup = createSculptedHand3D('piedra', -3.5, 0x00f0ff);
+      rivalHandGroup = createSculptedHand3D('piedra', 3.5, 0xff007f);
+      rivalHandGroup.rotation.y = Math.PI;
 
-      scene.add(playerMesh); scene.add(rivalMesh);
+      scene.add(playerHandGroup);
+      scene.add(rivalHandGroup);
+
       animateThreeJS();
     }
 
-    function create3DHandMesh(type, posX, posZ) {
+    // Constructor de Mano 3D Anatomica Cyberpunk (Piedra, Papel o Tijera)
+    function createSculptedHand3D(gesture, posX, colorHex) {
       const group = new THREE.Group();
-      group.position.set(posX, 0, posZ);
+      group.position.set(posX, 0, 0);
 
-      if (type === 'piedra') {
-        const geo = new THREE.DodecahedronGeometry(1.4, 1);
-        const mat = new THREE.MeshStandardMaterial({ color: 0x22283a, roughness: 0.3, metalness: 0.7, emissive: 0x9d00ff, emissiveIntensity: 0.3 });
-        group.add(new THREE.Mesh(geo, mat));
-      } else if (type === 'papel') {
-        const geo = new THREE.BoxGeometry(2.2, 2.2, 0.1);
-        const mat = new THREE.MeshStandardMaterial({ color: 0x00f0ff, transparent: true, opacity: 0.8, roughness: 0.1, metalness: 0.9, emissive: 0x00f0ff, emissiveIntensity: 0.5 });
-        group.add(new THREE.Mesh(geo, mat));
-      } else if (type === 'tijera') {
-        const bladeGeo = new THREE.ConeGeometry(0.3, 2.5, 4);
-        const bladeMat = new THREE.MeshStandardMaterial({ color: 0xff007f, emissive: 0xff007f, emissiveIntensity: 0.8, roughness: 0.2 });
-        const b1 = new THREE.Mesh(bladeGeo, bladeMat); b1.rotation.z = -0.3;
-        const b2 = new THREE.Mesh(bladeGeo, bladeMat); b2.rotation.z = 0.3;
-        group.add(b1); group.add(b2);
+      const mainMat = new THREE.MeshStandardMaterial({
+        color: colorHex, roughness: 0.3, metalness: 0.7, emissive: colorHex, emissiveIntensity: 0.2
+      });
+      const jointMat = new THREE.MeshStandardMaterial({ color: 0x22283a, roughness: 0.1, metalness: 0.9 });
+
+      // Palma de la mano (Palm base)
+      const palmGeo = new THREE.BoxGeometry(1.2, 1.3, 0.4);
+      const palmMesh = new THREE.Mesh(palmGeo, mainMat);
+      group.add(palmMesh);
+
+      // Muñeca / Brazo cyber
+      const wristGeo = new THREE.CylinderGeometry(0.5, 0.6, 1.2, 16);
+      const wristMesh = new THREE.Mesh(wristGeo, jointMat);
+      wristMesh.position.y = -1.1;
+      group.add(wristMesh);
+
+      if (gesture === 'piedra') {
+        // Puño cerrado ✊ (Fingers folded)
+        for (let i = 0; i < 4; i++) {
+          const fingerFolded = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.5, 0.45), mainMat);
+          fingerFolded.position.set(-0.42 + i * 0.28, 0.55, 0.2);
+          group.add(fingerFolded);
+        }
+        // Pulgar doblado
+        const thumb = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.4, 0.4), mainMat);
+        thumb.position.set(0.6, 0.1, 0.2);
+        group.add(thumb);
+
+      } else if (gesture === 'papel') {
+        // Mano abierta / Palma ✋ (Fingers extended up)
+        for (let i = 0; i < 4; i++) {
+          const fingerExt = new THREE.Mesh(new THREE.BoxGeometry(0.24, 1.2, 0.2), mainMat);
+          fingerExt.position.set(-0.42 + i * 0.28, 1.1, 0);
+          group.add(fingerExt);
+        }
+        const thumb = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.9, 0.2), mainMat);
+        thumb.position.set(0.7, 0.4, 0);
+        thumb.rotation.z = -0.4;
+        group.add(thumb);
+
+      } else if (gesture === 'tijera') {
+        // Tijera ✌️ (Índice y Medio extendidos, Anular y Meñique doblados)
+        // Índice y Medio extendidos
+        const fIndex = new THREE.Mesh(new THREE.BoxGeometry(0.24, 1.3, 0.2), mainMat);
+        fIndex.position.set(-0.25, 1.15, 0); fIndex.rotation.z = 0.15;
+        group.add(fIndex);
+
+        const fMiddle = new THREE.Mesh(new THREE.BoxGeometry(0.24, 1.3, 0.2), mainMat);
+        fMiddle.position.set(0.05, 1.15, 0); fMiddle.rotation.z = -0.15;
+        group.add(fMiddle);
+
+        // Anular y Meñique doblados
+        const fRing = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.5, 0.45), mainMat);
+        fRing.position.set(0.32, 0.55, 0.2); group.add(fRing);
+
+        const fPinky = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.45, 0.45), mainMat);
+        fPinky.position.set(0.55, 0.52, 0.2); group.add(fPinky);
       }
+
       return group;
     }
 
-    function update3DMeshChoice(isPlayer, moveType) {
-      if (isPlayer) {
-        scene.remove(playerMesh); playerMesh = create3DHandMesh(moveType, -3.5, 0); scene.add(playerMesh);
-      } else {
-        scene.remove(rivalMesh); rivalMesh = create3DHandMesh(moveType, 3.5, 0); rivalMesh.rotation.y = Math.PI; scene.add(rivalMesh);
-      }
+    function update3DHandGestures(playerGesture, rivalGesture) {
+      scene.remove(playerHandGroup);
+      scene.remove(rivalHandGroup);
+
+      playerHandGroup = createSculptedHand3D(playerGesture, -3.5, 0x00f0ff);
+      rivalHandGroup = createSculptedHand3D(rivalGesture, 3.5, 0xff007f);
+      rivalHandGroup.rotation.y = Math.PI;
+
+      scene.add(playerHandGroup);
+      scene.add(rivalHandGroup);
     }
 
     let clock = new THREE.Clock();
@@ -587,18 +678,18 @@
       requestAnimationFrame(animateThreeJS);
       const elapsedTime = clock.getElapsedTime();
 
-      if (arenaPlatform) arenaPlatform.rotation.y = elapsedTime * 0.1;
+      if (arenaPlatform) arenaPlatform.rotation.y = elapsedTime * 0.08;
       if (particlesMesh) particlesMesh.rotation.y = elapsedTime * 0.03;
 
-      if (playerMesh) {
-        playerMesh.position.y = Math.sin(elapsedTime * 2) * 0.2;
-        playerMesh.rotation.y = Math.sin(elapsedTime) * 0.2;
+      // Flotación constante de las manos 3D
+      if (playerHandGroup) {
+        playerHandGroup.position.y = Math.sin(elapsedTime * 2.5) * 0.15;
       }
-      if (rivalMesh) {
-        rivalMesh.position.y = Math.sin(elapsedTime * 2 + 1) * 0.2;
-        rivalMesh.rotation.y = Math.PI + Math.sin(elapsedTime) * 0.2;
+      if (rivalHandGroup) {
+        rivalHandGroup.position.y = Math.sin(elapsedTime * 2.5 + 1) * 0.15;
       }
 
+      // Cámara suave
       camera.position.x += (targetCameraPos.x - camera.position.x) * 0.05;
       camera.position.y += (targetCameraPos.y - camera.position.y) * 0.05;
       camera.position.z += (targetCameraPos.z - camera.position.z) * 0.05;
@@ -607,31 +698,73 @@
       renderer.render(scene, camera);
     }
 
-    function trigger3DClashAnimation(cb) {
-      playSynthSound('clash');
-      targetCameraPos = { x: 0, y: 1.5, z: 7 };
-      const startP = playerMesh.position.x;
-      const startR = rivalMesh.position.x;
+    // Animación Clásica "1, 2, 3... ¡PIEDRA, PAPEL O TIJERA!" con movimiento de Manos 3D
+    function trigger3DHandShakeAndClashAnimation(finalPlayerMove, finalRivalMove, onComplete) {
+      const banner = document.getElementById('shakeBannerOverlay');
+      banner.style.opacity = '1';
+      
+      // Asegurar que ambas manos empiecen en forma de puño ✊ para los 3 movimientos
+      update3DHandGestures('piedra', 'piedra');
 
-      let step = 0;
-      const animInt = setInterval(() => {
-        step += 0.08;
-        playerMesh.position.x = -3.5 + step * 3;
-        rivalMesh.position.x = 3.5 - step * 3;
+      let shakeCount = 0;
+      const shakeInterval = setInterval(() => {
+        shakeCount++;
+        playSynthSound('shake');
 
-        if (step >= 1) {
-          clearInterval(animInt);
-          targetCameraPos.x = (Math.random() - 0.5) * 1.5;
-          targetCameraPos.y = 1.5 + (Math.random() - 0.5) * 1.5;
-          
-          setTimeout(() => {
-            playerMesh.position.x = startP;
-            rivalMesh.position.x = startR;
-            targetCameraPos = { x: 0, y: 3, z: 12 };
-            if (cb) cb();
-          }, 600);
+        if (shakeCount === 1) {
+          banner.innerText = '¡1...!';
+        } else if (shakeCount === 2) {
+          banner.innerText = '¡2...!';
+        } else if (shakeCount === 3) {
+          banner.innerText = '¡3...!';
         }
-      }, 20);
+
+        // Sacudida de manos 3D arriba y abajo
+        playerHandGroup.position.y = 1.2;
+        rivalHandGroup.position.y = 1.2;
+
+        setTimeout(() => {
+          playerHandGroup.position.y = -0.3;
+          rivalHandGroup.position.y = -0.3;
+        }, 150);
+
+        if (shakeCount >= 3) {
+          clearInterval(shakeInterval);
+          
+          // Revelar las señas finales inmediatamente después del "3"
+          setTimeout(() => {
+            banner.innerText = '¡REVELAR!';
+            update3DHandGestures(finalPlayerMove, finalRivalMove);
+
+            // Choque de impacto 3D
+            playSynthSound('clash');
+            targetCameraPos = { x: 0, y: 1.5, z: 7.5 };
+
+            let step = 0;
+            const clashInt = setInterval(() => {
+              step += 0.1;
+              playerHandGroup.position.x = -3.5 + step * 2.8;
+              rivalHandGroup.position.x = 3.5 - step * 2.8;
+
+              if (step >= 1) {
+                clearInterval(clashInt);
+                // Temblor de cámara
+                targetCameraPos.x = (Math.random() - 0.5) * 1.5;
+                targetCameraPos.y = 1.5 + (Math.random() - 0.5) * 1.5;
+
+                setTimeout(() => {
+                  banner.style.opacity = '0';
+                  playerHandGroup.position.x = -3.5;
+                  rivalHandGroup.position.x = 3.5;
+                  targetCameraPos = { x: 0, y: 3, z: 12 };
+                  if (onComplete) onComplete();
+                }, 800);
+              }
+            }, 20);
+
+          }, 350);
+        }
+      }, 550);
     }
 
     window.addEventListener('resize', () => {
@@ -642,24 +775,19 @@
     });
 
     /* ==========================================================================
-       3. RED GLOBAL MQTT WEBSOCKETS MULTIJUGADOR (EMPX PUBLIC BROKER)
+       3. MATCHMAKING AUTOMÁTICO REAL & RED GLOBAL MQTT
        ========================================================================== */
     const myClientId = 'usr_' + Math.floor(Math.random() * 1000000);
-    document.getElementById('myPlayerIdText').innerText = `Tu ID: ${myClientId.substring(0, 10)}`;
+    document.getElementById('myPlayerIdText').innerText = `ID: ${myClientId.substring(0, 10)}`;
 
-    // Conectar al Broker Global WebSocket de MQTT (Público, Gratis y Ultrarrápido)
     const mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt', {
-      clientId: myClientId,
-      keepalive: 60,
-      clean: true
+      clientId: myClientId, keepalive: 60, clean: true
     });
 
     const MQTT_LOBBIES_TOPIC = 'pugastralis/3d/lobbies';
     let globalLobbies = [];
 
     mqttClient.on('connect', () => {
-      console.log('Conectado a la Red Global MQTT Multijugador');
-      document.getElementById('p2pStatusText').innerText = "Conectado a Red Global";
       mqttClient.subscribe(MQTT_LOBBIES_TOPIC);
       publishLobbiesRequest();
     });
@@ -682,7 +810,6 @@
             publishLobbyAnnouncement(myActiveLobby);
           }
         } else if (myActiveLobby && topic === `pugastralis/3d/room/${myActiveLobby.id}`) {
-          // Mensajes específicos de la sala actual
           if (payload.type === 'PLAYER_JOINED' && payload.sender !== myClientId) {
             playSynthSound('win');
             document.getElementById('waitingRivalView').classList.add('hidden');
@@ -721,7 +848,7 @@
       document.getElementById('activeLobbiesCount').innerText = `Salas Online: ${openLobbies.length}`;
 
       if (openLobbies.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">No hay salas abiertas por otros jugadores globales. ¡Crea una para que alguien se una!</div>`;
+        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">No hay salas abiertas en este instante. ¡Usa el buscador rápido o crea una nueva!</div>`;
         return;
       }
 
@@ -731,13 +858,28 @@
             <strong>${l.tier}</strong> // Apuesta: <strong>${l.stake} ASTCH</strong><br>
             <span style="font-size:0.7rem; color: var(--text-muted);">Creador: ${l.creatorId.substring(0, 10)}</span>
           </div>
-          <button class="btn-join-lobby" onclick="joinP2PLobby('${l.id}', ${l.stake})">UNIRSE Y JUGAR</button>
+          <button class="btn-join-lobby" onclick="joinP2PLobby('${l.id}', ${l.stake})">ACEPTAR APUESTA</button>
         </div>
       `).join('');
     }
 
+    // Buscador Rápido Automático de Rival
+    function startQuickMatchmaking() {
+      playSynthSound('click');
+      const openLobbies = globalLobbies.filter(l => l.creatorId !== myClientId);
+      
+      if (openLobbies.length > 0) {
+        // Unirse automáticamente a la primera sala disponible
+        const target = openLobbies[0];
+        joinP2PLobby(target.id, target.stake);
+      } else {
+        // Crear automáticamente una sala Bronce (10 ASTCH) y esperar en cola de emparejamiento
+        createP2PLobby('Bronce', 10);
+      }
+    }
+
     /* ==========================================================================
-       4. CONEXIÓN WEB3 & METAMASK
+       4. CONEXIÓN WEB3 & BALANCE DE APUESTAS
        ========================================================================== */
     const ASTRALIS_CHAIN_ID = "0x1165d";
     let provider = null, signer = null, walletConnected = false, userAccount = null;
@@ -769,23 +911,20 @@
           const rawBal = await provider.getBalance(userAccount);
           userAstrBalance = parseFloat(ethers.utils.formatEther(rawBal));
           document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
-          document.getElementById('tokenGateStatus').innerText = "WEB3 CONECTADO";
-          document.getElementById('tokenGateStatus').style.color = "var(--accent-green)";
         } catch (e) { console.error(e); }
-      } else { alert("Instala MetaMask si deseas firmar transacciones en la testnet."); }
+      } else { alert("Instala MetaMask si deseas realizar transacciones Web3 reales."); }
     }
 
     function disconnectMetaMask() {
       walletConnected = false;
       document.getElementById('walletBtnText').innerText = "CONECTAR WALLET";
-      document.getElementById('astralisBalanceText').innerText = "100.00 ASTCH (Demo)";
-      document.getElementById('tokenGateStatus').innerText = "DEMO / LIBRE";
+      document.getElementById('astralisBalanceText').innerText = "100.00 ASTCH";
     }
 
     /* ==========================================================================
-       5. LÓGICA DE PARTIDA & BOT SIMULADO
+       5. SISTEMA DE COMBATE CON APUESTAS Y ANIMACIÓN DE MANOS
        ========================================================================== */
-    let myActiveLobby = null, currentMatchStake = 0, isBotMatch = false;
+    let myActiveLobby = null, currentMatchStake = 10, isBotMatch = false;
     let playerWins = 0, rivalWins = 0, currentRound = 1;
     const maxRounds = 5;
     let matchIsOver = false, playerMove = null, rivalMove = null, roundTimerInterval = null, timeLeft = 30;
@@ -796,6 +935,10 @@
       currentMatchStake = stake;
       isBotMatch = false;
 
+      // Descontar la apuesta del saldo
+      userAstrBalance -= stake;
+      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+
       const lobbyId = 'room_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
       myActiveLobby = { id: lobbyId, creatorId: myClientId, tier: tierName, stake: stake };
 
@@ -804,7 +947,7 @@
 
       document.getElementById('lobbyView').classList.add('hidden');
       document.getElementById('waitingRivalView').classList.remove('hidden');
-      document.getElementById('waitingTitle').innerText = `Sala ${tierName} (${stake} ASTCH) Publicada en la Red`;
+      document.getElementById('waitingTitle').innerText = `Buscando rival para Apuesta ${tierName} (${stake} ASTCH)...`;
     }
 
     function joinP2PLobby(lobbyId, stake) {
@@ -812,13 +955,15 @@
       currentMatchStake = stake;
       isBotMatch = false;
 
+      // Descontar la apuesta del saldo al unirse
+      userAstrBalance -= stake;
+      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+
       myActiveLobby = { id: lobbyId };
       mqttClient.subscribe(`pugastralis/3d/room/${lobbyId}`);
       
-      // Notificar al creador que nos unimos
       mqttClient.publish(`pugastralis/3d/room/${lobbyId}`, JSON.stringify({
-        type: 'PLAYER_JOINED',
-        sender: myClientId
+        type: 'PLAYER_JOINED', sender: myClientId
       }));
 
       publishLobbyRemoval(lobbyId);
@@ -842,12 +987,17 @@
         publishLobbyRemoval(myActiveLobby.id);
         myActiveLobby = null;
       }
+      // Reembolsar la apuesta
+      userAstrBalance += currentMatchStake;
+      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+
       document.getElementById('waitingRivalView').classList.add('hidden');
       document.getElementById('lobbyView').classList.remove('hidden');
     }
 
     function initMatch() {
       playerWins = 0; rivalWins = 0; currentRound = 1; matchIsOver = false;
+      document.getElementById('potBannerText').innerText = `💰 POZO EN GARANTÍA: ${(currentMatchStake * 2).toFixed(2)} ASTCH (GANADOR RECIBE TODO)`;
       document.getElementById('playerScoreBoard').innerText = `0`;
       document.getElementById('rivalScoreBoard').innerText = `0`;
       document.getElementById('roundCounter').innerText = `${currentRound} / ${maxRounds}`;
@@ -860,11 +1010,12 @@
       playerMove = null; rivalMove = null; timeLeft = 30;
       document.getElementById('opponentTimerBox').style.display = "block";
       document.getElementById('opponentCountdown').innerText = timeLeft;
-      document.getElementById('playerChoiceDisplay').innerText = "🤜";
-      document.getElementById('rivalChoiceDisplay').innerText = "❓";
+      document.getElementById('playerChoiceDisplay').innerText = "✊";
+      document.getElementById('rivalChoiceDisplay').innerText = "✊";
       document.getElementById('vsStatus').innerText = `¡Ronda ${currentRound}! Elige tu seña`;
-      document.getElementById('battleResult').innerText = `Selecciona tu estrategia en 3D.`;
+      document.getElementById('battleResult').innerText = `Haz clic en Piedra, Papel o Tijera.`;
 
+      update3DHandGestures('piedra', 'piedra');
       document.querySelectorAll('.card-3d').forEach(el => el.classList.remove('selected', 'disabled'));
 
       clearInterval(roundTimerInterval);
@@ -888,15 +1039,11 @@
 
       document.getElementById(`choice${choice.charAt(0).toUpperCase() + choice.slice(1)}`).classList.add('selected');
       document.getElementById('playerChoiceDisplay').innerText = handIcons[choice];
-      update3DMeshChoice(true, choice);
-
       document.getElementById('battleResult').innerText = `Elegiste ${choice.toUpperCase()}. Esperando jugada del rival...`;
 
       if (!isBotMatch && myActiveLobby) {
         mqttClient.publish(`pugastralis/3d/room/${myActiveLobby.id}`, JSON.stringify({
-          type: 'MOVE_SUBMITTED',
-          sender: myClientId,
-          move: choice
+          type: 'MOVE_SUBMITTED', sender: myClientId, move: choice
         }));
       }
 
@@ -912,9 +1059,9 @@
       if (playerMove && rivalMove) {
         clearInterval(roundTimerInterval);
         document.getElementById('rivalChoiceDisplay').innerText = handIcons[rivalMove];
-        update3DMeshChoice(false, rivalMove);
 
-        trigger3DClashAnimation(() => {
+        // Ejecutar Animación 3D "1, 2, 3... ¡PIEDRA, PAPEL O TIJERA!"
+        trigger3DHandShakeAndClashAnimation(playerMove, rivalMove, () => {
           evaluateRoundResult();
         });
       }
@@ -930,12 +1077,13 @@
         (playerMove === 'tijera' && rivalMove === 'papel')
       ) {
         playerWins++;
-        resultText = "¡GANASTE ESTA RONDA! 🎉";
+        resultText = "¡GANASTE LA RONDA! 🎉";
         playSynthSound('win');
         confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
       } else {
         rivalWins++;
-        resultText = "RIVAL GANA ESTA RONDA 💥";
+        resultText = "RIVAL GANA LA RONDA 💥";
+        playSynthSound('lose');
       }
 
       document.getElementById('playerScoreBoard').innerText = playerWins;
@@ -959,16 +1107,21 @@
       document.getElementById('choicesGrid').classList.add('hidden');
       document.getElementById('btnLeaveArena').classList.remove('hidden');
 
+      const totalPot = currentMatchStake * 2;
+
       if (playerWins > rivalWins) {
-        document.getElementById('battleResult').innerHTML = `🏆 ¡VICTORIA ABSOLUTA EN EL DUELO 3D!<br>Premio: <strong>${currentMatchStake * 2} ASTCH</strong>`;
-        userAstrBalance += currentMatchStake * 2;
+        document.getElementById('battleResult').innerHTML = `🏆 ¡VICTORIA ABSOLUTA DE LA APUESTA!<br>Has ganado el pozo total de <strong>${totalPot.toFixed(2)} ASTCH</strong>`;
+        userAstrBalance += totalPot;
         document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
-        confetti({ particleCount: 150, spread: 100, origin: { y: 0.5 } });
+        confetti({ particleCount: 180, spread: 100, origin: { y: 0.5 } });
         playSynthSound('win');
       } else if (rivalWins > playerWins) {
-        document.getElementById('battleResult').innerHTML = `💀 DERROTA. El rival gana la partida.`;
+        document.getElementById('battleResult').innerHTML = `💀 ¡PERDISTE LA APUESTA!<br>El rival se lleva el pozo de <strong>${totalPot.toFixed(2)} ASTCH</strong>`;
+        playSynthSound('lose');
       } else {
-        document.getElementById('battleResult').innerHTML = `🤝 EMPATE FINAL. Reembolso entregado.`;
+        document.getElementById('battleResult').innerHTML = `🤝 EMPATE FINAL. Fondos reembolsados (<strong>${currentMatchStake.toFixed(2)} ASTCH</strong>).`;
+        userAstrBalance += currentMatchStake;
+        document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
       }
     }
 
