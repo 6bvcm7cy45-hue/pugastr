@@ -111,9 +111,10 @@
       font-size: 0.65rem; background: rgba(0, 240, 255, 0.12); padding: 5px 10px; border-radius: 8px;
       border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-family: 'Press Start 2P', cursive;
     }
-    .fee-badge {
-      font-size: 0.65rem; background: rgba(255, 183, 0, 0.15); padding: 5px 10px; border-radius: 8px;
-      border: 1px solid var(--accent-gold); color: var(--accent-gold); font-family: 'Press Start 2P', cursive;
+    .online-badge {
+      font-size: 0.65rem; background: rgba(0, 255, 102, 0.15); padding: 5px 10px; border-radius: 8px;
+      border: 1px solid var(--accent-green); color: var(--accent-green); font-family: 'Press Start 2P', cursive;
+      box-shadow: 0 0 12px rgba(0, 255, 102, 0.3);
     }
 
     .section { max-width: 1000px; margin: 10px auto 40px auto; padding: 0 20px; width: 100%; }
@@ -157,7 +158,7 @@
     }
     .btn-join-lobby:hover { box-shadow: 0 0 20px var(--accent-green); transform: scale(1.05); }
 
-    /* Modal de Confirmación de Fee AL INICIO */
+    /* Modal Confirmación Fee */
     .modal-backdrop {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
       background: rgba(2, 3, 7, 0.85); backdrop-filter: blur(12px);
@@ -289,8 +290,9 @@
       </div>
     </header>
 
+    <!-- HERO SECTION - PVP REMOVIDO DE ARRIBA -->
     <section class="hero">
-      <h1 class="hero-title">UNITY 3D CYBER ARENA // APUESTAS WEB3 PVP</h1>
+      <h1 class="hero-title">UNITY 3D CYBER ARENA // ARENA DE APUESTAS WEB3</h1>
       <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261). Fee Creador (2%) Aceptado al Inicio.</p>
     </section>
 
@@ -306,17 +308,18 @@
         </div>
       </div>
       
+      <!-- PRESENCIA EN TIEMPO REAL - JUGADORES ONLINE -->
       <div class="dash-card">
-        <div class="dash-title">RED DE MATCHMAKING GLOBAL</div>
+        <div class="dash-title">RED DE PERSONAS CONECTADAS ONLINE</div>
         <div class="dash-value" style="font-size: 0.88rem;">
-          <span id="p2pStatusText" style="color: var(--accent-green);">Red Global Online</span>
-          <span class="fee-badge" id="activeLobbiesCount">Salas Online: 0</span>
+          <span id="p2pStatusText" style="color: var(--accent-green);">Buscador de Personas Activo</span>
+          <span class="online-badge" id="activeOnlinePlayersBadge">Jugadores Online: 1</span>
         </div>
         <div style="font-size: 0.75rem; color: var(--text-muted);" id="myPlayerIdText">ID: Jugador_Web3</div>
       </div>
     </div>
 
-    <!-- MODAL CONFIRMACIÓN FEE 2% AL INICIO -->
+    <!-- MODAL CONFIRMACIÓN FEE AL INICIO -->
     <div class="modal-backdrop hidden" id="feeConfirmModal">
       <div class="fee-modal-card">
         <div class="fee-modal-title">⚠️ ACEPTAR APUESTA Y FEE DEL CREADOR (2%)</div>
@@ -344,7 +347,7 @@
     <!-- Vista Lobby -->
     <section class="section" id="lobbyView">
       <div class="view-container">
-        <h2 class="section-header">[ SELECCIONA TU SALA DE APUESTA PVP ]</h2>
+        <h2 class="section-header">[ SELECCIONA TU SALA DE APUESTA ]</h2>
         
         <div class="rooms-grid">
           <div class="tier-card" id="roomBronce" onclick="promptFeeModal('Tier 10', 10, 'create')">
@@ -367,10 +370,10 @@
         </div>
 
         <div class="active-lobbies-box">
-          <h3 style="font-family: 'Press Start 2P'; font-size: 0.7rem; color: var(--accent-cyan); margin-bottom: 12px;">SALAS PUBLICADAS EN LA RED GLOBAL:</h3>
+          <h3 style="font-family: 'Press Start 2P'; font-size: 0.7rem; color: var(--accent-cyan); margin-bottom: 12px;">PERSONAS EN ESPERA SEGÚN NIVEL DE APUESTA:</h3>
           <div class="lobby-list" id="lobbiesListContainer">
             <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">
-              Buscando salas abiertas globales... Si no ves ninguna, crea una nueva.
+              Buscando personas en línea... Selecciona una sala para ingresar a la cola.
             </div>
           </div>
         </div>
@@ -381,9 +384,9 @@
     <section class="section hidden" id="waitingRivalView">
       <div class="view-container matchmaking-loader">
         <div class="radar-spinner"></div>
-        <h2 class="section-header" id="waitingTitle">Buscando rival en la red global...</h2>
+        <h2 class="section-header" id="waitingTitle">Buscando persona online con tu mismo nivel de apuesta...</h2>
         <p style="color: var(--text-muted); font-size: 0.88rem; max-width: 550px;" id="waitingSubtext">
-          Conectando con la red pública MQTT... Cuando otro jugador se una, el duelo 3D iniciará automáticamente.
+          Conectando con personas online en la red pública... Cuando coincidan, el duelo 3D iniciará automáticamente.
         </p>
         <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
           <button class="btn-action" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" onclick="startSimulationBot()">ENTRENAR CON BOT SIMULADO</button>
@@ -818,6 +821,7 @@
       document.getElementById('tokenGateStatus').innerText = "CONECTADO";
     }
 
+    /* PRESENCIA Y PERSONAS ONLINE */
     const myClientId = 'usr_' + Math.floor(Math.random() * 1000000);
     document.getElementById('myPlayerIdText').innerText = `ID: ${myClientId.substring(0, 10)}`;
 
@@ -826,18 +830,50 @@
     });
 
     const MQTT_LOBBIES_TOPIC = 'pugastralis/3d/lobbies';
+    const MQTT_PRESENCE_TOPIC = 'pugastralis/3d/presence';
+
+    let onlinePlayersMap = new Map();
     let globalLobbies = [];
 
     mqttClient.on('connect', () => {
       mqttClient.subscribe(MQTT_LOBBIES_TOPIC);
+      mqttClient.subscribe(MQTT_PRESENCE_TOPIC);
+
+      setInterval(broadcastPresence, 2500);
+      broadcastPresence();
       publishLobbiesRequest();
     });
+
+    function broadcastPresence() {
+      if (!mqttClient || !mqttClient.connected) return;
+      mqttClient.publish(MQTT_PRESENCE_TOPIC, JSON.stringify({
+        type: 'HEARTBEAT',
+        clientId: myClientId,
+        timestamp: Date.now(),
+        state: myActiveLobby ? 'WAITING' : 'LOBBY'
+      }));
+      cleanStalePlayers();
+    }
+
+    function cleanStalePlayers() {
+      const now = Date.now();
+      onlinePlayersMap.forEach((lastSeen, id) => {
+        if (now - lastSeen > 7000) onlinePlayersMap.delete(id);
+      });
+      onlinePlayersMap.set(myClientId, now);
+      document.getElementById('activeOnlinePlayersBadge').innerText = `Jugadores Online: ${onlinePlayersMap.size}`;
+    }
 
     mqttClient.on('message', (topic, message) => {
       try {
         const payload = JSON.parse(message.toString());
-        
-        if (topic === MQTT_LOBBIES_TOPIC) {
+
+        if (topic === MQTT_PRESENCE_TOPIC) {
+          if (payload.type === 'HEARTBEAT' && payload.clientId) {
+            onlinePlayersMap.set(payload.clientId, payload.timestamp || Date.now());
+            cleanStalePlayers();
+          }
+        } else if (topic === MQTT_LOBBIES_TOPIC) {
           if (payload.type === 'ANNOUNCE_LOBBY') {
             const existing = globalLobbies.find(l => l.id === payload.lobby.id);
             if (!existing) {
@@ -890,8 +926,6 @@
       const container = document.getElementById('lobbiesListContainer');
       const openLobbies = globalLobbies.filter(l => l.creatorId !== myClientId);
 
-      document.getElementById('activeLobbiesCount').innerText = `Salas Online: ${openLobbies.length}`;
-
       if (openLobbies.length === 0) {
         container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">No hay salas abiertas en la red. Selecciona una sala para crear una nueva.</div>`;
         return;
@@ -901,7 +935,7 @@
         <div class="lobby-item">
           <div>
             <strong>${l.tier}</strong> // Apuesta: <strong>${l.stake} ASTCH</strong><br>
-            <span style="font-size:0.7rem; color: var(--text-muted);">Creador: ${l.creatorId.substring(0, 10)}</span>
+            <span style="font-size:0.7rem; color: var(--text-muted);">Persona Online: ${l.creatorId.substring(0, 10)}</span>
           </div>
           <button class="btn-join-lobby" onclick="promptFeeModal('${l.tier}', ${l.stake}, 'join', '${l.id}')">ACEPTAR APUESTA (${l.stake} ASTCH)</button>
         </div>
@@ -981,7 +1015,7 @@
       document.getElementById('waitingRivalView').classList.remove('hidden');
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      document.getElementById('waitingTitle').innerText = `Buscando rival para Apuesta ${tierName} (${stake} ASTCH)...`;
+      document.getElementById('waitingTitle').innerText = `Buscando persona online para Apuesta ${tierName} (${stake} ASTCH)...`;
     }
 
     async function executeJoinP2PLobby(lobbyId, stake) {
