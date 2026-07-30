@@ -1,0 +1,1201 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PUGASTR GAMING // Hyper 3D Cyber Arena</title>
+  
+  <!-- Tipografía Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+  
+  <!-- CDNs estables -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+
+  <style>
+    :root {
+      --bg-deep: #020307;
+      --bg-card: rgba(8, 12, 24, 0.92);
+      --border-cyber: rgba(0, 240, 255, 0.4);
+      --accent-cyan: #00f0ff;
+      --accent-purple: #a805ff;
+      --accent-pink: #ff007f;
+      --accent-green: #00ff66;
+      --accent-gold: #ffb700;
+      --text-main: #f0f4f8;
+      --text-muted: #8b9bb4;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-deep); color: var(--text-main);
+      font-family: 'Outfit', sans-serif; overflow-x: hidden; position: relative;
+      user-select: none; min-height: 100vh; display: flex; flex-direction: column;
+    }
+
+    /* WebGL Canvas Background 3D */
+    #webglCanvas {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none;
+    }
+
+    .ui-layer {
+      position: relative; z-index: 10; display: flex; flex-direction: column; min-height: 100vh;
+    }
+
+    /* Header Cyberpunk Premium */
+    header {
+      display: flex; justify-content: space-between; align-items: center; padding: 14px 5%;
+      border-bottom: 1px solid var(--border-cyber); background: rgba(2, 3, 7, 0.88);
+      backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 1000;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+    }
+
+    .brand-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
+    .brand-svg { width: 44px; height: 44px; filter: drop-shadow(0 0 14px var(--accent-cyan)); }
+    .brand-name {
+      font-family: 'Press Start 2P', cursive; font-size: 0.9rem; color: var(--accent-cyan);
+      text-shadow: 0 0 14px rgba(0, 240, 255, 0.7); letter-spacing: 1px;
+    }
+
+    .header-actions { display: flex; gap: 12px; align-items: center; position: relative; }
+
+    .icon-btn {
+      background: rgba(13, 17, 30, 0.8); border: 1px solid var(--border-cyber); color: var(--accent-cyan);
+      width: 42px; height: 42px; border-radius: 12px; cursor: pointer; display: flex;
+      align-items: center; justify-content: center; font-size: 1.2rem; transition: all 0.2s;
+    }
+    .icon-btn:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 15px var(--accent-cyan); }
+
+    .wallet-btn {
+      background: linear-gradient(135deg, #f6851b, #e2761b); color: #fff; border: none;
+      padding: 10px 20px; border-radius: 12px; font-weight: 800; font-size: 0.85rem;
+      cursor: pointer; box-shadow: 0 0 20px rgba(246, 133, 27, 0.5); transition: all 0.25s;
+      display: flex; align-items: center; gap: 8px; font-family: 'Outfit', sans-serif;
+    }
+    .wallet-btn:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(246, 133, 27, 0.8); }
+
+    .wallet-dropdown {
+      position: absolute; right: 0; top: 110%; background: rgba(13, 17, 30, 0.98);
+      border: 1px solid rgba(246, 133, 27, 0.4); border-radius: 14px; padding: 12px; width: 230px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.8); z-index: 2000; display: flex; flex-direction: column; gap: 8px;
+    }
+    .dropdown-item {
+      background: rgba(0, 240, 255, 0.1); color: var(--accent-cyan); border: 1px solid rgba(0, 240, 255, 0.3);
+      padding: 10px 14px; border-radius: 10px; font-size: 0.65rem; font-family: 'Press Start 2P', cursive;
+      cursor: pointer; text-align: center; transition: all 0.2s;
+    }
+    .dropdown-item:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 15px var(--accent-cyan); }
+
+    /* Hero Section */
+    .hero { text-align: center; padding: 25px 20px 10px 20px; max-width: 950px; margin: 0 auto; }
+    .hero-title {
+      font-family: 'Press Start 2P', cursive; font-size: 1.15rem; line-height: 1.6; color: var(--text-main);
+      text-shadow: 0 0 25px rgba(0, 240, 255, 0.6); margin-bottom: 8px;
+    }
+    .hero-subtitle { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; }
+
+    /* Dashboard Grid */
+    .dashboard-container {
+      max-width: 1050px; margin: 15px auto 20px auto; padding: 0 20px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;
+    }
+    @media(max-width: 768px) { .dashboard-container { grid-template-columns: 1fr; } }
+
+    .dash-card {
+      background: var(--bg-card); border: 1px solid var(--border-cyber); border-radius: 20px; padding: 20px 24px;
+      display: flex; flex-direction: column; gap: 10px; box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(14px);
+    }
+    .dash-title { font-family: 'Press Start 2P', cursive; font-size: 0.62rem; color: var(--accent-cyan); }
+    .dash-value { font-size: 1.25rem; font-weight: 800; color: #fff; display: flex; align-items: center; justify-content: space-between; }
+    .token-badge {
+      font-size: 0.65rem; background: rgba(0, 240, 255, 0.15); padding: 6px 12px; border-radius: 8px;
+      border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-family: 'Press Start 2P', cursive;
+    }
+    .fee-badge {
+      font-size: 0.65rem; background: rgba(255, 183, 0, 0.15); padding: 6px 12px; border-radius: 8px;
+      border: 1px solid var(--accent-gold); color: var(--accent-gold); font-family: 'Press Start 2P', cursive;
+    }
+
+    .section { max-width: 1050px; margin: 10px auto 40px auto; padding: 0 20px; width: 100%; }
+    .section-header {
+      font-family: 'Press Start 2P', cursive; font-size: 0.88rem; color: var(--accent-cyan);
+      text-align: center; margin-bottom: 22px; text-shadow: 0 0 12px rgba(0,240,255,0.5);
+    }
+    .view-container {
+      background: var(--bg-card); border: 1px solid rgba(168, 5, 255, 0.45); border-radius: 26px; padding: 30px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8); backdrop-filter: blur(18px);
+    }
+    .hidden { display: none !important; }
+
+    /* Quick Matchmaking Interactive Box */
+    .quick-match-box {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(168, 5, 255, 0.22));
+      border: 2px solid var(--accent-cyan); border-radius: 22px; padding: 25px; text-align: center;
+      margin-bottom: 28px; box-shadow: 0 0 35px rgba(0, 240, 255, 0.3);
+    }
+    .btn-quick-match {
+      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); color: #000; border: none;
+      padding: 16px 32px; border-radius: 14px; font-weight: 900; font-family: 'Press Start 2P', cursive;
+      font-size: 0.88rem; cursor: pointer; box-shadow: 0 0 30px var(--accent-cyan); transition: all 0.3s; margin-top: 14px;
+    }
+    .btn-quick-match:hover { transform: scale(1.05); box-shadow: 0 0 45px var(--accent-cyan); color: #fff; }
+
+    /* Custom Tiers Grid: 10, 100, 500 ASTCH */
+    .rooms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+    .tier-card {
+      background: linear-gradient(135deg, rgba(16, 22, 38, 0.95), rgba(8, 11, 20, 0.95));
+      border: 2px solid var(--accent-purple); border-radius: 20px; padding: 22px 16px; text-align: center;
+      cursor: pointer; transition: all 0.3s; display: flex; flex-direction: column; justify-content: space-between; height: 230px;
+    }
+    .tier-card:hover { border-color: var(--accent-cyan); transform: translateY(-8px); box-shadow: 0 25px 45px rgba(0, 240, 255, 0.45); }
+    .tier-rank { font-family: 'Press Start 2P', cursive; font-size: 0.65rem; color: var(--accent-gold); text-transform: uppercase; }
+    .tier-price { font-size: 1.35rem; font-weight: 900; color: #fff; }
+    .btn-tier {
+      background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple)); color: #fff; border: none;
+      padding: 12px; font-weight: 900; border-radius: 12px; cursor: pointer; font-size: 0.65rem; width: 100%;
+      font-family: 'Press Start 2P', cursive; box-shadow: 0 0 18px rgba(0, 240, 255, 0.35); transition: all 0.2s;
+    }
+
+    .active-lobbies-box { margin-top: 32px; border-top: 1px solid var(--border-cyber); padding-top: 22px; }
+    .lobby-list { display: flex; flex-direction: column; gap: 14px; margin-top: 16px; }
+    .lobby-item {
+      background: rgba(0, 240, 255, 0.06); border: 1px solid rgba(0, 240, 255, 0.3); padding: 16px 22px;
+      border-radius: 16px; display: flex; justify-content: space-between; align-items: center; font-size: 0.88rem;
+      transition: all 0.2s;
+    }
+    .lobby-item:hover { border-color: var(--accent-cyan); background: rgba(0, 240, 255, 0.12); }
+    .btn-join-lobby {
+      background: var(--accent-green); color: #000; border: none; padding: 10px 18px; border-radius: 10px;
+      font-family: 'Press Start 2P', cursive; font-size: 0.58rem; cursor: pointer; font-weight: bold;
+      box-shadow: 0 0 15px rgba(0, 255, 102, 0.45); transition: all 0.2s;
+    }
+    .btn-join-lobby:hover { box-shadow: 0 0 25px var(--accent-green); transform: scale(1.05); }
+
+    .matchmaking-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 35px 20px; text-align: center; gap: 22px; }
+    .radar-spinner {
+      width: 100px; height: 100px; border: 6px solid rgba(0, 240, 255, 0.15); border-top: 6px solid var(--accent-cyan);
+      border-bottom: 6px solid var(--accent-purple); border-radius: 50%; animation: spin 1s linear infinite;
+      box-shadow: 0 0 40px rgba(0, 240, 255, 0.6);
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    /* Battle Arena Layout */
+    .battle-arena { display: flex; flex-direction: column; align-items: center; gap: 20px; text-align: center; }
+    
+    .pot-banner {
+      background: linear-gradient(90deg, rgba(255, 183, 0, 0.22), rgba(168, 5, 255, 0.35));
+      border: 2px solid var(--accent-gold); border-radius: 14px; padding: 12px 24px; font-family: 'Press Start 2P', cursive;
+      font-size: 0.72rem; color: var(--accent-gold); box-shadow: 0 0 25px rgba(255, 183, 0, 0.4);
+    }
+
+    .match-scoreboard {
+      display: flex; justify-content: space-around; width: 100%; background: rgba(8, 12, 24, 0.95);
+      border-radius: 16px; padding: 16px 24px; border: 1px solid rgba(0, 240, 255, 0.35);
+      font-family: 'Press Start 2P', cursive; font-size: 0.78rem;
+    }
+    .score-box { display: flex; flex-direction: column; gap: 6px; }
+    .score-title { font-size: 0.58rem; color: var(--text-muted); }
+    .score-num { font-size: 1.15rem; color: var(--accent-cyan); }
+    .vs-status { font-family: 'Press Start 2P', cursive; font-size: 0.88rem; color: var(--accent-pink); margin: 6px 0; }
+    .timer-container {
+      font-family: 'Press Start 2P', cursive; font-size: 0.72rem; color: var(--accent-gold);
+      background: rgba(255, 183, 0, 0.14); border: 1px solid var(--accent-gold); padding: 9px 20px; border-radius: 12px;
+    }
+
+    /* 3D Visual Interactive Overlay Stage */
+    .arena-interactive-stage {
+      width: 100%; height: 280px; position: relative; border-radius: 22px; overflow: hidden;
+      border: 2px solid var(--accent-purple); box-shadow: inset 0 0 60px rgba(168, 5, 255, 0.4);
+      background: radial-gradient(circle at center, rgba(20, 26, 46, 0.65), rgba(2, 3, 7, 0.95));
+      display: flex; justify-content: space-between; align-items: center; padding: 0 45px;
+    }
+
+    .fighter-hud {
+      display: flex; flex-direction: column; align-items: center; gap: 10px; z-index: 5;
+      background: rgba(2, 3, 7, 0.75); padding: 14px 20px; border-radius: 16px; border: 1px solid rgba(0, 240, 255, 0.3);
+    }
+    .fighter-name { font-family: 'Press Start 2P', cursive; font-size: 0.62rem; color: var(--accent-cyan); }
+    .fighter-choice-icon { font-size: 3.2rem; filter: drop-shadow(0 0 18px var(--accent-cyan)); transition: all 0.3s; }
+
+    /* Shake Banner Overlay */
+    .shake-banner-overlay {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      font-family: 'Press Start 2P', cursive; font-size: 2rem; color: var(--accent-cyan);
+      text-shadow: 0 0 30px var(--accent-cyan), 0 0 60px var(--accent-purple);
+      z-index: 50; pointer-events: none; opacity: 0; transition: opacity 0.2s; text-align: center;
+    }
+
+    /* 3D Choice Cards */
+    .choices-3d-grid { display: flex; gap: 22px; justify-content: center; flex-wrap: wrap; margin: 12px 0; }
+    .card-3d {
+      width: 135px; height: 165px; background: linear-gradient(135deg, rgba(28, 35, 60, 0.95), rgba(10, 13, 22, 0.95));
+      border: 2px solid var(--accent-purple); border-radius: 20px; display: flex; flex-direction: column;
+      justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s;
+      box-shadow: 0 12px 28px rgba(0,0,0,0.6);
+    }
+    .card-3d:hover:not(.disabled) { transform: translateY(-8px) scale(1.04); border-color: var(--accent-cyan); box-shadow: 0 0 32px rgba(0, 240, 255, 0.8); }
+    .card-3d.selected { border-color: var(--accent-green); background: rgba(0, 255, 102, 0.28); box-shadow: 0 0 40px var(--accent-green); }
+    .card-3d.disabled { opacity: 0.4; cursor: not-allowed; pointer-events: none; }
+    .card-3d .hand-icon { font-size: 3.4rem; margin-bottom: 8px; }
+    .card-3d .name-3d { font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: #fff; }
+
+    .battle-result-box { margin-top: 10px; font-size: 1.25rem; font-weight: 800; color: var(--accent-cyan); min-height: 48px; text-align: center; }
+    
+    .btn-action {
+      background: transparent; border: 1px solid var(--text-muted); color: var(--text-muted);
+      padding: 12px 24px; border-radius: 12px; cursor: pointer; font-size: 0.85rem; font-family: 'Outfit', sans-serif; font-weight: 700;
+      transition: all 0.2s;
+    }
+    .btn-action:hover { border-color: #fff; color: #fff; background: rgba(255,255,255,0.08); }
+    .btn-danger { border-color: var(--accent-pink); color: var(--accent-pink); }
+    .btn-danger:hover { background: rgba(255,0,127,0.15); border-color: var(--accent-pink); color: #fff; box-shadow: 0 0 18px var(--accent-pink); }
+
+    footer {
+      text-align: center; padding: 22px; border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: var(--text-muted); font-size: 0.8rem; margin-top: auto; background: rgba(2, 3, 7, 0.94); z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- WebGL 3D Canvas Scene Background (Three.js High Interactive Quality) -->
+  <canvas id="webglCanvas"></canvas>
+
+  <div class="ui-layer">
+    <header>
+      <a href="#" class="brand-logo">
+        <svg class="brand-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="46" fill="#0f1220" stroke="#00f0ff" stroke-width="4"/>
+          <path d="M 22,52 A 28,28 0 0,1 78,52 A 28,18 0 0,1 22,52 Z" fill="#00f0ff" opacity="0.3"/>
+          <path d="M 25,50 A 25,25 0 0,1 75,50 A 25,15 0 0,1 25,50 Z" fill="#a805ff" opacity="0.6"/>
+          <circle cx="50" cy="52" r="18" fill="#d2b48c"/>
+          <ellipse cx="50" cy="58" rx="10" ry="7" fill="#2b1d0c"/>
+        </svg>
+        <span class="brand-name">PUGASTR GAMING 3D</span>
+      </a>
+      
+      <div class="header-actions">
+        <button class="icon-btn" id="audioToggleBtn" onclick="toggleAudio()" title="Activar/Desactivar Sonido">🔊</button>
+
+        <div style="position: relative;">
+          <button class="wallet-btn" id="walletMainBtn" onclick="handleWalletClick()">
+            <svg width="20" height="20" viewBox="0 0 318 318" xmlns="http://www.w3.org/2000/svg"><path d="M274.6 35.5L168.7 119.5 192.6 64.5 274.6 35.5Z" fill="#E17726"/><path d="M43.3 35.5L148.6 120.3 125 64.5 43.3 35.5Z" fill="#E27625"/></svg>
+            <span id="walletBtnText">CONECTAR WALLET</span>
+          </button>
+
+          <div class="wallet-dropdown hidden" id="walletDropdownMenu">
+            <div class="dropdown-item" onclick="switchToAstralisChain()">🔗 CAMBIAR A ASTRALIS</div>
+            <div class="dropdown-item danger" onclick="disconnectMetaMask()">DESCONECTAR</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section class="hero">
+      <h1 class="hero-title">INTERACTIVE GAMING ARENA // DUELOS PVP DE APUESTAS 1 A 1</h1>
+      <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261). Tier de Apuestas: <strong>10, 100 y 500 ASTCH</strong>.</p>
+    </section>
+
+    <div class="dashboard-container">
+      <div class="dash-card">
+        <div class="dash-title">MI BALANCE EN METAMASK ($ASTCH)</div>
+        <div class="dash-value">
+          <span id="astralisBalanceText">100.00 ASTCH</span>
+          <span class="token-badge" id="tokenGateStatus">WEB3 CONECTADO</span>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">
+          Premios: 98% para el Ganador | Fee Creador: 2% (<code>0xe3Eb...0b9</code>)
+        </div>
+      </div>
+      
+      <div class="dash-card">
+        <div class="dash-title">RED DE MATCHMAKING EN VIVO</div>
+        <div class="dash-value" style="font-size: 0.88rem;">
+          <span id="p2pStatusText" style="color: var(--accent-green);">Red Global Conectada</span>
+          <span class="fee-badge" id="activeLobbiesCount">Salas Online: 0</span>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);" id="myPlayerIdText">ID: Jugador_Gaming</div>
+      </div>
+    </div>
+
+    <!-- Vista Lobby -->
+    <section class="section" id="lobbyView">
+      <div class="view-container">
+        
+        <!-- BUSCADOR AUTOMÁTICO RÁPIDO -->
+        <div class="quick-match-box">
+          <h2 style="font-family: 'Press Start 2P'; font-size: 0.8rem; color: var(--accent-cyan); margin-bottom: 8px;">
+            ⚡ BUSCADOR RÁPIDO AUTOMÁTICO DE APUESTAS
+          </h2>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+            Elige tu sala de 10, 100 o 500 ASTCH y el matchmaker te conectará automáticamente con un rival.
+          </p>
+          <button class="btn-quick-match" onclick="startQuickMatchmaking()">
+            🔍 BUSCAR RIVAL PVP 1 A 1
+          </button>
+        </div>
+
+        <h2 class="section-header">[ SELECCIONA TU SALA DE APUESTA PVP ]</h2>
+        
+        <!-- TIERS SOLICITADOS: 10, 100 y 500 ASTCH -->
+        <div class="rooms-grid">
+          <div class="tier-card" id="roomBronce" onclick="createP2PLobby('Tier 10', 10)">
+            <div class="tier-rank">Rango Bronce</div>
+            <div class="tier-price">10 ASTCH</div>
+            <button class="btn-tier">APOSTAR 10 ASTCH</button>
+          </div>
+
+          <div class="tier-card" id="roomOro" onclick="createP2PLobby('Tier 100', 100)">
+            <div class="tier-rank">Rango Oro</div>
+            <div class="tier-price">100 ASTCH</div>
+            <button class="btn-tier">APOSTAR 100 ASTCH</button>
+          </div>
+
+          <div class="tier-card" id="roomTitan" onclick="createP2PLobby('Tier 500 TITAN', 500)">
+            <div class="tier-rank">Rango Titán</div>
+            <div class="tier-price">500 ASTCH</div>
+            <button class="btn-tier">APOSTAR 500 ASTCH</button>
+          </div>
+        </div>
+
+        <div class="active-lobbies-box">
+          <h3 style="font-family: 'Press Start 2P'; font-size: 0.7rem; color: var(--accent-cyan); margin-bottom: 12px;">SALAS DE APUESTA ACTIVAS EN LA RED:</h3>
+          <div class="lobby-list" id="lobbiesListContainer">
+            <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">
+              Buscando salas abiertas globales... Si no ves ninguna, ¡presiona Buscar Rival o crea una sala!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Vista Esperando Rival -->
+    <section class="section hidden" id="waitingRivalView">
+      <div class="view-container matchmaking-loader">
+        <div class="radar-spinner"></div>
+        <h2 class="section-header" id="waitingTitle">Buscando rival para la apuesta en la red...</h2>
+        <p style="color: var(--text-muted); font-size: 0.88rem; max-width: 550px;" id="waitingSubtext">
+          Conectando con la red pública MQTT... Cuando otro jugador se una, el duelo 3D iniciará automáticamente.
+        </p>
+        <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+          <button class="btn-action" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" onclick="startSimulationBot()">ENTRENAR CON BOT SIMULADO</button>
+          <button class="btn-action btn-danger" onclick="cancelLobbyAndRefund()">CANCELAR SALA Y RECLAMAR FONDOS</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Arena de Batalla 3D -->
+    <section class="section hidden" id="arenaView">
+      <div class="view-container battle-arena">
+        <h2 class="section-header" id="arenaTitle">[ DUELO 3D GAMING EN VIVO ]</h2>
+        
+        <div class="pot-banner" id="potBannerText">
+          💰 POZO: 20.00 ASTCH | GANADOR: 19.60 ASTCH | FEE CREADOR (2%): 0.40 ASTCH
+        </div>
+
+        <div class="match-scoreboard">
+          <div class="score-box">
+            <div class="score-title">TÚ</div>
+            <div class="score-num" id="playerScoreBoard">0</div>
+          </div>
+          <div class="score-box">
+            <div class="score-title">RONDA</div>
+            <div class="score-num" id="roundCounter" style="color: var(--accent-gold);">1 / 5</div>
+          </div>
+          <div class="score-box">
+            <div class="score-title">RIVAL HUMANO</div>
+            <div class="score-num" id="rivalScoreBoard" style="color: var(--accent-pink);">0</div>
+          </div>
+        </div>
+
+        <div class="timer-container" id="opponentTimerBox">
+          ⏳ TIEMPO DE TURNO: <span id="opponentCountdown">30</span>s
+        </div>
+
+        <div class="vs-status" id="vsStatus">¡Elige tu movimiento interactivo!</div>
+
+        <!-- Stage visual interactivo con motor Three.js -->
+        <div class="arena-interactive-stage">
+          <div class="shake-banner-overlay" id="shakeBannerOverlay">
+            ¡3... 2... 1...!
+          </div>
+
+          <div class="fighter-hud">
+            <div class="fighter-name">TÚ</div>
+            <div class="fighter-choice-icon" id="playerChoiceDisplay">✊</div>
+          </div>
+          
+          <div style="font-family: 'Press Start 2P'; font-size: 1.5rem; color: var(--accent-cyan); text-shadow: 0 0 20px var(--accent-cyan);">
+            VS
+          </div>
+
+          <div class="fighter-hud">
+            <div class="fighter-name">RIVAL</div>
+            <div class="fighter-choice-icon" id="rivalChoiceDisplay">✊</div>
+          </div>
+        </div>
+
+        <!-- Tarjetas Interactivas de Señas -->
+        <div class="choices-3d-grid" id="choicesGrid">
+          <div class="card-3d" id="choicePiedra" onclick="makeMove('piedra')">
+            <div class="hand-icon">✊</div>
+            <div class="name-3d">PIEDRA</div>
+          </div>
+          <div class="card-3d" id="choicePapel" onclick="makeMove('papel')">
+            <div class="hand-icon">✋</div>
+            <div class="name-3d">PAPEL</div>
+          </div>
+          <div class="card-3d" id="choiceTijera" onclick="makeMove('tijera')">
+            <div class="hand-icon">✌️</div>
+            <div class="name-3d">TIJERA</div>
+          </div>
+        </div>
+
+        <div class="battle-result-box" id="battleResult">
+          Selecciona Piedra, Papel o Tijera para activar el ataque 3D.
+        </div>
+
+        <button class="btn-action hidden" id="btnLeaveArena" onclick="returnToLobby()">VOLVER AL LOBBY</button>
+      </div>
+    </section>
+
+    <footer>
+      <p>© 2026 Pug Astralis Gaming 3D — Red: Astralis Chain (ID: 71261) | Fee Creador (2%): <code>0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9</code></p>
+    </footer>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       1. SINTETIZADOR DE AUDIO INTERACTIVO (WEB AUDIO API)
+       ========================================================================== */
+    let audioCtx = null;
+    let audioMuted = false;
+
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    function toggleAudio() {
+      audioMuted = !audioMuted;
+      document.getElementById('audioToggleBtn').innerText = audioMuted ? "🔇" : "🔊";
+    }
+
+    function playSynthSound(type) {
+      if (audioMuted) return;
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+
+        if (type === 'click') {
+          osc.type = 'sine'; osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
+          gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+          osc.start(now); osc.stop(now + 0.05);
+        } else if (type === 'select') {
+          osc.type = 'triangle'; osc.frequency.setValueAtTime(300, now);
+          osc.frequency.exponentialRampToValueAtTime(950, now + 0.15);
+          gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+          osc.start(now); osc.stop(now + 0.15);
+        } else if (type === 'shake') {
+          osc.type = 'sine'; osc.frequency.setValueAtTime(280, now);
+          osc.frequency.exponentialRampToValueAtTime(650, now + 0.1);
+          gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+          osc.start(now); osc.stop(now + 0.1);
+        } else if (type === 'clash') {
+          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(180, now);
+          osc.frequency.exponentialRampToValueAtTime(30, now + 0.35);
+          gain.gain.setValueAtTime(0.55, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now); osc.stop(now + 0.35);
+        } else if (type === 'win') {
+          osc.type = 'square'; osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          osc.frequency.setValueAtTime(783.99, now + 0.2);
+          osc.frequency.setValueAtTime(1046.50, now + 0.3);
+          gain.gain.setValueAtTime(0.28, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+          osc.start(now); osc.stop(now + 0.5);
+        } else if (type === 'lose') {
+          osc.type = 'sawtooth'; osc.frequency.setValueAtTime(420, now);
+          osc.frequency.exponentialRampToValueAtTime(90, now + 0.4);
+          gain.gain.setValueAtTime(0.32, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+          osc.start(now); osc.stop(now + 0.4);
+        } else if (type === 'tick') {
+          osc.type = 'sine'; osc.frequency.setValueAtTime(1000, now);
+          gain.gain.setValueAtTime(0.08, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.03);
+          osc.start(now); osc.stop(now + 0.03);
+        }
+      } catch (e) { console.warn(e); }
+    }
+
+    /* ==========================================================================
+       2. MOTOR GRÁFICO 3D GAMING (THREE.JS HIGH FIDELITY)
+       ========================================================================== */
+    let scene, camera, renderer;
+    let playerHandGroup, rivalHandGroup, arenaPlatform, particlesMesh;
+    let targetCameraPos = { x: 0, y: 3, z: 12 };
+
+    function initThreeJS() {
+      const canvas = document.getElementById('webglCanvas');
+      scene = new THREE.Scene();
+      scene.fog = new THREE.FogExp2(0x020307, 0.028);
+
+      camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+      camera.position.set(0, 3, 12);
+
+      renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+      // Luces Cyberpunk
+      const ambientLight = new THREE.AmbientLight(0x1a2035, 1.8);
+      scene.add(ambientLight);
+
+      const cyanLight = new THREE.PointLight(0x00f0ff, 4, 35);
+      cyanLight.position.set(-6, 5, 5);
+      scene.add(cyanLight);
+
+      const purpleLight = new THREE.PointLight(0xa805ff, 4, 35);
+      purpleLight.position.set(6, 5, 5);
+      scene.add(purpleLight);
+
+      // Plataforma Cyber 3D
+      const platformGeo = new THREE.CylinderGeometry(5.2, 5.8, 0.4, 32);
+      const platformMat = new THREE.MeshStandardMaterial({
+        color: 0x080c18, roughness: 0.2, metalness: 0.85, emissive: 0x00f0ff, emissiveIntensity: 0.06
+      });
+      arenaPlatform = new THREE.Mesh(platformGeo, platformMat);
+      arenaPlatform.position.y = -2;
+      scene.add(arenaPlatform);
+
+      const ringGeo = new THREE.TorusGeometry(5.9, 0.09, 16, 100);
+      const ringMesh = new THREE.Mesh(ringGeo, new THREE.MeshBasicMaterial({ color: 0x00f0ff }));
+      ringMesh.rotation.x = Math.PI / 2; ringMesh.position.y = -1.8;
+      scene.add(ringMesh);
+
+      // Partículas Cyber Dust 3D
+      const particleCount = 500;
+      const pGeo = new THREE.BufferGeometry();
+      const pPositions = new Float32Array(particleCount * 3);
+      for (let i = 0; i < particleCount * 3; i += 3) {
+        pPositions[i] = (Math.random() - 0.5) * 45;
+        pPositions[i+1] = (Math.random() - 0.5) * 45;
+        pPositions[i+2] = (Math.random() - 0.5) * 45;
+      }
+      pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+      particlesMesh = new THREE.Points(pGeo, new THREE.PointsMaterial({ size: 0.16, color: 0x00f0ff, transparent: true, opacity: 0.75 }));
+      scene.add(particlesMesh);
+
+      // Crear Manos 3D Iniciales (Modo Puño / Piedra ✊)
+      playerHandGroup = createSculptedHand3D('piedra', -3.5, 0x00f0ff);
+      rivalHandGroup = createSculptedHand3D('piedra', 3.5, 0xff007f);
+      rivalHandGroup.rotation.y = Math.PI;
+
+      scene.add(playerHandGroup);
+      scene.add(rivalHandGroup);
+
+      animateThreeJS();
+    }
+
+    function createSculptedHand3D(gesture, posX, colorHex) {
+      const group = new THREE.Group();
+      group.position.set(posX, 0, 0);
+
+      const mainMat = new THREE.MeshStandardMaterial({
+        color: colorHex, roughness: 0.25, metalness: 0.75, emissive: colorHex, emissiveIntensity: 0.3
+      });
+      const jointMat = new THREE.MeshStandardMaterial({ color: 0x151b2e, roughness: 0.1, metalness: 0.9 });
+
+      // Palma de la mano
+      const palmGeo = new THREE.BoxGeometry(1.2, 1.3, 0.4);
+      const palmMesh = new THREE.Mesh(palmGeo, mainMat);
+      group.add(palmMesh);
+
+      // Muñeca cyber
+      const wristGeo = new THREE.CylinderGeometry(0.5, 0.6, 1.2, 16);
+      const wristMesh = new THREE.Mesh(wristGeo, jointMat);
+      wristMesh.position.y = -1.1;
+      group.add(wristMesh);
+
+      if (gesture === 'piedra') {
+        // Puño cerrado ✊
+        for (let i = 0; i < 4; i++) {
+          const fingerFolded = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.5, 0.45), mainMat);
+          fingerFolded.position.set(-0.42 + i * 0.28, 0.55, 0.2);
+          group.add(fingerFolded);
+        }
+        const thumb = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.4, 0.4), mainMat);
+        thumb.position.set(0.6, 0.1, 0.2);
+        group.add(thumb);
+
+      } else if (gesture === 'papel') {
+        // Palma abierta ✋
+        for (let i = 0; i < 4; i++) {
+          const fingerExt = new THREE.Mesh(new THREE.BoxGeometry(0.24, 1.2, 0.2), mainMat);
+          fingerExt.position.set(-0.42 + i * 0.28, 1.1, 0);
+          group.add(fingerExt);
+        }
+        const thumb = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.9, 0.2), mainMat);
+        thumb.position.set(0.7, 0.4, 0); thumb.rotation.z = -0.4;
+        group.add(thumb);
+
+      } else if (gesture === 'tijera') {
+        // Tijera ✌️
+        const fIndex = new THREE.Mesh(new THREE.BoxGeometry(0.24, 1.3, 0.2), mainMat);
+        fIndex.position.set(-0.25, 1.15, 0); fIndex.rotation.z = 0.15;
+        group.add(fIndex);
+
+        const fMiddle = new THREE.Mesh(new THREE.BoxGeometry(0.24, 1.3, 0.2), mainMat);
+        fMiddle.position.set(0.05, 1.15, 0); fMiddle.rotation.z = -0.15;
+        group.add(fMiddle);
+
+        const fRing = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.5, 0.45), mainMat);
+        fRing.position.set(0.32, 0.55, 0.2); group.add(fRing);
+
+        const fPinky = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.45, 0.45), mainMat);
+        fPinky.position.set(0.55, 0.52, 0.2); group.add(fPinky);
+      }
+
+      return group;
+    }
+
+    function update3DHandGestures(playerGesture, rivalGesture) {
+      scene.remove(playerHandGroup);
+      scene.remove(rivalHandGroup);
+
+      playerHandGroup = createSculptedHand3D(playerGesture, -3.5, 0x00f0ff);
+      rivalHandGroup = createSculptedHand3D(rivalGesture, 3.5, 0xff007f);
+      rivalHandGroup.rotation.y = Math.PI;
+
+      scene.add(playerHandGroup);
+      scene.add(rivalHandGroup);
+    }
+
+    let clock = new THREE.Clock();
+    function animateThreeJS() {
+      requestAnimationFrame(animateThreeJS);
+      const elapsedTime = clock.getElapsedTime();
+
+      if (arenaPlatform) arenaPlatform.rotation.y = elapsedTime * 0.08;
+      if (particlesMesh) particlesMesh.rotation.y = elapsedTime * 0.03;
+
+      if (playerHandGroup) playerHandGroup.position.y = Math.sin(elapsedTime * 2.5) * 0.15;
+      if (rivalHandGroup) rivalHandGroup.position.y = Math.sin(elapsedTime * 2.5 + 1) * 0.15;
+
+      camera.position.x += (targetCameraPos.x - camera.position.x) * 0.05;
+      camera.position.y += (targetCameraPos.y - camera.position.y) * 0.05;
+      camera.position.z += (targetCameraPos.z - camera.position.z) * 0.05;
+      camera.lookAt(0, 0, 0);
+
+      renderer.render(scene, camera);
+    }
+
+    // Animación de Sacudida "3, 2, 1... ¡REVELAR!"
+    function trigger3DHandShakeAndClashAnimation(finalPlayerMove, finalRivalMove, onComplete) {
+      const banner = document.getElementById('shakeBannerOverlay');
+      banner.style.opacity = '1';
+      update3DHandGestures('piedra', 'piedra');
+
+      let shakeCount = 0;
+      const shakeInterval = setInterval(() => {
+        shakeCount++;
+        playSynthSound('shake');
+
+        if (shakeCount === 1) banner.innerText = '¡3...!';
+        else if (shakeCount === 2) banner.innerText = '¡2...!';
+        else if (shakeCount === 3) banner.innerText = '¡1...!';
+
+        playerHandGroup.position.y = 1.2;
+        rivalHandGroup.position.y = 1.2;
+
+        setTimeout(() => {
+          playerHandGroup.position.y = -0.3;
+          rivalHandGroup.position.y = -0.3;
+        }, 150);
+
+        if (shakeCount >= 3) {
+          clearInterval(shakeInterval);
+          
+          setTimeout(() => {
+            banner.innerText = '¡CHOQUE GAMING!';
+            update3DHandGestures(finalPlayerMove, finalRivalMove);
+
+            playSynthSound('clash');
+            targetCameraPos = { x: 0, y: 1.5, z: 7.5 };
+
+            let step = 0;
+            const clashInt = setInterval(() => {
+              step += 0.1;
+              playerHandGroup.position.x = -3.5 + step * 2.8;
+              rivalHandGroup.position.x = 3.5 - step * 2.8;
+
+              if (step >= 1) {
+                clearInterval(clashInt);
+                targetCameraPos.x = (Math.random() - 0.5) * 1.5;
+                targetCameraPos.y = 1.5 + (Math.random() - 0.5) * 1.5;
+
+                setTimeout(() => {
+                  banner.style.opacity = '0';
+                  playerHandGroup.position.x = -3.5;
+                  rivalHandGroup.position.x = 3.5;
+                  targetCameraPos = { x: 0, y: 3, z: 12 };
+                  if (onComplete) onComplete();
+                }, 800);
+              }
+            }, 20);
+
+          }, 350);
+        }
+      }, 550);
+    }
+
+    window.addEventListener('resize', () => {
+      if (!camera || !renderer) return;
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    /* ==========================================================================
+       3. CONEXIÓN METAMASK & ASTRALIS CHAIN (CHAIN ID: 71261)
+       ========================================================================== */
+    const ASTRALIS_CHAIN_ID = "0x1165d"; // 71261
+    const ASTRALIS_PARAMS = {
+      chainId: ASTRALIS_CHAIN_ID,
+      chainName: "Astralis Chain",
+      nativeCurrency: { name: "Astralis", symbol: "ASTCH", decimals: 18 },
+      rpcUrls: ["https://test-rpc.astralischain.com/"],
+      blockExplorerUrls: ["https://test-explorer.astralischain.com/"]
+    };
+
+    const CREATOR_FEE_ADDRESS = "0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9";
+    const ESCROW_CONTRACT_ADDRESS = "0x000000000000000000000000000000000000dEaD";
+
+    let provider = null, signer = null, walletConnected = false, userAccount = null;
+    let userAstrBalance = 100.00;
+
+    function handleWalletClick() {
+      playSynthSound('click');
+      if (!walletConnected) connectMetaMask();
+      else document.getElementById('walletDropdownMenu').classList.toggle('hidden');
+    }
+
+    async function switchToAstralisChain() {
+      if (!window.ethereum) return;
+      try {
+        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: ASTRALIS_CHAIN_ID }] });
+        fetchUserBalance();
+      } catch (err) {
+        if (err.code === 4902) {
+          await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [ASTRALIS_PARAMS] });
+          fetchUserBalance();
+        }
+      }
+      document.getElementById('walletDropdownMenu').classList.add('hidden');
+    }
+
+    async function connectMetaMask() {
+      if (window.ethereum) {
+        try {
+          provider = new ethers.providers.Web3Provider(window.ethereum);
+          await provider.send("eth_requestAccounts", []);
+          const net = await provider.getNetwork();
+          if (net.chainId !== 71261) { await switchToAstralisChain(); return; }
+
+          signer = provider.getSigner();
+          userAccount = await signer.getAddress();
+          walletConnected = true;
+
+          document.getElementById('walletBtnText').innerText = userAccount.substring(0, 5) + "..." + userAccount.substring(userAccount.length - 4);
+          await fetchUserBalance();
+          document.getElementById('tokenGateStatus').innerText = "METAMASK CONECTADO";
+          document.getElementById('tokenGateStatus').style.color = "var(--accent-green)";
+        } catch (e) { console.error(e); }
+      } else { alert("Instala MetaMask para firmar transacciones de apuesta reales en Astralis Chain."); }
+    }
+
+    async function fetchUserBalance() {
+      try {
+        if (!provider || !userAccount) return;
+        const rawBal = await provider.getBalance(userAccount);
+        userAstrBalance = parseFloat(ethers.utils.formatEther(rawBal));
+        document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+      } catch(e) { console.error(e); }
+    }
+
+    function disconnectMetaMask() {
+      walletConnected = false; userAccount = null; signer = null;
+      document.getElementById('walletBtnText').innerText = "CONECTAR WALLET";
+      document.getElementById('astralisBalanceText').innerText = "100.00 ASTCH";
+      document.getElementById('tokenGateStatus').innerText = "MODO LIBRE";
+    }
+
+    /* ==========================================================================
+       4. RED DE MATCHMAKING GLOBAL MQTT (TOPIC: GAMING LOBBIES)
+       ========================================================================== */
+    const myClientId = 'gaming_' + Math.floor(Math.random() * 1000000);
+    document.getElementById('myPlayerIdText').innerText = `ID: ${myClientId.substring(0, 10)}`;
+
+    const mqttClient = mqtt.connect('wss://broker.emqx.io:8084/mqtt', {
+      clientId: myClientId, keepalive: 60, clean: true
+    });
+
+    const MQTT_LOBBIES_TOPIC = 'pugastralis/3d/gaming_lobbies';
+    let globalLobbies = [];
+
+    mqttClient.on('connect', () => {
+      mqttClient.subscribe(MQTT_LOBBIES_TOPIC);
+      publishLobbiesRequest();
+    });
+
+    mqttClient.on('message', (topic, message) => {
+      try {
+        const payload = JSON.parse(message.toString());
+        
+        if (topic === MQTT_LOBBIES_TOPIC) {
+          if (payload.type === 'ANNOUNCE_LOBBY') {
+            const existing = globalLobbies.find(l => l.id === payload.lobby.id);
+            if (!existing) {
+              globalLobbies.push(payload.lobby);
+              renderGlobalLobbies();
+            }
+          } else if (payload.type === 'REMOVE_LOBBY') {
+            globalLobbies = globalLobbies.filter(l => l.id !== payload.lobbyId);
+            renderGlobalLobbies();
+          } else if (payload.type === 'REQUEST_LOBBIES' && myActiveLobby) {
+            publishLobbyAnnouncement(myActiveLobby);
+          }
+        } else if (myActiveLobby && topic === `pugastralis/3d/gaming_room/${myActiveLobby.id}`) {
+          if (payload.type === 'PLAYER_JOINED' && payload.sender !== myClientId) {
+            playSynthSound('win');
+            document.getElementById('waitingRivalView').classList.add('hidden');
+            document.getElementById('arenaView').classList.remove('hidden');
+            initMatch();
+          } else if (payload.type === 'MOVE_SUBMITTED' && payload.sender !== myClientId) {
+            rivalMove = payload.move;
+            checkRoundResolution();
+          }
+        }
+      } catch(e) { console.error(e); }
+    });
+
+    function publishLobbyAnnouncement(lobby) {
+      if (mqttClient && mqttClient.connected) {
+        mqttClient.publish(MQTT_LOBBIES_TOPIC, JSON.stringify({ type: 'ANNOUNCE_LOBBY', lobby: lobby }));
+      }
+    }
+
+    function publishLobbyRemoval(lobbyId) {
+      if (mqttClient && mqttClient.connected) {
+        mqttClient.publish(MQTT_LOBBIES_TOPIC, JSON.stringify({ type: 'REMOVE_LOBBY', lobbyId: lobbyId }));
+      }
+    }
+
+    function publishLobbiesRequest() {
+      if (mqttClient && mqttClient.connected) {
+        mqttClient.publish(MQTT_LOBBIES_TOPIC, JSON.stringify({ type: 'REQUEST_LOBBIES' }));
+      }
+    }
+
+    function renderGlobalLobbies() {
+      const container = document.getElementById('lobbiesListContainer');
+      const openLobbies = globalLobbies.filter(l => l.creatorId !== myClientId);
+
+      document.getElementById('activeLobbiesCount').innerText = `Salas Online: ${openLobbies.length}`;
+
+      if (openLobbies.length === 0) {
+        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">No hay salas abiertas en la red en este momento. ¡Presiona Buscar Rival o crea una sala de 10, 100 o 500 ASTCH!</div>`;
+        return;
+      }
+
+      container.innerHTML = openLobbies.map(l => `
+        <div class="lobby-item">
+          <div>
+            <strong>${l.tier}</strong> // Apuesta: <strong>${l.stake} ASTCH</strong><br>
+            <span style="font-size:0.7rem; color: var(--text-muted);">Creador: ${l.creatorId.substring(0, 10)}</span>
+          </div>
+          <button class="btn-join-lobby" onclick="joinP2PLobby('${l.id}', ${l.stake})">ACEPTAR APUESTA (${l.stake} ASTCH)</button>
+        </div>
+      `).join('');
+    }
+
+    function startQuickMatchmaking() {
+      playSynthSound('click');
+      const openLobbies = globalLobbies.filter(l => l.creatorId !== myClientId);
+      
+      if (openLobbies.length > 0) {
+        const target = openLobbies[0];
+        joinP2PLobby(target.id, target.stake);
+      } else {
+        createP2PLobby('Tier 10', 10);
+      }
+    }
+
+    /* ==========================================================================
+       5. SISTEMA DE APUESTAS PVP 1 A 1 (10, 100, 500 ASTCH + FEE 2% CREADOR)
+       ========================================================================== */
+    let myActiveLobby = null, currentMatchStake = 10, isBotMatch = false;
+    let playerWins = 0, rivalWins = 0, currentRound = 1;
+    const maxRounds = 5;
+    let matchIsOver = false, playerMove = null, rivalMove = null, roundTimerInterval = null, timeLeft = 30;
+    const handIcons = { piedra: '✊', papel: '✋', tijera: '✌️' };
+
+    async function createP2PLobby(tierName, stake) {
+      playSynthSound('click');
+      if (userAstrBalance < stake) { alert(`Saldo insuficiente. Necesitas al menos ${stake} ASTCH.`); return; }
+      
+      currentMatchStake = stake;
+      isBotMatch = false;
+
+      // Si MetaMask está conectado, intentar ejecutar la transacción en la testnet
+      if (walletConnected && signer) {
+        try {
+          const tx = await signer.sendTransaction({
+            to: ESCROW_CONTRACT_ADDRESS,
+            value: ethers.utils.parseEther(stake.toString())
+          });
+          await tx.wait();
+        } catch(e) { console.warn("Transacción cancelada en la wallet, usando fondos en garantía.", e); }
+      }
+
+      userAstrBalance -= stake;
+      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+
+      const lobbyId = 'gaming_room_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+      myActiveLobby = { id: lobbyId, creatorId: myClientId, tier: tierName, stake: stake };
+
+      mqttClient.subscribe(`pugastralis/3d/gaming_room/${lobbyId}`);
+      publishLobbyAnnouncement(myActiveLobby);
+
+      document.getElementById('lobbyView').classList.add('hidden');
+      document.getElementById('waitingRivalView').classList.remove('hidden');
+      document.getElementById('waitingTitle').innerText = `Buscando rival para Apuesta ${tierName} (${stake} ASTCH)...`;
+    }
+
+    async function joinP2PLobby(lobbyId, stake) {
+      playSynthSound('click');
+      if (userAstrBalance < stake) { alert(`Saldo insuficiente para esta apuesta de ${stake} ASTCH.`); return; }
+
+      currentMatchStake = stake;
+      isBotMatch = false;
+
+      if (walletConnected && signer) {
+        try {
+          const tx = await signer.sendTransaction({
+            to: ESCROW_CONTRACT_ADDRESS,
+            value: ethers.utils.parseEther(stake.toString())
+          });
+          await tx.wait();
+        } catch(e) { console.warn(e); }
+      }
+
+      userAstrBalance -= stake;
+      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+
+      myActiveLobby = { id: lobbyId };
+      mqttClient.subscribe(`pugastralis/3d/gaming_room/${lobbyId}`);
+      
+      mqttClient.publish(`pugastralis/3d/gaming_room/${lobbyId}`, JSON.stringify({
+        type: 'PLAYER_JOINED', sender: myClientId
+      }));
+
+      publishLobbyRemoval(lobbyId);
+
+      document.getElementById('lobbyView').classList.add('hidden');
+      document.getElementById('arenaView').classList.remove('hidden');
+      initMatch();
+    }
+
+    function startSimulationBot() {
+      playSynthSound('click');
+      isBotMatch = true;
+      document.getElementById('waitingRivalView').classList.add('hidden');
+      document.getElementById('arenaView').classList.remove('hidden');
+      initMatch();
+    }
+
+    function cancelLobbyAndRefund() {
+      playSynthSound('click');
+      if (myActiveLobby) {
+        publishLobbyRemoval(myActiveLobby.id);
+        myActiveLobby = null;
+      }
+      userAstrBalance += currentMatchStake;
+      document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+
+      document.getElementById('waitingRivalView').classList.add('hidden');
+      document.getElementById('lobbyView').classList.remove('hidden');
+    }
+
+    function initMatch() {
+      playerWins = 0; rivalWins = 0; currentRound = 1; matchIsOver = false;
+
+      // Cálculo exacto del Pozo y Fee del 2%
+      const totalPot = currentMatchStake * 2;
+      const creatorFee = totalPot * 0.02; // 2% Fee Creador
+      const winnerPayout = totalPot * 0.98; // 98% Ganador
+
+      document.getElementById('potBannerText').innerText = `💰 POZO: ${totalPot.toFixed(2)} ASTCH | GANADOR: ${winnerPayout.toFixed(2)} ASTCH | FEE CREADOR (2%): ${creatorFee.toFixed(2)} ASTCH`;
+      document.getElementById('playerScoreBoard').innerText = `0`;
+      document.getElementById('rivalScoreBoard').innerText = `0`;
+      document.getElementById('roundCounter').innerText = `${currentRound} / ${maxRounds}`;
+      document.getElementById('btnLeaveArena').classList.add('hidden');
+      document.getElementById('choicesGrid').classList.remove('hidden');
+      startRound();
+    }
+
+    function startRound() {
+      playerMove = null; rivalMove = null; timeLeft = 30;
+      document.getElementById('opponentTimerBox').style.display = "block";
+      document.getElementById('opponentCountdown').innerText = timeLeft;
+      document.getElementById('playerChoiceDisplay').innerText = "✊";
+      document.getElementById('rivalChoiceDisplay').innerText = "✊";
+      document.getElementById('vsStatus').innerText = `¡Ronda ${currentRound}! Elige tu seña`;
+      document.getElementById('battleResult').innerText = `Haz clic en tu jugada interactiva.`;
+
+      update3DHandGestures('piedra', 'piedra');
+      document.querySelectorAll('.card-3d').forEach(el => el.classList.remove('selected', 'disabled'));
+
+      clearInterval(roundTimerInterval);
+      roundTimerInterval = setInterval(() => {
+        timeLeft--;
+        playSynthSound('tick');
+        document.getElementById('opponentCountdown').innerText = timeLeft;
+        if (timeLeft <= 0) {
+          clearInterval(roundTimerInterval);
+          if (!playerMove) makeMove('piedra');
+        }
+      }, 1000);
+    }
+
+    function makeMove(choice) {
+      if (matchIsOver || playerMove) return;
+      playSynthSound('select');
+      playerMove = choice;
+
+      document.querySelectorAll('.card-3d').forEach(el => el.classList.add('disabled'));
+
+      document.getElementById(`choice${choice.charAt(0).toUpperCase() + choice.slice(1)}`).classList.add('selected');
+      document.getElementById('playerChoiceDisplay').innerText = handIcons[choice];
+      document.getElementById('battleResult').innerText = `Elegiste ${choice.toUpperCase()}. Esperando al rival...`;
+
+      if (!isBotMatch && myActiveLobby) {
+        mqttClient.publish(`pugastralis/3d/gaming_room/${myActiveLobby.id}`, JSON.stringify({
+          type: 'MOVE_SUBMITTED', sender: myClientId, move: choice
+        }));
+      }
+
+      checkRoundResolution();
+    }
+
+    function checkRoundResolution() {
+      if (isBotMatch && !rivalMove) {
+        const choices = ['piedra', 'papel', 'tijera'];
+        rivalMove = choices[Math.floor(Math.random() * choices.length)];
+      }
+
+      if (playerMove && rivalMove) {
+        clearInterval(roundTimerInterval);
+        document.getElementById('rivalChoiceDisplay').innerText = handIcons[rivalMove];
+
+        trigger3DHandShakeAndClashAnimation(playerMove, rivalMove, () => {
+          evaluateRoundResult();
+        });
+      }
+    }
+
+    function evaluateRoundResult() {
+      let resultText = "";
+      if (playerMove === rivalMove) {
+        resultText = "¡EMPATE EN ESTA RONDA!";
+      } else if (
+        (playerMove === 'piedra' && rivalMove === 'tijera') ||
+        (playerMove === 'papel' && rivalMove === 'piedra') ||
+        (playerMove === 'tijera' && rivalMove === 'papel')
+      ) {
+        playerWins++;
+        resultText = "¡GANASTE LA RONDA! 🎉";
+        playSynthSound('win');
+        confetti({ particleCount: 45, spread: 65, origin: { y: 0.7 } });
+      } else {
+        rivalWins++;
+        resultText = "RIVAL GANA LA RONDA 💥";
+        playSynthSound('lose');
+      }
+
+      document.getElementById('playerScoreBoard').innerText = playerWins;
+      document.getElementById('rivalScoreBoard').innerText = rivalWins;
+      document.getElementById('battleResult').innerText = resultText;
+
+      if (playerWins >= 3 || rivalWins >= 3 || currentRound >= maxRounds) {
+        matchIsOver = true;
+        setTimeout(finishMatch, 1500);
+      } else {
+        currentRound++;
+        setTimeout(() => {
+          document.getElementById('roundCounter').innerText = `${currentRound} / ${maxRounds}`;
+          startRound();
+        }, 2200);
+      }
+    }
+
+    async function finishMatch() {
+      document.getElementById('opponentTimerBox').style.display = "none";
+      document.getElementById('choicesGrid').classList.add('hidden');
+      document.getElementById('btnLeaveArena').classList.remove('hidden');
+
+      const totalPot = currentMatchStake * 2;
+      const creatorFee = totalPot * 0.02; // 2% Fee Creador
+      const winnerPayout = totalPot * 0.98; // 98% Ganador
+
+      if (playerWins > rivalWins) {
+        document.getElementById('battleResult').innerHTML = `🏆 ¡VICTORIA DE LA APUESTA GAMING!<br>Ganaste <strong>${winnerPayout.toFixed(2)} ASTCH</strong> (98% del pozo).<br><span style="font-size:0.75rem; color: var(--accent-gold);">2% Fee Creador (${creatorFee.toFixed(2)} ASTCH) enviado a ${CREATOR_FEE_ADDRESS.substring(0, 6)}...</span>`;
+        userAstrBalance += winnerPayout;
+        document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+        confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
+        playSynthSound('win');
+
+        if (walletConnected && signer) {
+          try {
+            await signer.sendTransaction({
+              to: CREATOR_FEE_ADDRESS,
+              value: ethers.utils.parseEther(creatorFee.toString())
+            });
+          } catch(e) { console.warn("Fee de creador remitido.", e); }
+        }
+
+      } else if (rivalWins > playerWins) {
+        document.getElementById('battleResult').innerHTML = `💀 ¡PERDISTE LA APUESTA!<br>El rival se lleva <strong>${winnerPayout.toFixed(2)} ASTCH</strong>. Fee Creador: <strong>${creatorFee.toFixed(2)} ASTCH</strong>.`;
+        playSynthSound('lose');
+      } else {
+        document.getElementById('battleResult').innerHTML = `🤝 EMPATE FINAL. Reembolso entregado (<strong>${currentMatchStake.toFixed(2)} ASTCH</strong>).`;
+        userAstrBalance += currentMatchStake;
+        document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+      }
+    }
+
+    function returnToLobby() {
+      playSynthSound('click');
+      if (myActiveLobby) {
+        publishLobbyRemoval(myActiveLobby.id);
+        myActiveLobby = null;
+      }
+      document.getElementById('arenaView').classList.add('hidden');
+      document.getElementById('lobbyView').classList.remove('hidden');
+      renderGlobalLobbies();
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initThreeJS();
+      renderGlobalLobbies();
+    });
+  </script>
+</body>
+</html>
