@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PUGGALAXYS</title>
   
+  <!-- FAVICON GENERADO DEL LOGO DEL HEADER -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%230f1220' stroke='%2300f0ff' stroke-width='4'/%3E%3Cpath d='M 22,52 A 28,28 0 0,1 78,52 A 28,18 0 0,1 22,52 Z' fill='%2300f0ff' opacity='0.3'/%3E%3Cpath d='M 25,50 A 25,25 0 0,1 75,50 A 25,15 0 0,1 25,50 Z' fill='%238a2be2' opacity='0.6'/%3E%3Ccircle cx='50' cy='52' r='18' fill='%23d2b48c'/%3E%3Cellipse cx='50' cy='58' rx='10' ry='7' fill='%232b1d0c'/%3E%3Ccircle cx='50' cy='55' rx='4' ry='3' fill='%23000'/%3E%3Ccircle cx='43' cy='48' r='4' fill='%23000'/%3E%3Ccircle cx='57' cy='48' r='4' fill='%23000'/%3E%3Ccircle cx='44' cy='47' r='1.5' fill='%23fff'/%3E%3Ccircle cx='58' cy='47' r='1.5' fill='%23fff'/%3E%3Cpath d='M 32,40 Q 25,32 35,34 Z' fill='%232b1d0c'/%3E%3Cpath d='M 68,40 Q 75,32 65,34 Z' fill='%232b1d0c'/%3E%3Cpath d='M 30,42 Q 50,30 68,40' stroke='%23ffffff' stroke-width='3' fill='none' opacity='0.8' stroke-linecap='round'/%3E%3C/svg%3E">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -517,9 +520,6 @@
   </footer>
 
   <script>
-    /* ========================================================
-       SISTEMA DE SEGURIDAD Y BLINDAJE DEL CLIENTE
-       ======================================================== */
     document.addEventListener('contextmenu', event => event.preventDefault());
 
     document.addEventListener('keydown', function(event) {
@@ -529,18 +529,6 @@
       if (event.ctrlKey && event.keyCode === 83) { event.preventDefault(); return false; }
     });
 
-    setInterval(function() {
-      const startTime = performance.now();
-      (function() {}.constructor("debugger")());
-      const endTime = performance.now();
-      if (endTime - startTime > 100) {
-        document.body.innerHTML = "<div style='color:#00f0ff;background:#030408;height:100vh;display:flex;justify-content:center;align-items:center;font-family:sans-serif;'><h1>Acceso restringido por seguridad</h1></div>";
-      }
-    }, 800);
-
-    /* ========================================================
-       1. CANVAS DE ESPACIO ORDENADO
-       ======================================================== */
     const canvas = document.getElementById('spaceCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -872,9 +860,6 @@
 
     animateSpace();
 
-    /* ========================================================
-       2. TRADUCTOR BILINGÜE
-       ======================================================== */
     const i18n = {
       es: {
         heroTitle: "EL COMANDANTE DE SOLANA",
@@ -963,13 +948,7 @@
       document.getElementById("t-disclaimer-text").innerText = t.disclaimerText;
     }
 
-    /* ========================================================
-       3. CONTADOR CON FECHA FIJA DIRECTA EN CÓDIGO
-       ======================================================== */
-    // AQUÍ CONFIGURAS TU FECHA Y HORA (Año, Mes [0-11], Día, Hora, Minuto, Segundo)
     const targetDateSetting = new Date(2026, 8, 1, 1, 0, 0).getTime();
-
-    // Fuerza a usar siempre la fecha que configures arriba en el código actual
     let launchTarget = targetDateSetting;
     localStorage.setItem("pugGalaxyLaunchTarget", launchTarget);
 
