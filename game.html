@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comandante Pug - Space Defender</title>
+    <!-- Logo en la pestaña del navegador -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🐶</text></svg>">
     <style>
         * {
             box-sizing: border-box;
@@ -122,7 +124,6 @@
 <body>
 
     <div class="top-nav">
-        <!-- Modifica el atributo href="#" con el enlace de tu sitio principal -->
         <a href="index.html" class="back-btn">⬅️ Volver al sitio principal</a>
     </div>
 
@@ -144,7 +145,6 @@
     </div>
 
     <script>
-        // Sistema de Sonido con Web Audio API
         let audioCtx = null;
 
         function initAudio() {
@@ -207,7 +207,6 @@
             }
         }
 
-        // Función principal del Juego
         function initGame(canvasId) {
             const canvas = document.getElementById(canvasId);
             if (!canvas) return;
