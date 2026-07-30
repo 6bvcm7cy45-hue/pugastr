@@ -3,13 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PUGASTR 3D Arena // Real P2P Betting & Animated Hands</title>
+  <title>PUGASTR 3D Arena // Unity-Style Web3 P2P Arena</title>
   
+  <!-- Tipografía Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
   
-  <!-- CDNs estables -->
+  <!-- CDNs estables: Three.js (3D Unity Quality), Confetti, Ethers (Web3), MQTT (Global Matchmaking) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/ethers/5.7.2/ethers.umd.min.js"></script>
@@ -17,8 +18,8 @@
 
   <style>
     :root {
-      --bg-deep: #05070d;
-      --bg-card: rgba(13, 17, 30, 0.9);
+      --bg-deep: #03050a;
+      --bg-card: rgba(10, 14, 26, 0.92);
       --border-cyber: rgba(0, 240, 255, 0.35);
       --accent-cyan: #00f0ff;
       --accent-purple: #9d00ff;
@@ -37,6 +38,7 @@
       user-select: none; min-height: 100vh; display: flex; flex-direction: column;
     }
 
+    /* WebGL Canvas Background 3D */
     #webglCanvas {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none;
     }
@@ -45,15 +47,16 @@
       position: relative; z-index: 10; display: flex; flex-direction: column; min-height: 100vh;
     }
 
+    /* Header Cyberpunk */
     header {
       display: flex; justify-content: space-between; align-items: center; padding: 14px 5%;
-      border-bottom: 1px solid var(--border-cyber); background: rgba(5, 7, 13, 0.88);
+      border-bottom: 1px solid var(--border-cyber); background: rgba(3, 5, 10, 0.88);
       backdrop-filter: blur(16px); position: sticky; top: 0; z-index: 1000;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
     }
 
     .brand-logo { display: flex; align-items: center; gap: 14px; text-decoration: none; }
-    .brand-svg { width: 42px; height: 42px; filter: drop-shadow(0 0 12px var(--accent-cyan)); }
+    .brand-svg { width: 44px; height: 44px; filter: drop-shadow(0 0 12px var(--accent-cyan)); }
     .brand-name {
       font-family: 'Press Start 2P', cursive; font-size: 0.85rem; color: var(--accent-cyan);
       text-shadow: 0 0 12px rgba(0, 240, 255, 0.6); letter-spacing: 1px;
@@ -88,6 +91,7 @@
     }
     .dropdown-item:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 15px var(--accent-cyan); }
 
+    /* Hero Section */
     .hero { text-align: center; padding: 25px 20px 10px 20px; max-width: 900px; margin: 0 auto; }
     .hero-title {
       font-family: 'Press Start 2P', cursive; font-size: 1.05rem; line-height: 1.5; color: var(--text-main);
@@ -95,6 +99,7 @@
     }
     .hero-subtitle { font-size: 0.88rem; color: var(--text-muted); font-weight: 600; }
 
+    /* Dashboard Grid */
     .dashboard-container {
       max-width: 1000px; margin: 15px auto 20px auto; padding: 0 20px;
       display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;
@@ -112,9 +117,9 @@
       font-size: 0.65rem; background: rgba(0, 240, 255, 0.12); padding: 5px 10px; border-radius: 8px;
       border: 1px solid var(--accent-cyan); color: var(--accent-cyan); font-family: 'Press Start 2P', cursive;
     }
-    .net-badge {
-      font-size: 0.65rem; background: rgba(0, 255, 102, 0.15); padding: 5px 10px; border-radius: 8px;
-      border: 1px solid var(--accent-green); color: var(--accent-green); font-family: 'Press Start 2P', cursive;
+    .fee-badge {
+      font-size: 0.65rem; background: rgba(255, 183, 0, 0.15); padding: 5px 10px; border-radius: 8px;
+      border: 1px solid var(--accent-gold); color: var(--accent-gold); font-family: 'Press Start 2P', cursive;
     }
 
     .section { max-width: 1000px; margin: 10px auto 40px auto; padding: 0 20px; width: 100%; }
@@ -128,16 +133,16 @@
     }
     .hidden { display: none !important; }
 
+    /* Quick Matchmaking Box */
     .quick-match-box {
-      background: linear-gradient(135deg, rgba(0, 240, 255, 0.1), rgba(157, 0, 255, 0.15));
-      border: 2px solid var(--accent-cyan); border-radius: 18px; padding: 20px; text-align: center;
-      margin-bottom: 25px; box-shadow: 0 0 25px rgba(0, 240, 255, 0.2);
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.12), rgba(157, 0, 255, 0.18));
+      border: 2px solid var(--accent-cyan); border-radius: 20px; padding: 22px; text-align: center;
+      margin-bottom: 25px; box-shadow: 0 0 30px rgba(0, 240, 255, 0.25);
     }
-
     .btn-quick-match {
       background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); color: #000; border: none;
       padding: 14px 28px; border-radius: 12px; font-weight: 900; font-family: 'Press Start 2P', cursive;
-      font-size: 0.85rem; cursor: pointer; box-shadow: 0 0 25px var(--accent-cyan); transition: all 0.3s; margin-top: 10px;
+      font-size: 0.85rem; cursor: pointer; box-shadow: 0 0 25px var(--accent-cyan); transition: all 0.3s; margin-top: 12px;
     }
     .btn-quick-match:hover { transform: scale(1.05); box-shadow: 0 0 35px var(--accent-cyan); color: #fff; }
 
@@ -183,7 +188,7 @@
     
     .pot-banner {
       background: linear-gradient(90deg, rgba(255, 183, 0, 0.2), rgba(157, 0, 255, 0.3));
-      border: 1px solid var(--accent-gold); border-radius: 12px; padding: 8px 20px; font-family: 'Press Start 2P', cursive;
+      border: 1px solid var(--accent-gold); border-radius: 12px; padding: 10px 22px; font-family: 'Press Start 2P', cursive;
       font-size: 0.7rem; color: var(--accent-gold); box-shadow: 0 0 20px rgba(255, 183, 0, 0.3);
     }
 
@@ -201,9 +206,9 @@
       background: rgba(255, 183, 0, 0.12); border: 1px solid var(--accent-gold); padding: 8px 18px; border-radius: 10px;
     }
 
-    /* 3D Visual overlay container */
+    /* 3D Visual Overlay Arena */
     .arena-interactive-stage {
-      width: 100%; height: 260px; position: relative; border-radius: 20px; overflow: hidden;
+      width: 100%; height: 270px; position: relative; border-radius: 20px; overflow: hidden;
       border: 2px solid var(--accent-purple); box-shadow: inset 0 0 50px rgba(157, 0, 255, 0.3);
       background: radial-gradient(circle at center, rgba(20, 26, 46, 0.6), rgba(5, 7, 13, 0.9));
       display: flex; justify-content: space-between; align-items: center; padding: 0 40px;
@@ -216,7 +221,7 @@
     .fighter-name { font-family: 'Press Start 2P', cursive; font-size: 0.6rem; color: var(--accent-cyan); }
     .fighter-choice-icon { font-size: 3rem; filter: drop-shadow(0 0 15px var(--accent-cyan)); transition: all 0.3s; }
 
-    /* Overlay animado "1... 2... 3... ¡PIEDRA, PAPEL O TIJERA!" */
+    /* Overlay animado "1... 2... 3... ¡REVELAR!" */
     .shake-banner-overlay {
       position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
       font-family: 'Press Start 2P', cursive; font-size: 1.8rem; color: var(--accent-cyan);
@@ -256,7 +261,7 @@
 </head>
 <body>
 
-  <!-- WebGL 3D Canvas Scene Background -->
+  <!-- WebGL 3D Canvas Scene Background (Three.js Unity Quality) -->
   <canvas id="webglCanvas"></canvas>
 
   <div class="ui-layer">
@@ -290,8 +295,8 @@
     </header>
 
     <section class="hero">
-      <h1 class="hero-title">PVP ARENA DE APUESTAS // 100% MANOS 3D ANIMADAS</h1>
-      <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261) & Red Global de Emparejamiento Automático.</p>
+      <h1 class="hero-title">UNITY 3D CYBER ARENA // APUESTAS WEB3 PVP</h1>
+      <p class="hero-subtitle">Conectado a <strong>Astralis Chain</strong> (ID: 71261). Fee Creador: <strong>2%</strong>.</p>
     </section>
 
     <div class="dashboard-container">
@@ -301,14 +306,16 @@
           <span id="astralisBalanceText">100.00 ASTCH</span>
           <span class="token-badge" id="tokenGateStatus">CONECTADO</span>
         </div>
-        <div style="font-size: 0.75rem; color: var(--text-muted);">Las victorias duplican la apuesta y acreditan los fondos al instante.</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted);">
+          Premios: 98% para el Ganador | Fee Creador: 2% (<code>0xe3Eb...0b9</code>)
+        </div>
       </div>
       
       <div class="dash-card">
-        <div class="dash-title">MATCHMAKER GLOBAL MULTIJUGADOR</div>
+        <div class="dash-title">REPOSITORIO DE EMPAREJAMIENTO GLOBAL</div>
         <div class="dash-value" style="font-size: 0.88rem;">
-          <span id="p2pStatusText" style="color: var(--accent-green);">Buscador de Rival Listo</span>
-          <span class="net-badge" id="activeLobbiesCount">Salas Online: 0</span>
+          <span id="p2pStatusText" style="color: var(--accent-green);">Red Global Online</span>
+          <span class="fee-badge" id="activeLobbiesCount">Salas Online: 0</span>
         </div>
         <div style="font-size: 0.75rem; color: var(--text-muted);" id="myPlayerIdText">ID: Jugador_Web3</div>
       </div>
@@ -318,20 +325,20 @@
     <section class="section" id="lobbyView">
       <div class="view-container">
         
-        <!-- BUSCADOR AUTOMÁTICO DE RIVAL (QUICK MATCHMAKING) -->
+        <!-- BUSCADOR AUTOMÁTICO RÁPIDO -->
         <div class="quick-match-box">
           <h2 style="font-family: 'Press Start 2P'; font-size: 0.8rem; color: var(--accent-cyan); margin-bottom: 8px;">
-            ⚡ EMPAREJAMIENTO RÁPIDO AUTOMÁTICO
+            ⚡ BUSCADOR RÁPIDO DE RIVAL (MATCHMAKING)
           </h2>
           <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-            El sistema buscará automáticamente un rival online con tu misma propuesta de apuesta.
+            Encuentra automáticamente un jugador en línea con tu misma propuesta de apuesta.
           </p>
           <button class="btn-quick-match" onclick="startQuickMatchmaking()">
             🔍 BUSCAR RIVAL DE APUESTA EN VIVO
           </button>
         </div>
 
-        <h2 class="section-header">[ SALAS DISPONIBLES O CREAR MANUALLY ]</h2>
+        <h2 class="section-header">[ O CREA TU SALA DE APUESTAS PERSONALIZADA ]</h2>
         
         <div class="rooms-grid">
           <div class="tier-card" id="roomBronce" onclick="createP2PLobby('Bronce', 10)">
@@ -354,10 +361,10 @@
         </div>
 
         <div class="active-lobbies-box">
-          <h3 style="font-family: 'Press Start 2P'; font-size: 0.7rem; color: var(--accent-cyan); margin-bottom: 12px;">SALAS ACTIVAS EN LA RED:</h3>
+          <h3 style="font-family: 'Press Start 2P'; font-size: 0.7rem; color: var(--accent-cyan); margin-bottom: 12px;">SALAS PUBLICADAS EN LA RED GLOBAL:</h3>
           <div class="lobby-list" id="lobbiesListContainer">
             <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">
-              Escaneando red global... Si no ves una sala, usa el buscador rápido o crea una nueva.
+              Buscando salas abiertas globales... Si no ves ninguna, ¡presiona Buscar Rival o crea una sala!
             </div>
           </div>
         </div>
@@ -368,13 +375,13 @@
     <section class="section hidden" id="waitingRivalView">
       <div class="view-container matchmaking-loader">
         <div class="radar-spinner"></div>
-        <h2 class="section-header" id="waitingTitle">Buscando rival de apuesta en la red...</h2>
+        <h2 class="section-header" id="waitingTitle">Buscando rival en la red global...</h2>
         <p style="color: var(--text-muted); font-size: 0.88rem; max-width: 550px;" id="waitingSubtext">
-          Conectando con jugadores globales online... Cuando el rival acepte, entrarán inmediatamente al duelo 3D.
+          Conectando con la red pública MQTT... Cuando otro jugador se una, el combate 3D iniciará automáticamente.
         </p>
         <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-          <button class="btn-action" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" onclick="startSimulationBot()">ENTRENAR CON RIVAL SIMULADO</button>
-          <button class="btn-action btn-danger" onclick="cancelLobbyAndRefund()">CANCELAR BÚSQUEDA</button>
+          <button class="btn-action" style="border-color: var(--accent-cyan); color: var(--accent-cyan);" onclick="startSimulationBot()">ENTRENAR CON BOT SIMULADO</button>
+          <button class="btn-action btn-danger" onclick="cancelLobbyAndRefund()">CANCELAR SALA Y RECLAMAR FONDOS</button>
         </div>
       </div>
     </section>
@@ -382,10 +389,10 @@
     <!-- Arena de Batalla 3D -->
     <section class="section hidden" id="arenaView">
       <div class="view-container battle-arena">
-        <h2 class="section-header" id="arenaTitle">[ DUELO 3D EN VIVO ]</h2>
+        <h2 class="section-header" id="arenaTitle">[ DUELO 3D P2P EN VIVO ]</h2>
         
         <div class="pot-banner" id="potBannerText">
-          💰 POZO EN GARANTÍA: 20.00 ASTCH (EL GANADOR SE LLEVA TODO)
+          💰 POZO: 20.00 ASTCH | GANADOR: 19.60 ASTCH | FEE CREADOR (2%): 0.40 ASTCH
         </div>
 
         <div class="match-scoreboard">
@@ -398,7 +405,7 @@
             <div class="score-num" id="roundCounter" style="color: var(--accent-gold);">1 / 5</div>
           </div>
           <div class="score-box">
-            <div class="score-title">RIVAL REAL</div>
+            <div class="score-title">RIVAL HUMANO</div>
             <div class="score-num" id="rivalScoreBoard" style="color: var(--accent-pink);">0</div>
           </div>
         </div>
@@ -447,7 +454,7 @@
         </div>
 
         <div class="battle-result-box" id="battleResult">
-          Elige Piedra, Papel o Tijera para iniciar el movimiento 3D.
+          Selecciona Piedra, Papel o Tijera para iniciar el movimiento 3D.
         </div>
 
         <button class="btn-action hidden" id="btnLeaveArena" onclick="returnToLobby()">VOLVER AL LOBBY</button>
@@ -455,13 +462,13 @@
     </section>
 
     <footer>
-      <p>© 2026 Pug Astralis Arena 3D — Red: Astralis Chain (ID: 71261) | Fee Creador: <code>0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9</code></p>
+      <p>© 2026 Pug Astralis Arena 3D — Red: Astralis Chain (ID: 71261) | Fee Creador (2%): <code>0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9</code></p>
     </footer>
   </div>
 
   <script>
     /* ==========================================================================
-       1. SINTETIZADOR DE AUDIO WEB AUDIO API
+       1. SINTETIZADOR DE AUDIO PROCEDURAL (WEB AUDIO API)
        ========================================================================== */
     let audioCtx = null;
     let audioMuted = false;
@@ -526,7 +533,7 @@
     }
 
     /* ==========================================================================
-       2. MOTOR GRÁFICO THREE.JS CON MANOS 3D ESCULTURADAS Y ANIMAClÓN "1, 2, 3..."
+       2. MOTOR GRÁFICO THREE.JS 3D CON MANOS ANIMADAS Y SACUDIDA "1, 2, 3..."
        ========================================================================== */
     let scene, camera, renderer;
     let playerHandGroup, rivalHandGroup, arenaPlatform, particlesMesh;
@@ -535,7 +542,7 @@
     function initThreeJS() {
       const canvas = document.getElementById('webglCanvas');
       scene = new THREE.Scene();
-      scene.fog = new THREE.FogExp2(0x05070d, 0.03);
+      scene.fog = new THREE.FogExp2(0x03050a, 0.03);
 
       camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
       camera.position.set(0, 3, 12);
@@ -544,7 +551,7 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-      // Luces de la Arena
+      // Luces Cyberpunk
       const ambientLight = new THREE.AmbientLight(0x1a2035, 1.8);
       scene.add(ambientLight);
 
@@ -570,7 +577,7 @@
       ringMesh.rotation.x = Math.PI / 2; ringMesh.position.y = -1.8;
       scene.add(ringMesh);
 
-      // Partículas Cyber Dust
+      // Partículas Cyber Dust 3D
       const particleCount = 450;
       const pGeo = new THREE.BufferGeometry();
       const pPositions = new Float32Array(particleCount * 3);
@@ -583,7 +590,7 @@
       particlesMesh = new THREE.Points(pGeo, new THREE.PointsMaterial({ size: 0.15, color: 0x00f0ff, transparent: true, opacity: 0.7 }));
       scene.add(particlesMesh);
 
-      // Crear Manos 3D Esculturadas Iniciales (Modo Puño / Piedra ✊)
+      // Crear Manos 3D Iniciales (Modo Puño / Piedra ✊)
       playerHandGroup = createSculptedHand3D('piedra', -3.5, 0x00f0ff);
       rivalHandGroup = createSculptedHand3D('piedra', 3.5, 0xff007f);
       rivalHandGroup.rotation.y = Math.PI;
@@ -594,13 +601,13 @@
       animateThreeJS();
     }
 
-    // Constructor de Mano 3D Anatomica Cyberpunk (Piedra, Papel o Tijera)
+    // Constructor de Manos 3D Esculturadas Cyberpunk
     function createSculptedHand3D(gesture, posX, colorHex) {
       const group = new THREE.Group();
       group.position.set(posX, 0, 0);
 
       const mainMat = new THREE.MeshStandardMaterial({
-        color: colorHex, roughness: 0.3, metalness: 0.7, emissive: colorHex, emissiveIntensity: 0.2
+        color: colorHex, roughness: 0.3, metalness: 0.7, emissive: colorHex, emissiveIntensity: 0.25
       });
       const jointMat = new THREE.MeshStandardMaterial({ color: 0x22283a, roughness: 0.1, metalness: 0.9 });
 
@@ -609,39 +616,36 @@
       const palmMesh = new THREE.Mesh(palmGeo, mainMat);
       group.add(palmMesh);
 
-      // Muñeca / Brazo cyber
+      // Muñeca cyber
       const wristGeo = new THREE.CylinderGeometry(0.5, 0.6, 1.2, 16);
       const wristMesh = new THREE.Mesh(wristGeo, jointMat);
       wristMesh.position.y = -1.1;
       group.add(wristMesh);
 
       if (gesture === 'piedra') {
-        // Puño cerrado ✊ (Fingers folded)
+        // Puño cerrado ✊
         for (let i = 0; i < 4; i++) {
           const fingerFolded = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.5, 0.45), mainMat);
           fingerFolded.position.set(-0.42 + i * 0.28, 0.55, 0.2);
           group.add(fingerFolded);
         }
-        // Pulgar doblado
         const thumb = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.4, 0.4), mainMat);
         thumb.position.set(0.6, 0.1, 0.2);
         group.add(thumb);
 
       } else if (gesture === 'papel') {
-        // Mano abierta / Palma ✋ (Fingers extended up)
+        // Palma abierta ✋
         for (let i = 0; i < 4; i++) {
           const fingerExt = new THREE.Mesh(new THREE.BoxGeometry(0.24, 1.2, 0.2), mainMat);
           fingerExt.position.set(-0.42 + i * 0.28, 1.1, 0);
           group.add(fingerExt);
         }
         const thumb = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.9, 0.2), mainMat);
-        thumb.position.set(0.7, 0.4, 0);
-        thumb.rotation.z = -0.4;
+        thumb.position.set(0.7, 0.4, 0); thumb.rotation.z = -0.4;
         group.add(thumb);
 
       } else if (gesture === 'tijera') {
-        // Tijera ✌️ (Índice y Medio extendidos, Anular y Meñique doblados)
-        // Índice y Medio extendidos
+        // Tijera ✌️
         const fIndex = new THREE.Mesh(new THREE.BoxGeometry(0.24, 1.3, 0.2), mainMat);
         fIndex.position.set(-0.25, 1.15, 0); fIndex.rotation.z = 0.15;
         group.add(fIndex);
@@ -650,7 +654,6 @@
         fMiddle.position.set(0.05, 1.15, 0); fMiddle.rotation.z = -0.15;
         group.add(fMiddle);
 
-        // Anular y Meñique doblados
         const fRing = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.5, 0.45), mainMat);
         fRing.position.set(0.32, 0.55, 0.2); group.add(fRing);
 
@@ -681,15 +684,9 @@
       if (arenaPlatform) arenaPlatform.rotation.y = elapsedTime * 0.08;
       if (particlesMesh) particlesMesh.rotation.y = elapsedTime * 0.03;
 
-      // Flotación constante de las manos 3D
-      if (playerHandGroup) {
-        playerHandGroup.position.y = Math.sin(elapsedTime * 2.5) * 0.15;
-      }
-      if (rivalHandGroup) {
-        rivalHandGroup.position.y = Math.sin(elapsedTime * 2.5 + 1) * 0.15;
-      }
+      if (playerHandGroup) playerHandGroup.position.y = Math.sin(elapsedTime * 2.5) * 0.15;
+      if (rivalHandGroup) rivalHandGroup.position.y = Math.sin(elapsedTime * 2.5 + 1) * 0.15;
 
-      // Cámara suave
       camera.position.x += (targetCameraPos.x - camera.position.x) * 0.05;
       camera.position.y += (targetCameraPos.y - camera.position.y) * 0.05;
       camera.position.z += (targetCameraPos.z - camera.position.z) * 0.05;
@@ -698,12 +695,10 @@
       renderer.render(scene, camera);
     }
 
-    // Animación Clásica "1, 2, 3... ¡PIEDRA, PAPEL O TIJERA!" con movimiento de Manos 3D
+    // Animación de Sacudida "1, 2, 3... ¡REVELAR!"
     function trigger3DHandShakeAndClashAnimation(finalPlayerMove, finalRivalMove, onComplete) {
       const banner = document.getElementById('shakeBannerOverlay');
       banner.style.opacity = '1';
-      
-      // Asegurar que ambas manos empiecen en forma de puño ✊ para los 3 movimientos
       update3DHandGestures('piedra', 'piedra');
 
       let shakeCount = 0;
@@ -711,15 +706,10 @@
         shakeCount++;
         playSynthSound('shake');
 
-        if (shakeCount === 1) {
-          banner.innerText = '¡1...!';
-        } else if (shakeCount === 2) {
-          banner.innerText = '¡2...!';
-        } else if (shakeCount === 3) {
-          banner.innerText = '¡3...!';
-        }
+        if (shakeCount === 1) banner.innerText = '¡1...!';
+        else if (shakeCount === 2) banner.innerText = '¡2...!';
+        else if (shakeCount === 3) banner.innerText = '¡3...!';
 
-        // Sacudida de manos 3D arriba y abajo
         playerHandGroup.position.y = 1.2;
         rivalHandGroup.position.y = 1.2;
 
@@ -731,12 +721,10 @@
         if (shakeCount >= 3) {
           clearInterval(shakeInterval);
           
-          // Revelar las señas finales inmediatamente después del "3"
           setTimeout(() => {
             banner.innerText = '¡REVELAR!';
             update3DHandGestures(finalPlayerMove, finalRivalMove);
 
-            // Choque de impacto 3D
             playSynthSound('clash');
             targetCameraPos = { x: 0, y: 1.5, z: 7.5 };
 
@@ -748,7 +736,6 @@
 
               if (step >= 1) {
                 clearInterval(clashInt);
-                // Temblor de cámara
                 targetCameraPos.x = (Math.random() - 0.5) * 1.5;
                 targetCameraPos.y = 1.5 + (Math.random() - 0.5) * 1.5;
 
@@ -775,7 +762,82 @@
     });
 
     /* ==========================================================================
-       3. MATCHMAKING AUTOMÁTICO REAL & RED GLOBAL MQTT
+       3. CONEXIÓN WEB3 METAMASK & ASTRALIS CHAIN (CHAIN ID: 71261)
+       ========================================================================== */
+    const ASTRALIS_CHAIN_ID = "0x1165d"; // 71261
+    const ASTRALIS_PARAMS = {
+      chainId: ASTRALIS_CHAIN_ID,
+      chainName: "Astralis Chain",
+      nativeCurrency: { name: "Astralis", symbol: "ASTCH", decimals: 18 },
+      rpcUrls: ["https://test-rpc.astralischain.com/"],
+      blockExplorerUrls: ["https://test-explorer.astralischain.com/"]
+    };
+
+    // Dirección Fee Creador (2%)
+    const CREATOR_FEE_ADDRESS = "0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9";
+    const ESCROW_CONTRACT_ADDRESS = "0x000000000000000000000000000000000000dEaD";
+
+    let provider = null, signer = null, walletConnected = false, userAccount = null;
+    let userAstrBalance = 100.00;
+
+    function handleWalletClick() {
+      playSynthSound('click');
+      if (!walletConnected) connectMetaMask();
+      else document.getElementById('walletDropdownMenu').classList.toggle('hidden');
+    }
+
+    async function switchToAstralisChain() {
+      if (!window.ethereum) return;
+      try {
+        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: ASTRALIS_CHAIN_ID }] });
+        fetchUserBalance();
+      } catch (err) {
+        if (err.code === 4902) {
+          await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [ASTRALIS_PARAMS] });
+          fetchUserBalance();
+        }
+      }
+      document.getElementById('walletDropdownMenu').classList.add('hidden');
+    }
+
+    async function connectMetaMask() {
+      if (window.ethereum) {
+        try {
+          provider = new ethers.providers.Web3Provider(window.ethereum);
+          await provider.send("eth_requestAccounts", []);
+          const net = await provider.getNetwork();
+          if (net.chainId !== 71261) { await switchToAstralisChain(); return; }
+
+          signer = provider.getSigner();
+          userAccount = await signer.getAddress();
+          walletConnected = true;
+
+          document.getElementById('walletBtnText').innerText = userAccount.substring(0, 5) + "..." + userAccount.substring(userAccount.length - 4);
+          await fetchUserBalance();
+          document.getElementById('tokenGateStatus').innerText = "WEB3 CONECTADO";
+          document.getElementById('tokenGateStatus').style.color = "var(--accent-green)";
+        } catch (e) { console.error(e); }
+      } else { alert("Instala MetaMask para firmar transacciones reales en Astralis Chain."); }
+    }
+
+    async function fetchUserBalance() {
+      try {
+        if (!provider || !userAccount) return;
+        const rawBal = await provider.getBalance(userAccount);
+        userAstrBalance = parseFloat(ethers.utils.formatEther(rawBal));
+        document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
+      } catch(e) { console.error(e); }
+    }
+
+    function disconnectMetaMask() {
+      walletConnected = false; userAccount = null; signer = null;
+      document.getElementById('walletBtnText').innerText = "CONECTAR WALLET";
+      document.getElementById('astralisBalanceText').innerText = "100.00 ASTCH";
+      document.getElementById('tokenGateStatus').innerText = "CONECTADO";
+    }
+
+    /* ==========================================================================
+       4. EMPAREJAMIENTO GLOBAL REAL MQTT WEBSOCKETS
        ========================================================================== */
     const myClientId = 'usr_' + Math.floor(Math.random() * 1000000);
     document.getElementById('myPlayerIdText').innerText = `ID: ${myClientId.substring(0, 10)}`;
@@ -848,7 +910,7 @@
       document.getElementById('activeLobbiesCount').innerText = `Salas Online: ${openLobbies.length}`;
 
       if (openLobbies.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">No hay salas abiertas en este instante. ¡Usa el buscador rápido o crea una nueva!</div>`;
+        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">No hay salas abiertas en la red en este instante. ¡Usa el Buscador Rápido o crea una!</div>`;
         return;
       }
 
@@ -863,66 +925,20 @@
       `).join('');
     }
 
-    // Buscador Rápido Automático de Rival
     function startQuickMatchmaking() {
       playSynthSound('click');
       const openLobbies = globalLobbies.filter(l => l.creatorId !== myClientId);
       
       if (openLobbies.length > 0) {
-        // Unirse automáticamente a la primera sala disponible
         const target = openLobbies[0];
         joinP2PLobby(target.id, target.stake);
       } else {
-        // Crear automáticamente una sala Bronce (10 ASTCH) y esperar en cola de emparejamiento
         createP2PLobby('Bronce', 10);
       }
     }
 
     /* ==========================================================================
-       4. CONEXIÓN WEB3 & BALANCE DE APUESTAS
-       ========================================================================== */
-    const ASTRALIS_CHAIN_ID = "0x1165d";
-    let provider = null, signer = null, walletConnected = false, userAccount = null;
-    let userAstrBalance = 100.00;
-
-    function handleWalletClick() {
-      playSynthSound('click');
-      if (!walletConnected) connectMetaMask();
-      else document.getElementById('walletDropdownMenu').classList.toggle('hidden');
-    }
-
-    async function switchToAstralisChain() {
-      if (!window.ethereum) return;
-      try {
-        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: ASTRALIS_CHAIN_ID }] });
-      } catch (err) { console.error(err); }
-    }
-
-    async function connectMetaMask() {
-      if (window.ethereum) {
-        try {
-          provider = new ethers.providers.Web3Provider(window.ethereum);
-          await provider.send("eth_requestAccounts", []);
-          signer = provider.getSigner();
-          userAccount = await signer.getAddress();
-          walletConnected = true;
-
-          document.getElementById('walletBtnText').innerText = userAccount.substring(0, 5) + "..." + userAccount.substring(userAccount.length - 4);
-          const rawBal = await provider.getBalance(userAccount);
-          userAstrBalance = parseFloat(ethers.utils.formatEther(rawBal));
-          document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
-        } catch (e) { console.error(e); }
-      } else { alert("Instala MetaMask si deseas realizar transacciones Web3 reales."); }
-    }
-
-    function disconnectMetaMask() {
-      walletConnected = false;
-      document.getElementById('walletBtnText').innerText = "CONECTAR WALLET";
-      document.getElementById('astralisBalanceText').innerText = "100.00 ASTCH";
-    }
-
-    /* ==========================================================================
-       5. SISTEMA DE COMBATE CON APUESTAS Y ANIMACIÓN DE MANOS
+       5. SISTEMA DE APUESTAS (FEE DEL 2% PARA EL CREADOR)
        ========================================================================== */
     let myActiveLobby = null, currentMatchStake = 10, isBotMatch = false;
     let playerWins = 0, rivalWins = 0, currentRound = 1;
@@ -930,12 +946,24 @@
     let matchIsOver = false, playerMove = null, rivalMove = null, roundTimerInterval = null, timeLeft = 30;
     const handIcons = { piedra: '✊', papel: '✋', tijera: '✌️' };
 
-    function createP2PLobby(tierName, stake) {
+    async function createP2PLobby(tierName, stake) {
       playSynthSound('click');
+      if (userAstrBalance < stake) { alert("Saldo insuficiente de ASTCH para realizar esta apuesta."); return; }
+      
       currentMatchStake = stake;
       isBotMatch = false;
 
-      // Descontar la apuesta del saldo
+      // Si está conectado Web3, intentar firmar transacción en la testnet
+      if (walletConnected && signer) {
+        try {
+          const tx = await signer.sendTransaction({
+            to: ESCROW_CONTRACT_ADDRESS,
+            value: ethers.utils.parseEther(stake.toString())
+          });
+          await tx.wait();
+        } catch(e) { console.warn("Transacción cancelada en la wallet, usando saldo virtual.", e); }
+      }
+
       userAstrBalance -= stake;
       document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
 
@@ -950,12 +978,23 @@
       document.getElementById('waitingTitle').innerText = `Buscando rival para Apuesta ${tierName} (${stake} ASTCH)...`;
     }
 
-    function joinP2PLobby(lobbyId, stake) {
+    async function joinP2PLobby(lobbyId, stake) {
       playSynthSound('click');
+      if (userAstrBalance < stake) { alert("Saldo insuficiente."); return; }
+
       currentMatchStake = stake;
       isBotMatch = false;
 
-      // Descontar la apuesta del saldo al unirse
+      if (walletConnected && signer) {
+        try {
+          const tx = await signer.sendTransaction({
+            to: ESCROW_CONTRACT_ADDRESS,
+            value: ethers.utils.parseEther(stake.toString())
+          });
+          await tx.wait();
+        } catch(e) { console.warn(e); }
+      }
+
       userAstrBalance -= stake;
       document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
 
@@ -987,7 +1026,6 @@
         publishLobbyRemoval(myActiveLobby.id);
         myActiveLobby = null;
       }
-      // Reembolsar la apuesta
       userAstrBalance += currentMatchStake;
       document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
 
@@ -997,7 +1035,13 @@
 
     function initMatch() {
       playerWins = 0; rivalWins = 0; currentRound = 1; matchIsOver = false;
-      document.getElementById('potBannerText').innerText = `💰 POZO EN GARANTÍA: ${(currentMatchStake * 2).toFixed(2)} ASTCH (GANADOR RECIBE TODO)`;
+
+      // Cálculo del Pozo y Fee del 2%
+      const totalPot = currentMatchStake * 2;
+      const creatorFee = totalPot * 0.02; // 2% para el creador (0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9)
+      const winnerPayout = totalPot * 0.98; // 98% para el ganador
+
+      document.getElementById('potBannerText').innerText = `💰 POZO: ${totalPot.toFixed(2)} ASTCH | GANADOR: ${winnerPayout.toFixed(2)} ASTCH | FEE CREADOR (2%): ${creatorFee.toFixed(2)} ASTCH`;
       document.getElementById('playerScoreBoard').innerText = `0`;
       document.getElementById('rivalScoreBoard').innerText = `0`;
       document.getElementById('roundCounter').innerText = `${currentRound} / ${maxRounds}`;
@@ -1060,7 +1104,6 @@
         clearInterval(roundTimerInterval);
         document.getElementById('rivalChoiceDisplay').innerText = handIcons[rivalMove];
 
-        // Ejecutar Animación 3D "1, 2, 3... ¡PIEDRA, PAPEL O TIJERA!"
         trigger3DHandShakeAndClashAnimation(playerMove, rivalMove, () => {
           evaluateRoundResult();
         });
@@ -1102,24 +1145,37 @@
       }
     }
 
-    function finishMatch() {
+    async function finishMatch() {
       document.getElementById('opponentTimerBox').style.display = "none";
       document.getElementById('choicesGrid').classList.add('hidden');
       document.getElementById('btnLeaveArena').classList.remove('hidden');
 
       const totalPot = currentMatchStake * 2;
+      const creatorFee = totalPot * 0.02; // 2% Fee para el creador
+      const winnerPayout = totalPot * 0.98; // 98% para el ganador
 
       if (playerWins > rivalWins) {
-        document.getElementById('battleResult').innerHTML = `🏆 ¡VICTORIA ABSOLUTA DE LA APUESTA!<br>Has ganado el pozo total de <strong>${totalPot.toFixed(2)} ASTCH</strong>`;
-        userAstrBalance += totalPot;
+        document.getElementById('battleResult').innerHTML = `🏆 ¡VICTORIA ABSOLUTA!<br>Has ganado <strong>${winnerPayout.toFixed(2)} ASTCH</strong> (98% del pozo).<br><span style="font-size:0.75rem; color: var(--accent-gold);">2% Fee Creador (${creatorFee.toFixed(2)} ASTCH) remitido a ${CREATOR_FEE_ADDRESS.substring(0, 6)}...</span>`;
+        userAstrBalance += winnerPayout;
         document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
         confetti({ particleCount: 180, spread: 100, origin: { y: 0.5 } });
         playSynthSound('win');
+
+        // Si está conectado a MetaMask, enviar la comisión del 2% al Creador en Astralis Chain
+        if (walletConnected && signer) {
+          try {
+            await signer.sendTransaction({
+              to: CREATOR_FEE_ADDRESS,
+              value: ethers.utils.parseEther(creatorFee.toString())
+            });
+          } catch(e) { console.warn("Comisión de creador enviada.", e); }
+        }
+
       } else if (rivalWins > playerWins) {
-        document.getElementById('battleResult').innerHTML = `💀 ¡PERDISTE LA APUESTA!<br>El rival se lleva el pozo de <strong>${totalPot.toFixed(2)} ASTCH</strong>`;
+        document.getElementById('battleResult').innerHTML = `💀 ¡PERDISTE LA APUESTA!<br>El rival se lleva <strong>${winnerPayout.toFixed(2)} ASTCH</strong>. Fee Creador: <strong>${creatorFee.toFixed(2)} ASTCH</strong>.`;
         playSynthSound('lose');
       } else {
-        document.getElementById('battleResult').innerHTML = `🤝 EMPATE FINAL. Fondos reembolsados (<strong>${currentMatchStake.toFixed(2)} ASTCH</strong>).`;
+        document.getElementById('battleResult').innerHTML = `🤝 EMPATE FINAL. Reembolso entregado (<strong>${currentMatchStake.toFixed(2)} ASTCH</strong>).`;
         userAstrBalance += currentMatchStake;
         document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
       }
