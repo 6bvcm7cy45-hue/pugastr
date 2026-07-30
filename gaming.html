@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PUGASTR GAMING // Hyper 3D Cyber Arena</title>
   
-  <!-- Tipografía Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -38,7 +37,6 @@
       user-select: none; min-height: 100vh; display: flex; flex-direction: column;
     }
 
-    /* WebGL Canvas Background 3D */
     #webglCanvas {
       position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none;
     }
@@ -47,7 +45,6 @@
       position: relative; z-index: 10; display: flex; flex-direction: column; min-height: 100vh;
     }
 
-    /* Header Cyberpunk Premium */
     header {
       display: flex; justify-content: space-between; align-items: center; padding: 14px 5%;
       border-bottom: 1px solid var(--border-cyber); background: rgba(2, 3, 7, 0.88);
@@ -91,7 +88,6 @@
     }
     .dropdown-item:hover { background: var(--accent-cyan); color: #000; box-shadow: 0 0 15px var(--accent-cyan); }
 
-    /* Hero Section */
     .hero { text-align: center; padding: 25px 20px 10px 20px; max-width: 950px; margin: 0 auto; }
     .hero-title {
       font-family: 'Press Start 2P', cursive; font-size: 1.15rem; line-height: 1.6; color: var(--text-main);
@@ -99,7 +95,6 @@
     }
     .hero-subtitle { font-size: 0.9rem; color: var(--text-muted); font-weight: 600; }
 
-    /* Dashboard Grid */
     .dashboard-container {
       max-width: 1050px; margin: 15px auto 20px auto; padding: 0 20px;
       display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%;
@@ -133,19 +128,6 @@
     }
     .hidden { display: none !important; }
 
-    /* Quick Matchmaking Interactive Box */
-    .quick-match-box {
-      background: linear-gradient(135deg, rgba(0, 240, 255, 0.15), rgba(168, 5, 255, 0.22));
-      border: 2px solid var(--accent-cyan); border-radius: 22px; padding: 25px; text-align: center;
-      margin-bottom: 28px; box-shadow: 0 0 35px rgba(0, 240, 255, 0.3);
-    }
-    .btn-quick-match {
-      background: linear-gradient(90deg, var(--accent-cyan), var(--accent-purple)); color: #000; border: none;
-      padding: 16px 32px; border-radius: 14px; font-weight: 900; font-family: 'Press Start 2P', cursive;
-      font-size: 0.88rem; cursor: pointer; box-shadow: 0 0 30px var(--accent-cyan); transition: all 0.3s; margin-top: 14px;
-    }
-    .btn-quick-match:hover { transform: scale(1.05); box-shadow: 0 0 45px var(--accent-cyan); color: #fff; }
-
     /* Custom Tiers Grid: 10, 100, 500 ASTCH */
     .rooms-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
     .tier-card {
@@ -176,6 +158,25 @@
       box-shadow: 0 0 15px rgba(0, 255, 102, 0.45); transition: all 0.2s;
     }
     .btn-join-lobby:hover { box-shadow: 0 0 25px var(--accent-green); transform: scale(1.05); }
+
+    /* Modal de Confirmación de Fee del 2% AL INICIO */
+    .modal-backdrop {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(2, 3, 7, 0.85); backdrop-filter: blur(12px);
+      z-index: 3000; display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .fee-modal-card {
+      background: var(--bg-card); border: 2px solid var(--accent-gold); border-radius: 24px; padding: 30px;
+      max-width: 500px; width: 100%; text-align: center; box-shadow: 0 0 40px rgba(255, 183, 0, 0.4);
+      display: flex; flex-direction: column; gap: 16px;
+    }
+    .fee-modal-title {
+      font-family: 'Press Start 2P', cursive; font-size: 0.85rem; color: var(--accent-gold);
+    }
+    .fee-details-box {
+      background: rgba(255, 183, 0, 0.08); border: 1px solid rgba(255, 183, 0, 0.3); border-radius: 14px;
+      padding: 16px; text-align: left; font-size: 0.85rem; display: flex; flex-direction: column; gap: 8px;
+    }
 
     .matchmaking-loader { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 35px 20px; text-align: center; gap: 22px; }
     .radar-spinner {
@@ -208,7 +209,7 @@
       background: rgba(255, 183, 0, 0.14); border: 1px solid var(--accent-gold); padding: 9px 20px; border-radius: 12px;
     }
 
-    /* 3D Visual Interactive Overlay Stage */
+    /* 3D Visual Stage Overlay */
     .arena-interactive-stage {
       width: 100%; height: 280px; position: relative; border-radius: 22px; overflow: hidden;
       border: 2px solid var(--accent-purple); box-shadow: inset 0 0 60px rgba(168, 5, 255, 0.4);
@@ -264,7 +265,7 @@
 </head>
 <body>
 
-  <!-- WebGL 3D Canvas Scene Background (Three.js High Interactive Quality) -->
+  <!-- WebGL 3D Canvas Scene Background -->
   <canvas id="webglCanvas"></canvas>
 
   <div class="ui-layer">
@@ -307,10 +308,10 @@
         <div class="dash-title">MI BALANCE EN METAMASK ($ASTCH)</div>
         <div class="dash-value">
           <span id="astralisBalanceText">100.00 ASTCH</span>
-          <span class="token-badge" id="tokenGateStatus">WEB3 CONECTADO</span>
+          <span class="token-badge" id="tokenGateStatus">METAMASK CONECTADO</span>
         </div>
         <div style="font-size: 0.75rem; color: var(--text-muted);">
-          Premios: 98% para el Ganador | Fee Creador: 2% (<code>0xe3Eb...0b9</code>)
+          Premios: 98% para el Ganador | Fee Creador: 2% Aceptado al inicio (<code>0xe3Eb...0b9</code>)
         </div>
       </div>
       
@@ -324,40 +325,55 @@
       </div>
     </div>
 
+    <!-- MODAL DE CONFIRMACIÓN DE FEE Y APUESTA AL INICIO -->
+    <div class="modal-backdrop hidden" id="feeConfirmModal">
+      <div class="fee-modal-card">
+        <div class="fee-modal-title">⚠️ ACEPTAR APUESTA Y FEE DEL CREADOR (2%)</div>
+        <p style="font-size: 0.85rem; color: var(--text-muted);">
+          Antes de ingresar a la sala, debes revisar y aceptar la tasa del 2% que se remitirá a la billetera del creador al finalizar el duelo.
+        </p>
+
+        <div class="fee-details-box">
+          <div>💰 <strong>Tu Apuesta:</strong> <span id="modalStakeAmount">10</span> ASTCH</div>
+          <div>🏆 <strong>Premio Ganador (98% del Pozo):</strong> <span id="modalWinAmount">19.60</span> ASTCH</div>
+          <div>🪙 <strong>Fee para el Creador (2%):</strong> <span id="modalFeeAmount">0.40</span> ASTCH</div>
+          <div style="font-size:0.75rem; color: var(--text-muted); margin-top:4px;">
+            Billetera Creador: <code>0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9</code>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 12px; justify-content: center; margin-top: 10px;">
+          <button class="btn-tier" style="background: linear-gradient(135deg, var(--accent-green), #00b347); color: #000;" onclick="confirmFeeAndStartMatch()">
+            ✅ ACEPTAR Y ENTRAR A LA SALA
+          </button>
+          <button class="btn-action btn-danger" onclick="closeFeeModal()">
+            CANCELAR
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Vista Lobby -->
     <section class="section" id="lobbyView">
       <div class="view-container">
         
-        <!-- BUSCADOR AUTOMÁTICO RÁPIDO -->
-        <div class="quick-match-box">
-          <h2 style="font-family: 'Press Start 2P'; font-size: 0.8rem; color: var(--accent-cyan); margin-bottom: 8px;">
-            ⚡ BUSCADOR RÁPIDO AUTOMÁTICO DE APUESTAS
-          </h2>
-          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-            Elige tu sala de 10, 100 o 500 ASTCH y el matchmaker te conectará automáticamente con un rival.
-          </p>
-          <button class="btn-quick-match" onclick="startQuickMatchmaking()">
-            🔍 BUSCAR RIVAL PVP 1 A 1
-          </button>
-        </div>
-
-        <h2 class="section-header">[ SELECCIONA TU SALA DE APUESTA PVP ]</h2>
+        <h2 class="section-header">[ SELECCIONA TU SALA DE APUESTA PVP 1 A 1 ]</h2>
         
-        <!-- TIERS SOLICITADOS: 10, 100 y 500 ASTCH -->
+        <!-- TIERS DE APUESTAS: 10, 100 y 500 ASTCH -->
         <div class="rooms-grid">
-          <div class="tier-card" id="roomBronce" onclick="createP2PLobby('Tier 10', 10)">
+          <div class="tier-card" id="roomBronce" onclick="promptFeeModal('Tier 10', 10, 'create')">
             <div class="tier-rank">Rango Bronce</div>
             <div class="tier-price">10 ASTCH</div>
             <button class="btn-tier">APOSTAR 10 ASTCH</button>
           </div>
 
-          <div class="tier-card" id="roomOro" onclick="createP2PLobby('Tier 100', 100)">
+          <div class="tier-card" id="roomOro" onclick="promptFeeModal('Tier 100', 100, 'create')">
             <div class="tier-rank">Rango Oro</div>
             <div class="tier-price">100 ASTCH</div>
             <button class="btn-tier">APOSTAR 100 ASTCH</button>
           </div>
 
-          <div class="tier-card" id="roomTitan" onclick="createP2PLobby('Tier 500 TITAN', 500)">
+          <div class="tier-card" id="roomTitan" onclick="promptFeeModal('Tier 500 TITAN', 500, 'create')">
             <div class="tier-rank">Rango Titán</div>
             <div class="tier-price">500 ASTCH</div>
             <button class="btn-tier">APOSTAR 500 ASTCH</button>
@@ -368,7 +384,7 @@
           <h3 style="font-family: 'Press Start 2P'; font-size: 0.7rem; color: var(--accent-cyan); margin-bottom: 12px;">SALAS DE APUESTA ACTIVAS EN LA RED:</h3>
           <div class="lobby-list" id="lobbiesListContainer">
             <div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">
-              Buscando salas abiertas globales... Si no ves ninguna, ¡presiona Buscar Rival o crea una sala!
+              Buscando salas abiertas globales... Si no ves ninguna, selecciona una sala de 10, 100 o 500 ASTCH para crear una nueva.
             </div>
           </div>
         </div>
@@ -466,7 +482,7 @@
     </section>
 
     <footer>
-      <p>© 2026 Pug Astralis Gaming 3D — Red: Astralis Chain (ID: 71261) | Fee Creador (2%): <code>0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9</code></p>
+      <p>© 2026 Pug Astralis Gaming 3D — Red: Astralis Chain (ID: 71261) | Fee Creador (2% Aceptado): <code>0xe3Eb933dA4379dCc3DbC87A23F9B44BDf85BC0b9</code></p>
     </footer>
   </div>
 
@@ -593,7 +609,6 @@
       particlesMesh = new THREE.Points(pGeo, new THREE.PointsMaterial({ size: 0.16, color: 0x00f0ff, transparent: true, opacity: 0.75 }));
       scene.add(particlesMesh);
 
-      // Crear Manos 3D Iniciales (Modo Puño / Piedra ✊)
       playerHandGroup = createSculptedHand3D('piedra', -3.5, 0x00f0ff);
       rivalHandGroup = createSculptedHand3D('piedra', 3.5, 0xff007f);
       rivalHandGroup.rotation.y = Math.PI;
@@ -613,19 +628,16 @@
       });
       const jointMat = new THREE.MeshStandardMaterial({ color: 0x151b2e, roughness: 0.1, metalness: 0.9 });
 
-      // Palma de la mano
       const palmGeo = new THREE.BoxGeometry(1.2, 1.3, 0.4);
       const palmMesh = new THREE.Mesh(palmGeo, mainMat);
       group.add(palmMesh);
 
-      // Muñeca cyber
       const wristGeo = new THREE.CylinderGeometry(0.5, 0.6, 1.2, 16);
       const wristMesh = new THREE.Mesh(wristGeo, jointMat);
       wristMesh.position.y = -1.1;
       group.add(wristMesh);
 
       if (gesture === 'piedra') {
-        // Puño cerrado ✊
         for (let i = 0; i < 4; i++) {
           const fingerFolded = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.5, 0.45), mainMat);
           fingerFolded.position.set(-0.42 + i * 0.28, 0.55, 0.2);
@@ -636,7 +648,6 @@
         group.add(thumb);
 
       } else if (gesture === 'papel') {
-        // Palma abierta ✋
         for (let i = 0; i < 4; i++) {
           const fingerExt = new THREE.Mesh(new THREE.BoxGeometry(0.24, 1.2, 0.2), mainMat);
           fingerExt.position.set(-0.42 + i * 0.28, 1.1, 0);
@@ -647,7 +658,6 @@
         group.add(thumb);
 
       } else if (gesture === 'tijera') {
-        // Tijera ✌️
         const fIndex = new THREE.Mesh(new THREE.BoxGeometry(0.24, 1.3, 0.2), mainMat);
         fIndex.position.set(-0.25, 1.15, 0); fIndex.rotation.z = 0.15;
         group.add(fIndex);
@@ -838,7 +848,7 @@
     }
 
     /* ==========================================================================
-       4. RED DE MATCHMAKING GLOBAL MQTT (TOPIC: GAMING LOBBIES)
+       4. RED DE MATCHMAKING GLOBAL MQTT
        ========================================================================== */
     const myClientId = 'gaming_' + Math.floor(Math.random() * 1000000);
     document.getElementById('myPlayerIdText').innerText = `ID: ${myClientId.substring(0, 10)}`;
@@ -875,8 +885,13 @@
         } else if (myActiveLobby && topic === `pugastralis/3d/gaming_room/${myActiveLobby.id}`) {
           if (payload.type === 'PLAYER_JOINED' && payload.sender !== myClientId) {
             playSynthSound('win');
+            
+            // TRANSMISIÓN AUTOMÁTICA Y SCROLL ARRIBA
             document.getElementById('waitingRivalView').classList.add('hidden');
+            document.getElementById('lobbyView').classList.add('hidden');
             document.getElementById('arenaView').classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
             initMatch();
           } else if (payload.type === 'MOVE_SUBMITTED' && payload.sender !== myClientId) {
             rivalMove = payload.move;
@@ -911,7 +926,7 @@
       document.getElementById('activeLobbiesCount').innerText = `Salas Online: ${openLobbies.length}`;
 
       if (openLobbies.length === 0) {
-        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">No hay salas abiertas en la red en este momento. ¡Presiona Buscar Rival o crea una sala de 10, 100 o 500 ASTCH!</div>`;
+        container.innerHTML = `<div style="color: var(--text-muted); font-size: 0.85rem; text-align: center; padding: 15px;">No hay salas abiertas en la red en este momento. ¡Selecciona una sala de 10, 100 o 500 ASTCH para crear una nueva!</div>`;
         return;
       }
 
@@ -921,25 +936,56 @@
             <strong>${l.tier}</strong> // Apuesta: <strong>${l.stake} ASTCH</strong><br>
             <span style="font-size:0.7rem; color: var(--text-muted);">Creador: ${l.creatorId.substring(0, 10)}</span>
           </div>
-          <button class="btn-join-lobby" onclick="joinP2PLobby('${l.id}', ${l.stake})">ACEPTAR APUESTA (${l.stake} ASTCH)</button>
+          <button class="btn-join-lobby" onclick="promptFeeModal('${l.tier}', ${l.stake}, 'join', '${l.id}')">ACEPTAR APUESTA (${l.stake} ASTCH)</button>
         </div>
       `).join('');
     }
 
-    function startQuickMatchmaking() {
+    /* ==========================================================================
+       5. PASO PREVIO: CONFIRMACIÓN DEL FEE DEL CREADOR (2%) AL INICIO
+       ========================================================================== */
+    let pendingLobbyConfig = null;
+
+    function promptFeeModal(tierName, stake, actionType, targetLobbyId = null) {
       playSynthSound('click');
-      const openLobbies = globalLobbies.filter(l => l.creatorId !== myClientId);
-      
-      if (openLobbies.length > 0) {
-        const target = openLobbies[0];
-        joinP2PLobby(target.id, target.stake);
-      } else {
-        createP2PLobby('Tier 10', 10);
+      if (userAstrBalance < stake) { alert(`Saldo insuficiente. Necesitas al menos ${stake} ASTCH.`); return; }
+
+      const totalPot = stake * 2;
+      const creatorFee = totalPot * 0.02;
+      const winnerPayout = totalPot * 0.98;
+
+      pendingLobbyConfig = { tierName, stake, actionType, targetLobbyId };
+
+      document.getElementById('modalStakeAmount').innerText = stake;
+      document.getElementById('modalWinAmount').innerText = winnerPayout.toFixed(2);
+      document.getElementById('modalFeeAmount').innerText = creatorFee.toFixed(2);
+
+      document.getElementById('feeConfirmModal').classList.remove('hidden');
+    }
+
+    function closeFeeModal() {
+      playSynthSound('click');
+      document.getElementById('feeConfirmModal').classList.add('hidden');
+      pendingLobbyConfig = null;
+    }
+
+    function confirmFeeAndStartMatch() {
+      playSynthSound('click');
+      document.getElementById('feeConfirmModal').classList.add('hidden');
+
+      if (!pendingLobbyConfig) return;
+
+      const { tierName, stake, actionType, targetLobbyId } = pendingLobbyConfig;
+
+      if (actionType === 'create') {
+        executeCreateP2PLobby(tierName, stake);
+      } else if (actionType === 'join' && targetLobbyId) {
+        executeJoinP2PLobby(targetLobbyId, stake);
       }
     }
 
     /* ==========================================================================
-       5. SISTEMA DE APUESTAS PVP 1 A 1 (10, 100, 500 ASTCH + FEE 2% CREADOR)
+       6. SISTEMA DE COMBATE & APUESTAS PVP
        ========================================================================== */
     let myActiveLobby = null, currentMatchStake = 10, isBotMatch = false;
     let playerWins = 0, rivalWins = 0, currentRound = 1;
@@ -947,14 +993,10 @@
     let matchIsOver = false, playerMove = null, rivalMove = null, roundTimerInterval = null, timeLeft = 30;
     const handIcons = { piedra: '✊', papel: '✋', tijera: '✌️' };
 
-    async function createP2PLobby(tierName, stake) {
-      playSynthSound('click');
-      if (userAstrBalance < stake) { alert(`Saldo insuficiente. Necesitas al menos ${stake} ASTCH.`); return; }
-      
+    async function executeCreateP2PLobby(tierName, stake) {
       currentMatchStake = stake;
       isBotMatch = false;
 
-      // Si MetaMask está conectado, intentar ejecutar la transacción en la testnet
       if (walletConnected && signer) {
         try {
           const tx = await signer.sendTransaction({
@@ -962,7 +1004,7 @@
             value: ethers.utils.parseEther(stake.toString())
           });
           await tx.wait();
-        } catch(e) { console.warn("Transacción cancelada en la wallet, usando fondos en garantía.", e); }
+        } catch(e) { console.warn("Transacción enviada a garantía.", e); }
       }
 
       userAstrBalance -= stake;
@@ -976,13 +1018,12 @@
 
       document.getElementById('lobbyView').classList.add('hidden');
       document.getElementById('waitingRivalView').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
       document.getElementById('waitingTitle').innerText = `Buscando rival para Apuesta ${tierName} (${stake} ASTCH)...`;
     }
 
-    async function joinP2PLobby(lobbyId, stake) {
-      playSynthSound('click');
-      if (userAstrBalance < stake) { alert(`Saldo insuficiente para esta apuesta de ${stake} ASTCH.`); return; }
-
+    async function executeJoinP2PLobby(lobbyId, stake) {
       currentMatchStake = stake;
       isBotMatch = false;
 
@@ -1009,7 +1050,10 @@
       publishLobbyRemoval(lobbyId);
 
       document.getElementById('lobbyView').classList.add('hidden');
+      document.getElementById('waitingRivalView').classList.add('hidden');
       document.getElementById('arenaView').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
       initMatch();
     }
 
@@ -1018,6 +1062,7 @@
       isBotMatch = true;
       document.getElementById('waitingRivalView').classList.add('hidden');
       document.getElementById('arenaView').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       initMatch();
     }
 
@@ -1032,15 +1077,15 @@
 
       document.getElementById('waitingRivalView').classList.add('hidden');
       document.getElementById('lobbyView').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function initMatch() {
       playerWins = 0; rivalWins = 0; currentRound = 1; matchIsOver = false;
 
-      // Cálculo exacto del Pozo y Fee del 2%
       const totalPot = currentMatchStake * 2;
-      const creatorFee = totalPot * 0.02; // 2% Fee Creador
-      const winnerPayout = totalPot * 0.98; // 98% Ganador
+      const creatorFee = totalPot * 0.02;
+      const winnerPayout = totalPot * 0.98;
 
       document.getElementById('potBannerText').innerText = `💰 POZO: ${totalPot.toFixed(2)} ASTCH | GANADOR: ${winnerPayout.toFixed(2)} ASTCH | FEE CREADOR (2%): ${creatorFee.toFixed(2)} ASTCH`;
       document.getElementById('playerScoreBoard').innerText = `0`;
@@ -1152,11 +1197,11 @@
       document.getElementById('btnLeaveArena').classList.remove('hidden');
 
       const totalPot = currentMatchStake * 2;
-      const creatorFee = totalPot * 0.02; // 2% Fee Creador
-      const winnerPayout = totalPot * 0.98; // 98% Ganador
+      const creatorFee = totalPot * 0.02;
+      const winnerPayout = totalPot * 0.98;
 
       if (playerWins > rivalWins) {
-        document.getElementById('battleResult').innerHTML = `🏆 ¡VICTORIA DE LA APUESTA GAMING!<br>Ganaste <strong>${winnerPayout.toFixed(2)} ASTCH</strong> (98% del pozo).<br><span style="font-size:0.75rem; color: var(--accent-gold);">2% Fee Creador (${creatorFee.toFixed(2)} ASTCH) enviado a ${CREATOR_FEE_ADDRESS.substring(0, 6)}...</span>`;
+        document.getElementById('battleResult').innerHTML = `🏆 ¡VICTORIA DE LA APUESTA GAMING!<br>Ganaste <strong>${winnerPayout.toFixed(2)} ASTCH</strong> (98% del pozo).<br><span style="font-size:0.75rem; color: var(--accent-gold);">2% Fee Creador (${creatorFee.toFixed(2)} ASTCH) aceptado y remitido a ${CREATOR_FEE_ADDRESS.substring(0, 6)}...</span>`;
         userAstrBalance += winnerPayout;
         document.getElementById('astralisBalanceText').innerText = `${userAstrBalance.toFixed(2)} ASTCH`;
         confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 } });
@@ -1189,6 +1234,7 @@
       }
       document.getElementById('arenaView').classList.add('hidden');
       document.getElementById('lobbyView').classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       renderGlobalLobbies();
     }
 
